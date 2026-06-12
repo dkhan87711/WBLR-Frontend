@@ -1,0 +1,675 @@
+.login-page {
+    min-height: 100vh;
+    background: url('../../assets/login6.png') center/cover no-repeat;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    padding-right: 8%;
+}
+
+.login-card {
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    background: rgba(4, 15, 45, 0.95);
+    border: 1px solid rgba(0, 140, 255, 0.35);
+    box-shadow:
+        0 0 12px rgba(0, 120, 255, 0.15);
+
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+/* ======================================
+   HEADER
+====================================== */
+
+.login-header {
+    text-align: center;
+}
+
+.login-icon-department {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 1px solid #0d8bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    color: #0d8bff;
+    text-align: center;
+}
+
+.login-header h2 {
+    margin: 6px 0 4px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.login-header p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #d0d8e6;
+}
+
+.divider {
+    width: 50px;
+    height: 2px;
+    margin: 10px auto;
+    border-radius: 10px;
+    background: #0d8bff;
+}
+
+/* ======================================
+   LOGIN AS
+====================================== */
+
+.login-as {
+    margin-top: 0px;
+}
+
+.login-as span {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: white;
+}
+
+.user-type-All {
+    display: flex;
+    gap: 6px;
+}
+
+.user-type {
+    flex: 1;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.role-icon {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.department {
+    border: 1px solid #0d8bff;
+    color: #0d8bff;
+}
+
+.institution {
+    border: 1px solid #37d468;
+    color: #37d468;
+}
+
+.citizen {
+    border: 1px solid #d778ff;
+    color: #d778ff;
+}
+
+.user-type:hover {
+    transform: translateY(-1px);
+}
+
+/* ======================================
+   INPUTS
+====================================== */
+.input-group {
+    margin-top: 12px;
+}
+
+.input-group input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 35px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: white;
+    padding: 0 12px;
+    font-size: 12px;
+    outline: none;
+    margin-top: 10px;
+}
+
+.input-group input::placeholder {
+    color: #b4bfd3;
+}
+
+/* ======================================
+   REMEMBER ME
+====================================== */
+.login-options {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+}
+
+.remember-me input {
+    margin: 0;
+}
+
+.login-options a {
+    color: #1f9cff;
+    text-decoration: none;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+
+/* ======================================
+   LOGIN BUTTON
+====================================== */
+
+.login-btn {
+    width: 100%;
+    margin-top: 14px;
+    height: 44px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(180deg,
+            #1f75ff,
+            #0055ff);
+
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    opacity: 0.95;
+}
+
+/* ======================================
+   OR DIVIDER
+====================================== */
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.or-divider span {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.or-divider p {
+    margin: 0;
+    font-size: 12px;
+    color: #d0d8e6;
+}
+
+/* Currently Selected Role */
+
+.active-role-department {
+    background: rgba(13, 139, 255, 0.25);
+    border: 1px solid #0d8bff !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(13, 139, 255, 0.55);
+}
+
+/* ======================================
+   FOOTER
+====================================== */
+
+.footer-help {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 11px;
+    color: #d0d8e6;
+}
+
+.footer-help a {
+    color: #1f9cff;
+    text-decoration: none;
+}
+
+.footer-help a:hover {
+    text-decoration: underline;
+}
+
+.back-home-btn {
+    background: none;
+    border: none;
+    color: #1f9cff;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 6px;
+    text-decoration: none;
+}
+
+.back-home-btn:hover {
+    text-decoration: underline;
+}
+
+
+
+/* ======================================
+   PAGE LAYOUT
+====================================== */
+.login-page {
+    min-height: 100vh;
+    background: url('../../assets/login6.png') center/cover no-repeat;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 8%;
+    position: relative;
+}
+
+/* ======================================
+   TOP HEADER (TITLE + TAGLINE)
+====================================== */
+.top-header {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 75%;
+    color: #ffffff;
+}
+
+.top-header h1 {
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 0px;
+    letter-spacing: 0.5px;
+}
+
+.top-header p {
+    font-size: 12px;
+    color: #37d468;
+    line-height: 1.6;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ======================================
+   LOGIN CARD (UNCHANGED BUT SAFE ALIGN)
+====================================== */
+.login-card {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 500px) {
+    .top-header h1 {
+        font-size: 20px;
+    }
+
+    .top-header p {
+        font-size: 12px;
+    }
+}
+
+/* ======================================
+   LEFT PANEL (MATCH IMAGE STYLE)
+====================================== */
+.left-panel {
+    position: absolute;
+    left: 4%;
+    top: 52%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    max-width: 600px;
+    color: white;
+}
+
+/* ICON (CIRCLE STYLE) */
+.left-icon {
+    width: 90px;
+    height: 90px;
+    min-width: 90px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Image inside icon */
+.left-icon img {
+    width: 140px;
+}
+
+/* TEXT BLOCK */
+.left-text {
+    flex: 1;
+}
+
+/* Welcome text */
+.welcome-text {
+    font-size: 22px;
+    color: #5ee2ff;
+    margin-bottom: 5px;
+
+}
+
+/* Main Title */
+.main-title {
+    font-size: 40px;
+    font-weight: 700;
+    margin: 0;
+    color: #ffffff;
+    background: rgba(4, 15, 45, 0.75);
+    width: fit-content;
+}
+
+/* Sub Title */
+.sub-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    color: #ccc;
+    background: rgba(4, 15, 45, 0.75);
+    width: 250px;
+}
+
+/* Underline */
+.underline {
+    width: 260px;
+    height: 2px;
+    margin: 12px 0;
+    background: linear-gradient(90deg, #00e0ff, #00ffa6);
+    border-radius: 2px;
+}
+
+/* Description text */
+.description {
+    font-size: 16px;
+    line-height: 1.4;
+    color: #ffffff;
+    max-width: 520px;
+    font-weight: 500;
+    background: rgba(4, 15, 45, 0.55);
+    padding: 5px;
+    border-radius: 15px;
+    text-align: justify;
+}
+
+/* DELETE / COMMENT THIS */
+.left-info-card {
+    display: none;
+}
+
+
+/*** ====================================== */
+.application-launcher {
+    width: 580px;
+    position: relative;
+    z-index: 2;
+    left: 8%;
+    top: 30px;
+}
+
+.launcher-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.launcher-header h2 {
+    color: white;
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.launcher-header p {
+    color: #fff;
+    font-size: 18px;
+    background: rgba(4, 15, 45, 0.55);
+    width: fit-content;
+    /* margin: 0 auto; */
+    padding: 1px 1px;
+    border-radius: 10px;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.app-card {
+    height: 170px;
+    padding: 15px;
+    border-radius: 18px;
+    background: rgba(4, 15, 45, .92);
+    backdrop-filter: blur(10px);
+    /* cursor: auto; */
+    transition: .3s ease;
+    border: 1px solid rgba(255, 255, 255, .08);
+    width: 250px;
+}
+
+.app-card:hover {
+    transform: translateY(-8px);
+}
+
+.app-card h3 {
+    color: white;
+    font-size: 16px;
+    margin: 5px;
+    padding: 0px;
+}
+
+.app-card p {
+    color: #c7d2df;
+    line-height: 1.6;
+    font-size: 13px;
+    margin: 0px;
+    padding: 5px;
+}
+
+.app-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+}
+
+.geospatial {
+    border-color: #24c8ff;
+}
+
+.geospatial-icon {
+    color: #24c8ff;
+    border: 1px solid #24c8ff;
+    background: rgba(36, 200, 255, .12);
+}
+
+.acquisition {
+    border-color: #7dff6f;
+}
+
+.acquisition-icon {
+    color: #7dff6f;
+    border: 1px solid #7dff6f;
+    background: rgba(125, 255, 111, .12);
+}
+
+.citizen-app {
+    border-color: #d67dff;
+}
+
+.citizen-icon {
+    color: #d67dff;
+    border: 1px solid #d67dff;
+    background: rgba(214, 125, 255, .12);
+}
+
+.compliance {
+    border-color: #ff9a1f;
+}
+
+.compliance-icon {
+    color: #ff9a1f;
+    border: 1px solid #ff9a1f;
+    background: rgba(255, 154, 31, .12);
+}
+
+.logged-user-card {
+    top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    background: rgba(4, 15, 45, .7);
+    border: 1px solid rgba(0, 180, 255, .25);
+    border-radius: 8px;
+    width: fit-content;
+    position: absolute;
+    right: 5px;
+    z-index: 10000;
+}
+
+.back-to-home-card {
+    bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    background: rgba(4, 15, 45, .7);
+    border: 1px solid rgba(0, 180, 255, .25);
+    border-radius: 8px;
+    width: fit-content;
+    position: absolute;
+    right: 210px;
+    z-index: 10000;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 180, 255, .15);
+    font-size: 18px;
+}
+
+.logged-label {
+    color: #8da4be;
+    font-size: 11px;
+}
+
+.logged-name {
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.logged-role {
+    color: #1f9cff;
+    font-size: 12px;
+}
+
+.back-home-btn2 {
+    background: none;
+    border: none;
+    color: #1f9cff;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 6px;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+
+.app-card {
+    position: relative;
+}
+
+/*** Explore Button (Common for all cards) */
+.explore-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+
+    height: 30px;
+    width: 110px;
+    padding: 0 14px;
+
+    border-radius: 20px;
+    border: none;
+
+    cursor: pointer;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition: all .25s ease;
+}
+
+/* Blue */
+.geospatial-btn {
+    background: rgba(36, 200, 255, .15);
+    border: 1px solid #24c8ff;
+    color: #24c8ff;
+}
+
+/* Green */
+.acquisition-btn {
+    background: rgba(125, 255, 111, .15);
+    border: 1px solid #7dff6f;
+    color: #7dff6f;
+}
+
+/* Purple */
+.citizen-btn-new {
+    background: rgba(214, 125, 255, .15);
+    border: 1px solid #d67dff;
+    color: #d67dff;
+}
+
+/* Orange */
+.compliance-btn {
+    background: rgba(255, 154, 31, .15);
+    border: 1px solid #ff9a1f;
+    color: #ff9a1f;
+}
+
+.explore-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(255, 255, 255, .15);
+}

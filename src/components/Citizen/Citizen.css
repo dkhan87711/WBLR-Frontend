@@ -1,0 +1,334 @@
+.login-page {
+    min-height: 100vh;
+    background: url('../../assets/login6.png') center/cover no-repeat;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    padding-right: 8%;
+}
+
+.login-card {
+    width: 300px;
+    height: fit-content;
+    padding: 20px;
+    border-radius: 8px;
+    background: rgba(4, 15, 45, 0.95);
+    border: 1px solid rgba(0, 140, 255, 0.35);
+    box-shadow:
+        0 0 12px rgba(0, 120, 255, 0.15);
+
+    display: flex;
+    flex-direction: column;
+    color: white;
+}
+
+/* ======================================
+   HEADER
+====================================== */
+
+.login-header {
+    text-align: center;
+}
+
+.login-icon-citizen {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 1px solid #d778ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    line-height: 1;
+    color: #d778ff;
+    text-align: center;
+}
+
+.login-header h2 {
+    margin: 6px 0 4px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.login-header p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #d0d8e6;
+}
+
+.divider-citizen {
+    width: 50px;
+    height: 2px;
+    margin: 10px auto;
+    border-radius: 10px;
+    background: #d778ff;
+}
+
+/* ======================================
+   LOGIN AS
+====================================== */
+
+.login-as {
+    margin-top: 0px;
+}
+
+.login-as span {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: white;
+}
+
+.user-type-All {
+    display: flex;
+    gap: 6px;
+}
+
+.user-type {
+    flex: 1;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.role-icon {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.department {
+    border: 1px solid #0d8bff;
+    color: #0d8bff;
+}
+
+.institution {
+    border: 1px solid #37d468;
+    color: #37d468;
+}
+
+.citizen {
+    border: 1px solid #d778ff;
+    color: #d778ff;
+}
+
+.user-type:hover {
+    transform: translateY(-1px);
+}
+
+/* ======================================
+   INPUTS
+====================================== */
+.input-group {
+    margin-top: 12px;
+}
+
+.input-group input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 35px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
+    color: white;
+    padding: 0 12px;
+    font-size: 12px;
+    outline: none;
+    margin-top: 10px;
+}
+
+.input-group input::placeholder {
+    color: #b4bfd3;
+}
+
+/* ======================================
+   REMEMBER ME
+====================================== */
+.login-options {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: white;
+}
+
+.remember-me input {
+    margin: 0;
+}
+
+.login-options a {
+    color: #1f9cff;
+    text-decoration: none;
+}
+
+.login-options a:hover {
+    text-decoration: underline;
+}
+
+/* ======================================
+   LOGIN BUTTON
+====================================== */
+
+.login-btn {
+    width: 100%;
+    margin-top: 14px;
+    height: 35px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(180deg,
+            #1f75ff,
+            #0055ff);
+
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    opacity: 0.95;
+}
+
+/* ======================================
+   OR DIVIDER
+====================================== */
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.or-divider span {
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.or-divider p {
+    margin: 0;
+    font-size: 12px;
+    color: #d0d8e6;
+}
+
+/* Currently Selected Role */
+
+.active-role-citizen {
+    background: rgba(143, 4, 120, 0.25);
+    border: 1px solid #d778ff !important;
+    color: #d778ff !important;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(171, 123, 161, 0.35);
+}
+
+/* ======================================
+   FOOTER
+====================================== */
+
+.footer-help {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 11px;
+    color: #d0d8e6;
+}
+
+.footer-help a {
+    color: #1f9cff;
+    text-decoration: none;
+}
+
+.footer-help a:hover {
+    text-decoration: underline;
+}
+
+/* OTP RESEND SECTION */
+.otp-resend {
+    margin-top: 0px;
+    text-align: center;
+    font-size: 11px;
+    color: #d0d8e6;
+}
+
+.otp-resend button {
+    background: transparent;
+    border: none;
+    color: #1f9cff;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.otp-resend button:hover {
+    text-decoration: underline;
+}
+
+/* MOBILE INPUT WITH +91 */
+
+.mobile-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.country-code {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #d0d8e6;
+    margin-top: 10px;
+    height: 18px;
+    font-weight: 500;
+}
+
+/* ERROR TEXT */
+
+.error-text {
+    margin-top: 5px;
+    font-size: 10px;
+    color: #ff6b6b;
+}
+
+.change-mobile-link {
+    display: inline-block;
+    margin-top: 5px;
+    color: #37d468;
+    font-size: 12px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.change-mobile-link:hover {
+    text-decoration: underline;
+}
+
+
+.citizen-launcher {
+    width: 320px;
+    position: relative;
+    z-index: 2;
+    left: 8%;
+}
+
+.citizen-launcher .app-card {
+    width: 280px;
+}

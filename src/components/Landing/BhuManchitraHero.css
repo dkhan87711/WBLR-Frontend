@@ -1,0 +1,41 @@
+.hero-container {
+  width: 100%;
+  height: 631px;
+  background: url('../../assets/landing7.png') center/cover no-repeat;
+  position: relative;
+}
+
+.btn {
+  position: absolute;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* Department Login */
+.department-btn {
+  top: 88.45%;
+  left: 35.4%;
+  width: 155px;
+  height: 42px;
+  /* background: rgba(255, 255, 255, 0.75); */
+}
+
+/* Institutional Login */
+.institution-btn {
+  top: 88.45%;
+  left: 57.25%;
+  width: 160px;
+  height: 42px;
+  /* background: rgba(255, 255, 255, 0.75); */
+}
+
+/* Citizen Login */
+.citizen-btn {
+  top: 88.45%;
+  left: 81%;
+  width: 170px;
+  height: 42px;
+  /* background: rgba(255, 255, 255, 0.75); */
+}

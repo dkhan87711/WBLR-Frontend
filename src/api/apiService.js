@@ -1,0 +1,48 @@
+import API from "./API";
+import ENDPOINTS from "./endPoints";
+
+// ---------------------- DEPARTMENT ----------------------
+export const departmentLogin = async (payload) => {
+    return await API.post(
+        ENDPOINTS.DEPARTMENT_LOGIN,
+        payload
+    );
+};
+
+// ---------------------- INSTITUTION ----------------------
+export const institutionLogin = async (payload) => {
+    return await API.post(
+        ENDPOINTS.INSTITUTION_LOGIN,
+        payload
+    );
+};
+
+// ---------------------- CITIZEN OTP ----------------------
+export const sendOtp = async (phoneNo) => {
+    return await API.post(
+        ENDPOINTS.SEND_OTP,
+        { phoneNo }
+    );
+};
+
+export const verifyOtp = async (
+    phoneNo,
+    otp
+) => {
+    return await API.post(
+        ENDPOINTS.VERIFY_OTP,
+        {
+            phoneNo,
+            otp
+        }
+    );
+};
+
+export const resendOtp = async (
+    phoneNo
+) => {
+    return await API.post(
+        ENDPOINTS.SEND_OTP,
+        { phoneNo }
+    );
+};
