@@ -175,38 +175,24 @@ export const Citizen = () => {
         <div className="login-page">
 
             <div className="left-panel">
-
                 <div className="left-icon">
-                    <img
-                        src={leftLogo}
-                        alt="landstack-icon"
-                    />
+                    <img src={leftLogo} alt="landstack-icon" />
                 </div>
 
                 <div className="left-text">
-
-                    <p className="welcome-text">
-                        Welcome to
-                    </p>
-
-                    <h2 className="main-title">
-                        Landstack
+                    <p className="welcome-text">Welcome to</p>
+                    <h2 className="main-title-header-login">
+                        Bhu <span>Manchitra</span>
                     </h2>
 
-                    <h5 className="sub-title">
-                        Unified Digital Land Information System
+                    <h5 className="sub-title-header-login">
+                        Land Records, Survey & Analytics Platform
                     </h5>
-
-                    <div className="underline"></div>
-
-                    <p className="description">
-                        Landstack is an integrated GIS-based
-                        Digital Land Information System that
-                        unifies land records, geospatial data,
-                        and administrative processes across
-                        multiple departments.
+                    <div className="underline-header-login"></div>
+                    <p className="description-header-login">
+                        Bhu Manchitra is an integrated Geospatial Web Platform for Land Governance, survey,
+                        Monitoring and Decision Support System.
                     </p>
-
                 </div>
 
             </div>
@@ -242,7 +228,7 @@ export const Citizen = () => {
                                     }`}
                                 onClick={() => goTo("/department")}
                             >
-                                🏛 Department
+                                🏛 &nbsp;Department
                             </div>
 
                             <div
@@ -370,7 +356,7 @@ export const Citizen = () => {
                     <div className="footer-help">
                         Need help?{" "}
                         <a href="#">
-                            Contact Support
+                            &nbsp; Contact Support
                         </a>
                     </div>
 

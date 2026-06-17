@@ -340,12 +340,12 @@
 ====================================== */
 .left-panel {
     position: absolute;
-    left: 4%;
-    top: 52%;
+    left: 2%;
+    top: 45%;
     transform: translateY(-50%);
     display: flex;
     align-items: flex-start;
-    gap: 20px;
+    gap: 10px;
     max-width: 600px;
     color: white;
 }
@@ -356,11 +356,11 @@
     height: 90px;
     min-width: 90px;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.25);
 }
 
 /* Image inside icon */
@@ -376,51 +376,55 @@
 /* Welcome text */
 .welcome-text {
     font-size: 22px;
-    color: #5ee2ff;
+    color: #24c8ff;
     margin-bottom: 5px;
-
+    background: rgba(4, 15, 45, 0.75);
+    width: 120px;
 }
 
 /* Main Title */
 .main-title {
-    font-size: 40px;
+    font-size: 35px;
     font-weight: 700;
     margin: 0;
     color: #ffffff;
-    background: rgba(4, 15, 45, 0.75);
+    background: rgba(4, 15, 45, 0.55);
     width: fit-content;
+    margin-top: -5px;
 }
 
 /* Sub Title */
 .sub-title {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
-    color: #ccc;
+    color: #d0d8e6;
     background: rgba(4, 15, 45, 0.75);
-    width: 250px;
+    width: 270px;
 }
 
 /* Underline */
 .underline {
-    width: 260px;
+    width: 270px;
     height: 2px;
-    margin: 12px 0;
+    margin: 6px 0;
     background: linear-gradient(90deg, #00e0ff, #00ffa6);
     border-radius: 2px;
 }
 
 /* Description text */
 .description {
-    font-size: 16px;
-    line-height: 1.4;
+    font-size: 17px;
+    line-height: 1.1;
     color: #ffffff;
     max-width: 520px;
     font-weight: 500;
     background: rgba(4, 15, 45, 0.55);
     padding: 5px;
-    border-radius: 15px;
+    border-radius: 5px;
     text-align: justify;
+    margin-top: 5px;
+    font-family: initial;
 }
 
 /* DELETE / COMMENT THIS */

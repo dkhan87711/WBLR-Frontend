@@ -1,11 +1,9 @@
 .login-page {
     min-height: 100vh;
     background: url('../../assets/login6.png') center/cover no-repeat;
-
     display: flex;
     justify-content: flex-end;
     align-items: center;
-
     padding-right: 8%;
 }
 
@@ -16,9 +14,7 @@
     border-radius: 8px;
     background: rgba(4, 15, 45, 0.95);
     border: 1px solid rgba(0, 140, 255, 0.35);
-    box-shadow:
-        0 0 12px rgba(0, 120, 255, 0.15);
-
+    box-shadow: 0 0 12px rgba(0, 120, 255, 0.15);
     display: flex;
     flex-direction: column;
     color: white;
@@ -340,8 +336,8 @@
 ====================================== */
 .left-panel {
     position: absolute;
-    left: 4%;
-    top: 52%;
+    left: 2%;
+    top: 45%;
     transform: translateY(-50%);
     display: flex;
     align-items: flex-start;
@@ -376,9 +372,10 @@
 /* Welcome text */
 .welcome-text {
     font-size: 22px;
-    color: #5ee2ff;
+    color: #24c8ff;
     margin-bottom: 5px;
-
+    background: rgba(4, 15, 45, 0.75);
+    width: 120px;
 }
 
 /* Main Title */
@@ -398,7 +395,7 @@
     margin: 0;
     color: #ccc;
     background: rgba(4, 15, 45, 0.75);
-    width: 250px;
+    width: 270px;
 }
 
 /* Underline */
@@ -625,19 +622,14 @@
     position: absolute;
     bottom: 12px;
     right: 12px;
-
     height: 30px;
     width: 110px;
     padding: 0 14px;
-
     border-radius: 20px;
     border: none;
-
     cursor: pointer;
-
     font-size: 12px;
     font-weight: 600;
-
     transition: all .25s ease;
 }
 
@@ -672,4 +664,95 @@
 .explore-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 0 12px rgba(255, 255, 255, .15);
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-group input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 60%;
+    right: 12px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+    transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: #0a5c8f;
+}
+
+.password-toggle:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.main-title-header-login {
+    margin: 0;
+    font-size: 33px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.main-title-header-login span {
+    background: linear-gradient(90deg,
+            #00d9ff 0%,
+            #3fa9ff 40%,
+            #11dc14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Subtitle */
+.sub-title-header-login {
+    margin: 6px 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #dce7ff;
+    /* letter-spacing: 0.4px; */
+}
+
+/* Accent Line */
+.underline-header-login {
+    width: 120px;
+    height: 3px;
+    margin: 4px 0 7px;
+    border-radius: 20px;
+    background: linear-gradient(90deg,
+            #00d9ff,
+            #00ffa6);
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
+}
+
+/* Description */
+.description-header-login {
+    font-size: 17px;
+    line-height: 1.1;
+    color: #ffffff;
+    max-width: 520px;
+    font-weight: 500;
+    background: rgba(4, 15, 45, 0.55);
+    padding: 5px;
+    border-radius: 5px;
+    text-align: justify;
+    margin-top: 5px;
+    font-family: initial;
 }

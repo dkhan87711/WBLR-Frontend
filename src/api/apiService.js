@@ -9,6 +9,18 @@ export const departmentLogin = async (payload) => {
     );
 };
 
+export const departmentLogout = async (
+    sessionId
+) => {
+    return await API.post(
+        ENDPOINTS.DEPARTMENT_LOGOUT,
+        {
+            sessionId
+        }
+    );
+};
+
+
 // ---------------------- INSTITUTION ----------------------
 export const institutionLogin = async (payload) => {
     return await API.post(
@@ -16,6 +28,17 @@ export const institutionLogin = async (payload) => {
         payload
     );
 };
+
+export const institutionLogout =
+    async (payload) => {
+
+        return await API.post(
+            ENDPOINTS.INSTITUTION_LOGOUT,
+            payload
+        );
+
+    };
+
 
 // ---------------------- CITIZEN OTP ----------------------
 export const sendOtp = async (phoneNo) => {

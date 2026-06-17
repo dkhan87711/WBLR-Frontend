@@ -1,8 +1,11 @@
 import "./Institution.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { institutionLogin } from "../../api/apiService";
 import leftLogo from "../../assets/department-left-logo.png";
+import {
+    institutionLogin,
+    institutionLogout
+} from "../../api/apiService";
 
 export const Institution = () => {
     const navigate = useNavigate();
@@ -29,6 +32,7 @@ export const Institution = () => {
             const response = await institutionLogin({
                 userName,
                 password,
+                loginType: "WEB"
             });
 
             console.log(
@@ -38,14 +42,16 @@ export const Institution = () => {
 
             const userData = response.data.data;
 
+            setLoggedInUser(userData);
             localStorage.setItem(
                 "user",
                 JSON.stringify(userData)
             );
-
-            setLoggedInUser(userData);
+            localStorage.setItem(
+                "sessionId",
+                userData.sessionId
+            );
             setShowApps(true);
-
         } catch (err) {
             console.error(err);
 
@@ -58,44 +64,67 @@ export const Institution = () => {
         }
     };
 
+    const handleLogout = async () => {
+        try {
+
+            const sessionId =
+                localStorage.getItem(
+                    "sessionId"
+                );
+
+            if (sessionId) {
+
+                await institutionLogout({
+                    sessionId
+                });
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Logout Error",
+                error
+            );
+
+        } finally {
+
+            localStorage.clear();
+
+            setLoggedInUser(null);
+
+            setShowApps(false);
+
+            navigate("/");
+
+        }
+    };
+
     return (
         <div className="login-page">
-
-            {/* ===== LEFT VISUAL PANEL ===== */}
             <div className="left-panel">
 
                 <div className="left-icon">
-                    <img
-                        src={leftLogo}
-                        alt="landstack-icon"
-                    />
+                    <img src={leftLogo} alt="landstack-icon" />
                 </div>
 
                 <div className="left-text">
-                    <p className="welcome-text">
-                        Welcome to
-                    </p>
-
-                    <h2 className="main-title">
-                        Landstack
+                    <p className="welcome-text">Welcome to</p>
+                    <h2 className="main-title-header-login">
+                        Bhu <span>Manchitra</span>
                     </h2>
 
-                    <h5 className="sub-title">
-                        Unified Digital Land Information System
+                    <h5 className="sub-title-header-login">
+                        Land Records, Survey & Analytics Platform
                     </h5>
-
-                    <div className="underline"></div>
-
-                    <p className="description">
-                        Landstack is an integrated GIS-based
-                        Digital Land Information System that
-                        unifies land records, geospatial data,
-                        and administrative processes across
-                        multiple departments. It enables
-                        seamless data exchange, enhances
-                        transparency, and drives efficient
-                        land governance through a single,
-                        connected digital ecosystem.
+                    <div className="underline-header-login"></div>
+                    <p className="description-header-login">
+                        Integrated Geospatial Platform for Land Governance,
+                        Monitoring and Decision Support System.
+                        It enables seamless integration of land records,
+                        cadastral maps, survey data, and spatial analytics
+                        to support transparent administration, evidence-based
+                        planning, and efficient land management across departments.
                     </p>
                 </div>
 
@@ -116,7 +145,6 @@ export const Institution = () => {
                             <br />
                             to continue
                         </p>
-
                         <div className="divider-institution"></div>
                     </div>
 
@@ -124,7 +152,6 @@ export const Institution = () => {
                         <span>Login as</span>
 
                         <div className="user-type-All">
-
                             <div
                                 className={`user-type department ${location.pathname === "/department"
                                     ? "active-role-department"
@@ -134,7 +161,7 @@ export const Institution = () => {
                                     goTo("/department")
                                 }
                             >
-                                🏛 Department
+                                🏛 &nbsp;Department
                             </div>
 
                             <div
@@ -160,7 +187,6 @@ export const Institution = () => {
                             >
                                 👤 Citizen
                             </div>
-
                         </div>
                     </div>
 
@@ -232,15 +258,13 @@ export const Institution = () => {
                     <div className="footer-help">
                         Need help?
                         <a href="#">
-                            Contact Support
+                            &nbsp; Contact Support
                         </a>
                     </div>
 
                     <button
                         className="back-home-btn"
-                        onClick={() =>
-                            navigate("/")
-                        }
+                        onClick={handleLogout}
                     >
                         ⬅ Back to Home
                     </button>
@@ -387,9 +411,7 @@ export const Institution = () => {
 
                         <button
                             className="back-home-btn"
-                            onClick={() =>
-                                navigate("/")
-                            }
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>

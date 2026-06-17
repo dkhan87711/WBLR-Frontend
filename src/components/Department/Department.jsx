@@ -1,12 +1,14 @@
 import "./Department.css";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { departmentLogin } from "../../api/apiService";
+import { departmentLogin, departmentLogout } from "../../api/apiService";
 import leftLogo from "../../assets/department-left-logo.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export const Department = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [showPassword, setShowPassword] = useState(false);
 
     const [showApps, setShowApps] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -29,7 +31,8 @@ export const Department = () => {
             const response =
                 await departmentLogin({
                     userName,
-                    password
+                    password,
+                    loginType: "WEB"
                 });
 
             console.log(
@@ -37,19 +40,25 @@ export const Department = () => {
                 response.data
             );
 
-            localStorage.setItem(
-                "user",
-                JSON.stringify(response.data)
-            );
-
             const userData = response.data.data;
+
             setLoggedInUser(userData);
+
             localStorage.setItem(
                 "user",
                 JSON.stringify(userData)
             );
+            // For future authenticated APIs
+            localStorage.setItem(
+                "token",
+                response.data.token || ""
+            );
+            // Session tracking
+            localStorage.setItem(
+                "sessionId",
+                userData.sessionId
+            );
             setShowApps(true);
-
         } catch (err) {
             console.error(err);
             setError(
@@ -58,6 +67,31 @@ export const Department = () => {
             );
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            const sessionId =
+                localStorage.getItem(
+                    "sessionId"
+                );
+            if (sessionId) {
+                await departmentLogout(
+                    sessionId
+                );
+
+            }
+        } catch (error) {
+            console.error(
+                "Logout Error:",
+                error
+            );
+        } finally {
+            localStorage.clear();
+            setLoggedInUser(null);
+            setShowApps(false);
+            navigate("/");
         }
     };
 
@@ -83,24 +117,26 @@ export const Department = () => {
 
                 {/* TEXT */}
                 <div className="left-text">
-
                     <p className="welcome-text">Welcome to</p>
-                    <h2 className="main-title">Landstack</h2>
-                    <h5 className="sub-title">Unified Digital Land Information System</h5>
-                    <div className="underline"></div>
+                    <h2 className="main-title-header-login">
+                        Bhu <span>Manchitra</span>
+                    </h2>
 
-                    <p className="description">
-                        Landstack is an integrated GIS-based Digital Land Information System
-                        that unifies land records, geospatial data, and administrative processes
-                        across multiple departments. It enables seamless data exchange, enhances
-                        transparency, and drives efficient land governance through a single,
-                        connected digital ecosystem.
+                    <h5 className="sub-title-header-login">
+                        Land Records, Survey & Analytics Platform
+                    </h5>
+                    <div className="underline-header-login"></div>
+                    <p className="description-header-login">
+                        Integrated Geospatial Platform for Land Governance,
+                        Monitoring and Decision Support System.
+                        It enables seamless integration of land records,
+                        cadastral maps, survey data, and spatial analytics
+                        to support transparent administration, evidence-based
+                        planning, and efficient land management across departments.
                     </p>
-
                 </div>
 
             </div>
-
 
             {
                 !showApps ? (
@@ -133,7 +169,7 @@ export const Department = () => {
                                         }`}
                                     onClick={() => goTo("/department")}
                                 >
-                                    🏛 &nbsp; Department
+                                    🏛 &nbsp;Department
                                 </div>
 
                                 <div
@@ -170,15 +206,29 @@ export const Department = () => {
                             />
                         </div>
 
-                        <div className="input-group">
+                        <div className="input-group password-group">
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) =>
                                     setPassword(e.target.value)
                                 }
                             />
+
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() =>
+                                    setShowPassword(!showPassword)
+                                }
+                            >
+                                {showPassword ? (
+                                    <FaEyeSlash />
+                                ) : (
+                                    <FaEye />
+                                )}
+                            </button>
                         </div>
 
                         <div className="login-options">
@@ -221,13 +271,13 @@ export const Department = () => {
                         <div className="footer-help">
                             Need help?
                             <a href="#">
-                                Contact Support
+                                &nbsp; Contact Support
                             </a>
                         </div>
 
                         <button
                             className="back-home-btn"
-                            onClick={() => navigate("/")}
+                            onClick={handleLogout}
                         >
                             ⬅ Back to Home
                         </button>
@@ -390,7 +440,7 @@ export const Department = () => {
                             </div>
                             <button
                                 className="back-home-btn"
-                                onClick={() => navigate("/")}
+                                onClick={handleLogout}
                             >
                                 Logout
                             </button>
