@@ -50,13 +50,15 @@ export const sendOtp = async (phoneNo) => {
 
 export const verifyOtp = async (
     phoneNo,
-    otp
+    otp,
+    user_name,
 ) => {
     return await API.post(
         ENDPOINTS.VERIFY_OTP,
         {
             phoneNo,
-            otp
+            otp,
+            user_name
         }
     );
 };

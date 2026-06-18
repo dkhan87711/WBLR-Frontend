@@ -2,6 +2,8 @@ import "./Institution.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import leftLogo from "../../assets/department-left-logo.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 import {
     institutionLogin,
     institutionLogout
@@ -10,6 +12,7 @@ import {
 export const Institution = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [showPassword, setShowPassword] = useState(false);
 
     const [showApps, setShowApps] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -66,37 +69,26 @@ export const Institution = () => {
 
     const handleLogout = async () => {
         try {
-
             const sessionId =
                 localStorage.getItem(
                     "sessionId"
                 );
 
             if (sessionId) {
-
                 await institutionLogout({
                     sessionId
                 });
-
             }
-
         } catch (error) {
-
             console.error(
                 "Logout Error",
                 error
             );
-
         } finally {
-
             localStorage.clear();
-
             setLoggedInUser(null);
-
             setShowApps(false);
-
             navigate("/");
-
         }
     };
 
@@ -111,7 +103,7 @@ export const Institution = () => {
                 <div className="left-text">
                     <p className="welcome-text">Welcome to</p>
                     <h2 className="main-title-header-login">
-                        Bhu <span>Manchitra</span>
+                        Bhu-<span>Manchitra</span>
                     </h2>
 
                     <h5 className="sub-title-header-login">
@@ -203,17 +195,29 @@ export const Institution = () => {
                         />
                     </div>
 
-                    <div className="input-group">
+                    <div className="input-group password-group">
                         <input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="Password"
                             value={password}
                             onChange={(e) =>
-                                setPassword(
-                                    e.target.value
-                                )
+                                setPassword(e.target.value)
                             }
                         />
+
+                        <button
+                            type="button"
+                            className="password-toggle"
+                            onClick={() =>
+                                setShowPassword(!showPassword)
+                            }
+                        >
+                            {showPassword ? (
+                                <FaEyeSlash />
+                            ) : (
+                                <FaEye />
+                            )}
+                        </button>
                     </div>
 
                     <div className="login-options">

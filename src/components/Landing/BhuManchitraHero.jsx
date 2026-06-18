@@ -12,7 +12,7 @@ export const BhuManchitraHero = () => {
         <div className="title-badge">GeoSpatial Intelligence Platform</div>
 
         <h2 className="main-title-header">
-          Bhu <span>Manchitra</span>
+          Bhu-<span>Manchitra</span>
         </h2>
 
         <h5 className="sub-title-header">

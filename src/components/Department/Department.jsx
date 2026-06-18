@@ -119,7 +119,7 @@ export const Department = () => {
                 <div className="left-text">
                     <p className="welcome-text">Welcome to</p>
                     <h2 className="main-title-header-login">
-                        Bhu <span>Manchitra</span>
+                        Bhu-<span>Manchitra</span>
                     </h2>
 
                     <h5 className="sub-title-header-login">
