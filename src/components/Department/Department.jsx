@@ -400,12 +400,12 @@ export const Department = () => {
                             </div>
 
                             <div className="logged-name">
-                                {loggedInUser.user.firstName}{" "}
-                                {loggedInUser.user.lastName}
+                                {loggedInUser?.user?.firstName}{" "}
+                                {loggedInUser?.user?.lastName}
                             </div>
 
                             <div className="logged-role">
-                                {loggedInUser.user.userType?.name} User
+                                {loggedInUser?.user?.userType?.name} User
                             </div>
 
                             <button

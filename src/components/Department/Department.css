@@ -437,11 +437,11 @@
 
 /*** ====================================== */
 .application-launcher {
-    width: 580px;
+    width: 520px;
     position: relative;
     z-index: 2;
-    left: 8%;
-    top: 30px;
+    left: 5%;
+    top: 0px;
 }
 
 .launcher-header {
@@ -476,7 +476,7 @@
 }
 
 .app-card {
-    height: 150px;
+    height: 160px;
     padding: 10px;
     border-radius: 18px;
     background: rgba(4, 15, 45, .52);
@@ -484,7 +484,7 @@
     /* cursor: auto; */
     transition: .3s ease;
     border: 1px solid rgba(255, 255, 255, .08);
-    width: 250px;
+    width: 270px;
 }
 
 .app-card:hover {
