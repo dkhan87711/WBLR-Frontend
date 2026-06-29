@@ -1,0 +1,258 @@
+/* =====================================================
+BHU-MANCHITRA - MAP PAGE
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+.map-page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+    background: #f5f7fa;
+}
+
+/* =====================================================
+HEADER
+===================================================== */
+.app-header {
+    height: 60px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: linear-gradient(90deg,
+            #071b4d 0%,
+            #0c2d75 100%);
+
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.menu-icon {
+    font-size: 20px;
+    cursor: pointer;
+    color: #ffffff;
+    transition: 0.2s ease;
+}
+
+.menu-icon:hover {
+    transform: scale(1.08);
+}
+
+.map-title-header {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+    line-height: 1;
+}
+
+/* =====================================================
+USER PROFILE CARD
+===================================================== */
+/* ===========================
+   USER PROFILE
+=========================== */
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 42px;
+    padding: 10px 10px;
+    /* background: rgba(255, 255, 255, 0.08); */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-right: -20px;
+}
+
+.user-profile-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    color: #d6e7ff;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-display-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.user-meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: #c7d7ef;
+}
+
+.logout-icon-btn {
+    width: 32px;
+    height: 32px;
+    margin-left: 6px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #d6e7ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+.logout-icon-btn svg {
+    font-size: 14px;
+}
+
+/* =====================================================
+MAP
+===================================================== */
+.map-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* =====================================================
+ESRI SEARCH WIDGET
+===================================================== */
+.esri-search {
+    width: 320px !important;
+}
+
+.esri-search__container {
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* =====================================================
+ESRI EXPAND BUTTONS
+===================================================== */
+
+.esri-expand__container {
+    border-radius: 8px !important;
+}
+
+.esri-expand__content {
+    border-radius: 8px !important;
+}
+
+/* =====================================================
+ESRI POPUP
+===================================================== */
+
+.esri-popup__main-container {
+    border-radius: 10px !important;
+    overflow: hidden;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.esri-popup__header {
+    background: #0c2d75 !important;
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+.esri-popup__content {
+    font-size: 13px;
+}
+
+.esri-popup__footer {
+    border-top: 1px solid #e0e0e0;
+}
+
+/* =====================================================
+SCALE BAR
+===================================================== */
+.esri-scale-bar {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+/* =====================================================
+ZOOM WIDGET
+===================================================== */
+.esri-zoom {
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+.esri-zoom .esri-widget--button {
+    transition: 0.2s ease;
+}
+
+.esri-zoom .esri-widget--button:hover {
+    background-color: #eef4ff;
+}
+
+/* =====================================================
+RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+    .map-title-header {
+        font-size: 15px;
+    }
+
+    .user-profile-card {
+        padding: 6px 10px;
+    }
+
+    .user-avatar {
+        font-size: 28px;
+    }
+
+    .user-display-name {
+        font-size: 13px;
+    }
+
+    .esri-search {
+        width: 250px !important;
+    }
+}

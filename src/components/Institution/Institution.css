@@ -9,20 +9,6 @@
     padding-right: 8%;
 }
 
-.login-card {
-    width: 300px;
-    height: 400px;
-    padding: 20px;
-    border-radius: 8px;
-    background: rgba(4, 15, 45, 0.95);
-    border: 1px solid rgba(0, 140, 255, 0.35);
-    box-shadow:
-        0 0 12px rgba(0, 120, 255, 0.15);
-    display: flex;
-    flex-direction: column;
-    color: white;
-}
-
 /* ======================================
    HEADER
 ====================================== */
@@ -258,24 +244,6 @@
     text-decoration: underline;
 }
 
-
-.back-home-btn {
-    background: none;
-    border: none;
-    color: #1f9cff;
-    font-size: 11px;
-    cursor: pointer;
-    padding: 0;
-    margin-top: 6px;
-    text-decoration: none;
-}
-
-.back-home-btn:hover {
-    text-decoration: underline;
-}
-
-
-
 /* ======================================
    PAGE LAYOUT
 ====================================== */
@@ -315,14 +283,6 @@
     line-height: 1.6;
     max-width: 1000px;
     margin: 0 auto;
-}
-
-/* ======================================
-   LOGIN CARD (UNCHANGED BUT SAFE ALIGN)
-====================================== */
-.login-card {
-    position: relative;
-    z-index: 2;
 }
 
 @media (max-width: 500px) {
@@ -433,52 +393,10 @@
 }
 
 
-/*** ====================================== */
-.application-launcher {
-    width: 580px;
-    position: relative;
-    z-index: 2;
-    left: 8%;
-    top: 30px;
-}
-
-.launcher-header {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.launcher-header h2 {
-    color: white;
-    font-size: 34px;
-    margin-bottom: 8px;
-}
-
-.launcher-header p {
-    color: #fff;
-    font-size: 18px;
-    background: rgba(4, 15, 45, 0.55);
-    width: fit-content;
-    /* margin: 0 auto; */
-    padding: 1px 1px;
-    border-radius: 10px;
-}
-
 .app-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-}
-
-.app-card {
-    height: 170px;
-    padding: 15px;
-    border-radius: 18px;
-    background: rgba(4, 15, 45, .92);
-    backdrop-filter: blur(10px);
-    /* cursor: auto; */
-    transition: .3s ease;
-    border: 1px solid rgba(255, 255, 255, .08);
-    width: 250px;
 }
 
 .app-card:hover {
@@ -490,24 +408,6 @@
     font-size: 16px;
     margin: 5px;
     padding: 0px;
-}
-
-.app-card p {
-    color: #c7d2df;
-    line-height: 1.6;
-    font-size: 13px;
-    margin: 0px;
-    padding: 5px;
-}
-
-.app-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
 }
 
 .geospatial {
@@ -550,21 +450,6 @@
     background: rgba(255, 154, 31, .12);
 }
 
-.logged-user-card {
-    top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 8px;
-    background: rgba(4, 15, 45, .7);
-    border: 1px solid rgba(0, 180, 255, .25);
-    border-radius: 8px;
-    width: fit-content;
-    position: absolute;
-    right: 5px;
-    z-index: 10000;
-}
-
 .back-to-home-card {
     bottom: 8px;
     display: flex;
@@ -578,17 +463,6 @@
     position: absolute;
     right: 210px;
     z-index: 10000;
-}
-
-.user-avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 180, 255, .15);
-    font-size: 18px;
 }
 
 .logged-label {

@@ -12,7 +12,7 @@
     height: 400px;
     padding: 20px;
     border-radius: 8px;
-    background: rgba(4, 15, 45, 0.95);
+    background: rgba(4, 15, 45, 0.75);
     border: 1px solid rgba(0, 140, 255, 0.35);
     box-shadow: 0 0 12px rgba(0, 120, 255, 0.15);
     display: flex;
@@ -270,7 +270,16 @@
     text-decoration: underline;
 }
 
-
+.logout-btn {
+    background: none;
+    border: none;
+    color: #1f9cff;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0px;
+    text-decoration: none;
+}
 
 /* ======================================
    PAGE LAYOUT
@@ -442,18 +451,22 @@
 
 .launcher-header h2 {
     color: white;
-    font-size: 34px;
-    margin-bottom: 8px;
+    font-size: 30px;
+    margin-bottom: 0px;
+    background: linear-gradient(90deg, #00d9ff 0%, #3fa9ff 40%, #11dc14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .launcher-header p {
     color: #fff;
-    font-size: 18px;
-    background: rgba(4, 15, 45, 0.55);
+    font-size: 15px;
+    background: rgba(4, 15, 45, 0);
     width: fit-content;
-    /* margin: 0 auto; */
+    margin: 0 auto;
     padding: 1px 1px;
     border-radius: 10px;
+    font-weight: 600;
 }
 
 .app-grid {
@@ -463,10 +476,10 @@
 }
 
 .app-card {
-    height: 170px;
-    padding: 15px;
+    height: 150px;
+    padding: 10px;
     border-radius: 18px;
-    background: rgba(4, 15, 45, .92);
+    background: rgba(4, 15, 45, .52);
     backdrop-filter: blur(10px);
     /* cursor: auto; */
     transition: .3s ease;
@@ -487,20 +500,23 @@
 
 .app-card p {
     color: #c7d2df;
-    line-height: 1.6;
-    font-size: 13px;
+    line-height: 1.25;
+    font-size: 11px;
     margin: 0px;
     padding: 5px;
 }
 
 .app-icon {
-    width: 60px;
-    height: 60px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+}
+
+.app-icon svg {
+    font-size: 20px;
 }
 
 .geospatial {
@@ -548,14 +564,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 6px 8px;
+    padding: 2px 6px;
     background: rgba(4, 15, 45, .7);
     border: 1px solid rgba(0, 180, 255, .25);
     border-radius: 8px;
-    width: fit-content;
+    width: 180px;
     position: absolute;
     right: 5px;
     z-index: 10000;
+    margin: 0;
 }
 
 .back-to-home-card {
@@ -574,14 +591,22 @@
 }
 
 .user-avatar {
-    width: 42px;
-    height: 42px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 180, 255, .15);
     font-size: 18px;
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: #ffffff;
 }
 
 .logged-label {

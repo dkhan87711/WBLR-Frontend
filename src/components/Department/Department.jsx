@@ -5,6 +5,14 @@ import { departmentLogin, departmentLogout } from "../../api/apiService";
 import leftLogo from "../../assets/department-left-logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+import {
+    FaMapMarkedAlt,
+    FaTasks,
+    FaDatabase,
+    FaChartLine,
+    FaUserCircle
+} from "react-icons/fa";
+
 export const Department = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -13,7 +21,7 @@ export const Department = () => {
     const [showApps, setShowApps] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
 
-    const [userName, setUserName] = useState("");
+    const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -30,7 +38,8 @@ export const Department = () => {
 
             const response =
                 await departmentLogin({
-                    userName,
+                    userName: loginId,
+                    email: loginId,
                     password,
                     loginType: "WEB"
                 });
@@ -48,25 +57,32 @@ export const Department = () => {
                 "user",
                 JSON.stringify(userData)
             );
-            // For future authenticated APIs
+
             localStorage.setItem(
                 "token",
                 response.data.token || ""
             );
-            // Session tracking
+
             localStorage.setItem(
                 "sessionId",
                 userData.sessionId
             );
+
             setShowApps(true);
+
         } catch (err) {
+
             console.error(err);
+
             setError(
                 err?.response?.data?.message ||
                 "Login failed"
             );
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
@@ -97,15 +113,6 @@ export const Department = () => {
 
     return (
         <div className="login-page">
-
-            {/* ===== TOP HEADER ===== */}
-            {/* <div className="top-header">
-                <h1>Landstack: Unified Digital Land Information System</h1>
-                <p>
-                    Integrated GIS Platform for Transparent, Efficient & Intelligent Land Management
-                    Covering Masterplan, Permissions, Registration, Record of Rights & Cadastral Mapping
-                </p>
-            </div> */}
 
             {/* ===== LEFT VISUAL PANEL ===== */}
             <div className="left-panel">
@@ -142,26 +149,21 @@ export const Department = () => {
                 !showApps ? (
 
                     <div className="login-card">
-
                         <div className="login-header">
                             <div className="login-icon-department">
                                 <span>🏛</span>
                             </div>
-
                             <p>
                                 Welcome! Please sign in to your account
                                 <br />
                                 to continue
                             </p>
-
                             <div className="divider"></div>
                         </div>
 
                         <div className="login-as">
                             <span>Login as</span>
-
                             <div className="user-type-All">
-
                                 <div
                                     className={`user-type department ${location.pathname === "/department"
                                         ? "active-role-department"
@@ -191,17 +193,16 @@ export const Department = () => {
                                 >
                                     👤 Citizen
                                 </div>
-
                             </div>
                         </div>
 
                         <div className="input-group">
                             <input
                                 type="text"
-                                placeholder="Username"
-                                value={userName}
+                                placeholder="Username or Email"
+                                value={loginId}
                                 onChange={(e) =>
-                                    setUserName(e.target.value)
+                                    setLoginId(e.target.value)
                                 }
                             />
                         </div>
@@ -252,7 +253,7 @@ export const Department = () => {
                             className="login-btn"
                             onClick={handleLogin}
                             disabled={
-                                !userName ||
+                                !loginId ||
                                 !password ||
                                 loading
                             }
@@ -287,119 +288,61 @@ export const Department = () => {
                 ) : (
 
                     <div className="application-launcher">
-
                         <div className="launcher-header">
-                            {/* <h2>Welcome To Landstack</h2> */}
+                            <h2>Welcome To Bhu-Manchitra</h2>
                             <p>
                                 Select an application to continue
                             </p>
                         </div>
 
                         <div className="app-grid">
-                            <div
-                                className="app-card geospatial"
-                            >
+                            <div className="app-card geospatial">
                                 <div className="app-icon geospatial-icon">
-                                    🗺️
+                                    <FaMapMarkedAlt />
                                 </div>
-                                <h3>
-                                    Unified Geospatial System
-                                </h3>
+                                <h3>Bhu-Manchitra Web Portal</h3>
                                 <p>
-                                    Integrated platform for all
-                                    geospatial data and services
+                                    Unified GIS platform for map visualization, spatial layers, and land information services.
                                 </p>
 
                                 <button
                                     className="explore-btn geospatial-btn"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=4377d53312084943907c9b0d36a9dbc5&draft=true",
-                                            "_blank"
-                                        );
+                                        navigate("/map");
                                     }}
                                 >
                                     Explore ↗
                                 </button>
                             </div>
 
-                            <div
-                                className="app-card acquisition"
-                            >
+                            <div className="app-card acquisition">
                                 <div className="app-icon acquisition-icon">
-                                    🔍
+                                    <FaTasks />
                                 </div>
-                                <h3>
-                                    Land Acquisition Impact Assessment
-                                </h3>
+                                <h3>Bhu-Manchitra Approval Flow</h3>
                                 <p>
-                                    Assess and analyse the impact
-                                    of land acquisition
+                                    Streamlined approval system for reviewing, validating, and tracking land-related requests.
                                 </p>
 
                                 <button
                                     className="explore-btn acquisition-btn"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=20a34cdc7ebd457283f7159a1f5507ad",
-                                            "_blank"
-                                        );
+                                        navigate("/map");
                                     }}
                                 >
                                     Explore ↗
                                 </button>
                             </div>
 
-                            <div
-                                className="app-card citizen-app"
-                            >
-                                <div className="app-icon citizen-icon">
-                                    👥
-                                </div>
-                                <h3>
-                                    Landstack Web Application
-                                    for Citizen
-                                </h3>
-                                <p>
-                                    Citizen-centric land
-                                    information and services
-                                </p>
-
-                                <button
-                                    className="explore-btn citizen-btn-new"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=dd63f5172f4342799a8204ccc02b8d3e",
-                                            "_blank"
-                                        );
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
-                            </div>
-
-                            <div
-                                className="app-card compliance"
-                            >
+                            <div className="app-card compliance">
                                 <div className="app-icon compliance-icon">
-                                    🛡️
+                                    <FaDatabase />
                                 </div>
-                                {/* <h3>
-                                    Compliance Monitoring &
-                                    Restriction Flagging
-                                </h3>
+                                <h3>Bhu-Manchitra Data Hub</h3>
                                 <p>
-                                    Monitor compliance and
-                                    land-use restrictions
-                                </p> */}
-                                <h3>
-                                    Property Tax Analytics Platform
-                                </h3>
-                                <p>
-                                    AI + ML Based Property Tax Recovery and Analytics Platform
+                                    Centralized repository for managing, integrating, and sharing geospatial datasets.
                                 </p>
 
                                 <button
@@ -416,6 +359,28 @@ export const Department = () => {
                                 </button>
                             </div>
 
+                            <div className="app-card citizen-app">
+                                <div className="app-icon citizen-icon">
+                                    <FaChartLine />
+                                </div>
+                                <h3>Bhu-Manchitra Dashboard</h3>
+                                <p>
+                                    Interactive dashboards and analytics for monitoring land information and activities.
+                                </p>
+
+                                <button
+                                    className="explore-btn citizen-btn-new"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(
+                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=dd63f5172f4342799a8204ccc02b8d3e",
+                                            "_blank"
+                                        );
+                                    }}
+                                >
+                                    Explore ↗
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -426,20 +391,25 @@ export const Department = () => {
                 loggedInUser && (
                     <div className="logged-user-card">
                         <div className="user-avatar">
-                            👤
+                            <FaUserCircle size={48} />
                         </div>
+
                         <div>
                             <div className="logged-label">
                                 Logged in as
                             </div>
+
                             <div className="logged-name">
-                                {loggedInUser.firstName} {loggedInUser.lastName}
+                                {loggedInUser.user.firstName}{" "}
+                                {loggedInUser.user.lastName}
                             </div>
+
                             <div className="logged-role">
-                                {loggedInUser.userTypeName} Login
+                                {loggedInUser.user.userType?.name} User
                             </div>
+
                             <button
-                                className="back-home-btn"
+                                className="logout-btn"
                                 onClick={handleLogout}
                             >
                                 Logout

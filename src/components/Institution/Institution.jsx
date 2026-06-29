@@ -9,6 +9,14 @@ import {
     institutionLogout
 } from "../../api/apiService";
 
+import {
+    FaMapMarkedAlt,
+    FaTasks,
+    FaDatabase,
+    FaChartLine,
+    FaUserCircle
+} from "react-icons/fa";
+
 export const Institution = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,7 +25,7 @@ export const Institution = () => {
     const [showApps, setShowApps] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
 
-    const [userName, setUserName] = useState("");
+    const [loginId, setLoginId] = useState("");
     const [password, setPassword] = useState("");
 
     const [loading, setLoading] = useState(false);
@@ -32,38 +40,49 @@ export const Institution = () => {
             setLoading(true);
             setError("");
 
-            const response = await institutionLogin({
-                userName,
-                password,
-                loginType: "WEB"
-            });
+            const response =
+                await institutionLogin({
+                    userName: loginId,
+                    email: loginId,
+                    password,
+                    loginType: "WEB"
+                });
 
             console.log(
                 "Institution Login Success",
                 response.data
             );
 
-            const userData = response.data.data;
+            const userData =
+                response.data.data;
 
             setLoggedInUser(userData);
+
             localStorage.setItem(
                 "user",
                 JSON.stringify(userData)
             );
+
             localStorage.setItem(
                 "sessionId",
                 userData.sessionId
             );
+
             setShowApps(true);
+
         } catch (err) {
+
             console.error(err);
 
             setError(
                 err?.response?.data?.message ||
                 "Login failed"
             );
+
         } finally {
+
             setLoading(false);
+
         }
     };
 
@@ -185,10 +204,10 @@ export const Institution = () => {
                     <div className="input-group">
                         <input
                             type="text"
-                            placeholder="Username"
-                            value={userName}
+                            placeholder="Username or Email"
+                            value={loginId}
                             onChange={(e) =>
-                                setUserName(
+                                setLoginId(
                                     e.target.value
                                 )
                             }
@@ -243,7 +262,7 @@ export const Institution = () => {
                         className="login-btn"
                         onClick={handleLogin}
                         disabled={
-                            !userName ||
+                            !loginId ||
                             !password ||
                             loading
                         }
@@ -280,109 +299,51 @@ export const Institution = () => {
                 <div className="application-launcher">
 
                     <div className="launcher-header">
+                        <h2>Welcome To Bhu-Manchitra</h2>
                         <p>
                             Select an application to continue
                         </p>
                     </div>
 
                     <div className="app-grid">
-
-                        {/* Geospatial */}
                         <div className="app-card geospatial">
-
                             <div className="app-icon geospatial-icon">
-                                🗺️
+                                <FaMapMarkedAlt />
                             </div>
-
-                            <h3>
-                                Unified Geospatial System
-                            </h3>
-
+                            <h3>Bhu-Manchitra Web Portal</h3>
                             <p>
-                                Integrated platform for all
-                                geospatial data and services
+                                Unified GIS platform for map visualization, spatial layers, and land information services.
                             </p>
 
                             <button
                                 className="explore-btn geospatial-btn"
                                 onClick={(e) => {
                                     e.stopPropagation();
-
-                                    window.open(
-                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=4377d53312084943907c9b0d36a9dbc5&draft=true",
-                                        "_blank"
-                                    );
+                                    navigate("/map");
                                 }}
                             >
                                 Explore ↗
                             </button>
-
                         </div>
 
-                        {/* Acquisition */}
                         <div className="app-card acquisition">
-
                             <div className="app-icon acquisition-icon">
-                                🔍
+                                <FaTasks />
                             </div>
-
-                            <h3>
-                                Land Acquisition Impact
-                                Assessment
-                            </h3>
-
+                            <h3>Bhu-Manchitra Approval Flow</h3>
                             <p>
-                                Assess and analyse the
-                                impact of land acquisition
+                                Streamlined approval system for reviewing, validating, and tracking land-related requests.
                             </p>
 
                             <button
                                 className="explore-btn acquisition-btn"
                                 onClick={(e) => {
                                     e.stopPropagation();
-
-                                    window.open(
-                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=20a34cdc7ebd457283f7159a1f5507ad",
-                                        "_blank"
-                                    );
+                                    navigate("/map");
                                 }}
                             >
                                 Explore ↗
                             </button>
-
-                        </div>
-
-                        {/* Compliance */}
-                        <div className="app-card compliance compliance-center">
-
-                            <div className="app-icon compliance-icon">
-                                🛡️
-                            </div>
-
-                            <h3>
-                                Compliance Monitoring &
-                                Restriction Flagging
-                            </h3>
-
-                            <p>
-                                Monitor compliance and
-                                land-use restrictions
-                            </p>
-
-                            <button
-                                className="explore-btn compliance-btn"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-
-                                    window.open(
-                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/dashboards/4ca187c5ed5f40fe9788d14824cbff9c",
-                                        "_blank"
-                                    );
-                                }}
-                            >
-                                Explore ↗
-                            </button>
-
                         </div>
 
                     </div>
@@ -393,35 +354,31 @@ export const Institution = () => {
 
             {loggedInUser && (
                 <div className="logged-user-card">
-
                     <div className="user-avatar">
-                        👤
+                        <FaUserCircle size={48} />
                     </div>
 
                     <div>
-
                         <div className="logged-label">
                             Logged in as
                         </div>
 
                         <div className="logged-name">
-                            {loggedInUser.firstName}{" "}
-                            {loggedInUser.lastName}
+                            {loggedInUser.user.firstName}{" "}
+                            {loggedInUser.user.lastName}
                         </div>
 
                         <div className="logged-role">
-                            {loggedInUser.userTypeName} Login
+                            {loggedInUser.user.userType?.name} User
                         </div>
 
                         <button
-                            className="back-home-btn"
+                            className="logout-btn"
                             onClick={handleLogout}
                         >
                             Logout
                         </button>
-
                     </div>
-
                 </div>
             )}
 
