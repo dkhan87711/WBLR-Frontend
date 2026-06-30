@@ -79,7 +79,7 @@ USER PROFILE CARD
     align-items: center;
     gap: 10px;
     min-height: 42px;
-    padding: 10px 10px;
+    padding: 5px;
     /* background: rgba(255, 255, 255, 0.08); */
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 4px;
@@ -255,4 +255,19 @@ RESPONSIVE
     .esri-search {
         width: 250px !important;
     }
+}
+
+.map-card {
+    margin: 0;
+}
+
+.map-card h3 {
+    display: block;
+    font-size: 1em;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: 1em;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
 }

@@ -1,5 +1,5 @@
 import "./Department.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { departmentLogin, departmentLogout } from "../../api/apiService";
 import leftLogo from "../../assets/department-left-logo.png";
@@ -26,6 +26,7 @@ export const Department = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [timeLeft, setTimeLeft] = useState(60); // 60 sec for testing
 
     const goTo = (path) => {
         navigate(path);
@@ -110,6 +111,48 @@ export const Department = () => {
             navigate("/");
         }
     };
+
+    useEffect(() => {
+        let countdownInterval;
+        let logoutTimer;
+
+        const SESSION_TIME = 60 * 15; // seconds
+        const WARNING_TIME = 30;
+
+        if (loggedInUser) {
+            setTimeLeft(SESSION_TIME);
+
+            countdownInterval = setInterval(() => {
+                setTimeLeft(prev => {
+                    if (prev <= 1) return 0;
+                    return prev - 1;
+                });
+            }, 1000);
+
+            logoutTimer = setTimeout(() => {
+                alert("Session expired. Logging out...");
+                handleLogout();
+            }, SESSION_TIME * 1000);
+        }
+
+        return () => {
+            clearInterval(countdownInterval);
+            clearTimeout(logoutTimer);
+        };
+    }, [loggedInUser]);
+
+    useEffect(() => {
+        if (timeLeft === 30) {
+            alert("⚠ Session will expire in 30 seconds. Please save your work.");
+        }
+    }, [timeLeft]);
+
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    const formattedTime = `${minutes}:${seconds
+        .toString()
+        .padStart(2, "0")}`;
 
     return (
         <div className="login-page">
@@ -389,6 +432,11 @@ export const Department = () => {
             {
                 loggedInUser && (
                     <div className="logged-user-card">
+
+                        <div className="session-timer">
+                            ⏱ Session expires in: {formattedTime}
+                        </div>
+
                         <div className="user-avatar">
                             <FaUserCircle size={48} />
                         </div>

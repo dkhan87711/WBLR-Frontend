@@ -57,6 +57,41 @@ const MapPage = () => {
 
     const navigate = useNavigate();
 
+    const [timeLeft, setTimeLeft] = useState(60); // 60 sec test
+    const [showWarning, setShowWarning] = useState(false);
+    useEffect(() => {
+        let interval;
+
+        const SESSION_TIME = 60 * 15;
+        const WARNING_TIME = 30;
+
+        setTimeLeft(SESSION_TIME);
+        setShowWarning(false);
+
+        interval = setInterval(() => {
+            setTimeLeft(prev => {
+                const newTime = prev - 1;
+
+                console.log("⏱", newTime);
+
+                if (newTime === WARNING_TIME) {
+                    setShowWarning(true);
+                }
+
+                if (newTime <= 0) {
+                    clearInterval(interval);
+                    handleLogout();
+                    return 0;
+                }
+
+                return newTime;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+
+    }, []);   // ✅ RUN ONCE ONLY
+
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         const sessionId = localStorage.getItem("sessionId");
@@ -608,6 +643,25 @@ const MapPage = () => {
                 </div>
 
                 <div className="header-right">
+
+                    {/* ✅ WARNING (ONLY AT 30s) */}
+                    {showWarning && (
+                        <div style={{
+                            position: "fixed",
+                            top: "17px",
+                            right: "200px",
+                            background: "yellow",
+                            color: "#000",
+                            padding: "5px 16px",
+                            borderRadius: "6px",
+                            zIndex: 9999,
+                            fontSize: "12px",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+                        }}>
+                            ⚠ Session is going to expire, save chnages
+                        </div>
+                    )}
+
                     <div className="user-profile-card">
                         <div className="user-avatar">
                             <FaUserCircle />
@@ -622,6 +676,19 @@ const MapPage = () => {
                                 <span>
                                     {user?.role?.name}
                                 </span>
+                            </div>
+                            {/* ✅ TIMER (ALWAYS VISIBLE) */}
+                            <div style={{
+                                marginRight: "15px",
+                                marginTop: "5px",
+                                background: "transparent",
+                                color: "#fff",
+                                padding: "0px",
+                                borderRadius: "6px",
+                                fontSize: "9px",
+                            }}>
+                                ⏱ {Math.floor(timeLeft / 60)}:
+                                {(timeLeft % 60).toString().padStart(2, "0")}
                             </div>
                         </div>
 

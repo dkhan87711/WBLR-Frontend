@@ -781,3 +781,17 @@
     margin-top: 5px;
     font-family: initial;
 }
+
+.session-timer {
+    position: absolute;
+    top: 72px;
+    right: 0px;
+    padding: 2px 10px;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 6px;
+    z-index: 1000;
+    min-width: 180px;
+    background: rgba(4, 15, 45, .7);
+    border: 1px solid rgba(0, 180, 255, .25);
+}

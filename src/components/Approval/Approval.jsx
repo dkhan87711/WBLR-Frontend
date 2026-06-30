@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ApprovalMap from "./ApprovalMap";
 import "./Approval.css";
 
 import {
@@ -49,9 +50,50 @@ const Approval = () => {
         selectedRequest?.rawStatus === "DISTRICT_APPROVED" ||
         selectedRequest?.rawStatus === "REJECTED";
 
+    const [transactionData, setTransactionData] = useState([]);
+    const [originalGeometry, setOriginalGeometry] = useState([]);
+
+    const [timeLeft, setTimeLeft] = useState(60);
+    const [showWarning, setShowWarning] = useState(false);
+
     // ✅ FETCH LIST
     useEffect(() => {
         fetchRequests();
+    }, []);
+
+    useEffect(() => {
+        let interval;
+
+        const SESSION_TIME = 60 * 15;   // change later
+        const WARNING_TIME = 30;
+
+        console.log("🚀 Approval Timer Started");
+
+        setTimeLeft(SESSION_TIME);
+        setShowWarning(false);
+
+        interval = setInterval(() => {
+            setTimeLeft(prev => {
+                const newTime = prev - 1;
+
+                console.log("⏱ Approval:", newTime);
+
+                if (newTime === WARNING_TIME) {
+                    setShowWarning(true);
+                }
+
+                if (newTime <= 0) {
+                    clearInterval(interval);
+                    handleLogout();
+                    return 0;
+                }
+
+                return newTime;
+            });
+        }, 1000);
+
+        return () => clearInterval(interval);
+
     }, []);
 
     const formatDate = (date) => {
@@ -111,6 +153,11 @@ const Approval = () => {
 
             setSelectedRequest(row);
             setReviewData(res.data.data);
+
+            setTransactionData(res.data.data.transaction);
+
+            // ✅ NEW
+            setOriginalGeometry(res.data.data.originalGeometry);
 
         } catch (err) {
             console.error(err);
@@ -268,10 +315,8 @@ const Approval = () => {
     };
 
     const sortedRequests = [...roleBasedRequests].sort((a, b) => {
-
         const priorityA = statusPriority[a.status] || 99;
         const priorityB = statusPriority[b.status] || 99;
-
         return priorityA - priorityB;   // ✅ lower number first
     });
 
@@ -317,24 +362,19 @@ const Approval = () => {
     const totalCount = roleBasedRequests.length;
 
     const pendingCount = roleBasedRequests.filter(r => {
-
         if (user.role.code === "SUBDIVISION_EDITOR") {
             return r.rawStatus === "SUBMITTED";
         }
-
         if (user.role.code === "DISTRICT_EDITOR") {
             return r.rawStatus === "SUBDIVISION_APPROVED";
         }
-
         // Editor
         return r.rawStatus === "DRAFT";
-
     }).length;
 
     const todayStr = new Date().toISOString().split("T")[0];
 
     const approvedCount = roleBasedRequests.filter(r => {
-
         let isApproved = false;
 
         // ✅ FIELD / BLRO (Editor)
@@ -389,6 +429,25 @@ const Approval = () => {
                 </div>
 
                 <div className="header-right">
+
+                    {/* ✅ WARNING (ONLY AT 30s) */}
+                    {showWarning && (
+                        <div style={{
+                            position: "fixed",
+                            top: "17px",
+                            right: "200px",
+                            background: "yellow",
+                            color: "#000",
+                            padding: "5px 16px",
+                            borderRadius: "6px",
+                            zIndex: 9999,
+                            fontSize: "12px",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+                        }}>
+                            ⚠ Session is going to expire, save chnages
+                        </div>
+                    )}
+
                     <div className="user-profile-card">
                         <div className="user-avatar">
                             <FaUserCircle />
@@ -403,6 +462,19 @@ const Approval = () => {
                                 <span>
                                     {user?.role?.name}
                                 </span>
+                            </div>
+                            {/* ✅ TIMER (ALWAYS VISIBLE) */}
+                            <div style={{
+                                marginRight: "15px",
+                                marginTop: "5px",
+                                background: "transparent",
+                                color: "#fff",
+                                padding: "0px",
+                                borderRadius: "6px",
+                                fontSize: "9px",
+                            }}>
+                                ⏱ {Math.floor(timeLeft / 60)}:
+                                {(timeLeft % 60).toString().padStart(2, "0")}
                             </div>
                         </div>
 
@@ -445,22 +517,18 @@ const Approval = () => {
 
                         <div className="summary-card">
                             <h3>Change Summary</h3>
-
                             <div className="summary-row">
                                 <span>Request ID</span>
                                 <strong>{selectedRequest.requestId}</strong>
                             </div>
-
                             <div className="summary-row">
                                 <span>Submitted By</span>
                                 <strong>{selectedRequest.requestedBy}</strong>
                             </div>
-
                             <div className="summary-row">
                                 <span>Submitted On</span>
                                 <strong>{selectedRequest.requestedDate}</strong>
                             </div>
-
                             <div className="summary-row">
                                 <span>Status</span>
                                 <strong>
@@ -474,13 +542,67 @@ const Approval = () => {
                             <h3>Approval Workflow</h3>
 
                             <ul className="timeline">
-                                <li className="completed">✓ Submitted</li>
+
+                                {/* ✅ Fixed steps */}
                                 <li className="completed">✓ Survey</li>
-                                <li className="active">● Review</li>
-                                <li>○ DLRO</li>
-                                <li>○ Final</li>
+                                <li className="completed">✓ Submitted</li>
+
+                                {/* ✅ NEW STEP: Sent for Approval */}
+                                {/* ✅ Block Level */}
+                                <li className={
+                                    selectedRequest.rawStatus === "DRAFT"
+                                        ? "active"
+                                        : selectedRequest.rawStatus === "SUBMITTED" ||
+                                            selectedRequest.rawStatus === "SUBDIVISION_APPROVED" ||
+                                            selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                            ? "completed"
+                                            : ""
+                                }>
+                                    {selectedRequest.rawStatus === "DRAFT"
+                                        ? "● Block Approval"
+                                        : selectedRequest.rawStatus === "SUBMITTED" ||
+                                            selectedRequest.rawStatus === "SUBDIVISION_APPROVED" ||
+                                            selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                            ? "✓ Block Approval"
+                                            : "○ Block Approval"}
+                                </li>
+
+                                {/* ✅ Subdivision */}
+                                <li className={
+                                    selectedRequest.rawStatus === "SUBDIVISION_APPROVED" ||
+                                        selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                        ? "completed"
+                                        : selectedRequest.rawStatus === "SUBMITTED"
+                                            ? "active"
+                                            : ""
+                                }>
+                                    {selectedRequest.rawStatus === "SUBDIVISION_APPROVED" ||
+                                        selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                        ? "✓ Subdivision Approval"
+                                        : selectedRequest.rawStatus === "SUBMITTED"
+                                            ? "● Subdivision Approval"
+                                            : "○ Subdivision Approval"}
+                                </li>
+
+                                {/* ✅ District */}
+                                <li className={
+                                    selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                        ? "completed"
+                                        : selectedRequest.rawStatus === "SUBDIVISION_APPROVED"
+                                            ? "active"
+                                            : ""
+                                }>
+                                    {selectedRequest.rawStatus === "DISTRICT_APPROVED"
+                                        ? "✓ District Approval"
+                                        : selectedRequest.rawStatus === "SUBDIVISION_APPROVED"
+                                            ? "● District Approval"
+                                            : "○ District Approval"}
+                                </li>
+
                             </ul>
                         </div>
+
+
 
                     </div>
 
@@ -488,24 +610,24 @@ const Approval = () => {
                     <div className="comparison-section">
 
                         <div className="map-panel">
-                            <div className="map-panel-header">BEFORE EDIT</div>
-                            <div className="approval-map">
-                                <div className="map-placeholder">
-                                    Existing Plot Boundary
-                                    <div className="legend">Blue Polygon</div>
-                                </div>
+                            <div className="map-card">
+                                <h3>Before Edit</h3>
+
+                                <ApprovalMap
+                                    mode="before"
+                                    geoData={originalGeometry}
+                                />
                             </div>
                         </div>
 
                         <div className="map-panel">
-                            <div className="map-panel-header">AFTER EDIT</div>
-                            <div className="approval-map">
-                                <div className="map-placeholder">
-                                    Proposed Plot Boundary
-                                    <div className="legend green">
-                                        Green Polygon
-                                    </div>
-                                </div>
+                            <div className="map-card">
+                                <h3>After Edit</h3>
+
+                                <ApprovalMap
+                                    mode="after"
+                                    geoData={transactionData}   // from API
+                                />
                             </div>
                         </div>
 
@@ -554,35 +676,63 @@ const Approval = () => {
                     </div>
 
                     {/* COMMENTS */}
-                    <div className="comment-card">
-                        <h3>Reviewer Comments</h3>
-                        <textarea
-                            value={reviewComment}
-                            onChange={(e) =>
-                                setReviewComment(e.target.value)
-                            }
-                            placeholder="Enter approval/rejection remarks..."
-                        />
-                    </div>
+                    {!isFinal && (
+                        <div className="comment-card">
+                            <h3>Reviewer Comments</h3>
+                            <textarea
+                                value={reviewComment}
+                                onChange={(e) =>
+                                    setReviewComment(e.target.value)
+                                }
+                                placeholder="Enter approval/rejection remarks..."
+                            />
+                        </div>
+                    )}
 
-                    {/* ACTION */}
+                    {/* ✅ EDITOR VIEW */}
                     <div className="action-panel">
+                        {isEditor ? (
+                            <>
+                                {selectedRequest.rawStatus === "DRAFT" && (
+                                    <button
+                                        className="reject-btn"
+                                        onClick={() => handleDelete(selectedRequest.requestId)}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
 
-                        <button
-                            disabled={isFinal}
-                            className="reject-btn"
-                            onClick={() => handleAction("REJECTED")}
-                        >
-                            <FaTimesCircle /> Reject Request
-                        </button>
+                                {selectedRequest.rawStatus === "DRAFT" && (
+                                    <button
+                                        className="approve-btn"
+                                        onClick={() =>
+                                            handleSendForApproval(selectedRequest.requestId)
+                                        }
+                                    >
+                                        Send for Approval
+                                    </button>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                {/* ✅ SUBDIVISION / DISTRICT */}
+                                <button
+                                    disabled={isFinal}
+                                    className="reject-btn"
+                                    onClick={() => handleAction("REJECTED")}
+                                >
+                                    Reject Request
+                                </button>
 
-                        <button
-                            disabled={isFinal}
-                            className="approve-btn"
-                            onClick={() => handleAction("APPROVED")}
-                        >
-                            <FaCheckCircle /> Approve Request
-                        </button>
+                                <button
+                                    disabled={isFinal}
+                                    className="approve-btn"
+                                    onClick={() => handleAction("APPROVED")}
+                                >
+                                    Approve Request
+                                </button>
+                            </>
+                        )}
 
                     </div>
 
@@ -743,25 +893,14 @@ const Approval = () => {
 
                                         <td style={{ display: "flex", height: '55px' }}>
 
-                                            {/* ✅ EDITOR */}
-                                            {/* ✅ EDITOR */}
+                                            {/* ✅ EDITOR (FIELD / BLRO) */}
                                             {isEditor && row.rawStatus === "DRAFT" && (
-                                                <>
-                                                    <button
-                                                        className="reject-btn"
-                                                        onClick={() => handleDelete(row.requestId)}
-                                                    >
-                                                        Delete
-                                                    </button>
-
-                                                    <button
-                                                        className="approve-btn"
-                                                        onClick={() => handleSendForApproval(row.requestId)}
-                                                        style={{ marginLeft: "6px" }}
-                                                    >
-                                                        Send for Approval
-                                                    </button>
-                                                </>
+                                                <button
+                                                    className="review-btn"
+                                                    onClick={() => handleReview(row)}
+                                                >
+                                                    Review
+                                                </button>
                                             )}
 
                                             {/* ✅ SUBDIVISION */}

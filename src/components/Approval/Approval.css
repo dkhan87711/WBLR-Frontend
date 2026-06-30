@@ -64,7 +64,7 @@ HEADER (SAME AS MAPPAGE)
     align-items: center;
     gap: 10px;
     min-height: 42px;
-    padding: 10px;
+    padding: 5px;
     border: 1px solid rgba(255,
             255,
             255,
@@ -83,11 +83,6 @@ HEADER (SAME AS MAPPAGE)
     flex-direction: column;
 }
 
-.user-display-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: #ffffff;
-}
 
 .user-meta {
     display: flex;
@@ -323,7 +318,7 @@ REVIEW HEADER
 }
 
 .review-header p {
-    margin: 4px 0 0;
+    margin: 0;
     color: #64748b;
 }
 
@@ -374,7 +369,7 @@ SUMMARY + TIMELINE
 .timeline-card h3,
 .attribute-card h3,
 .comment-card h3 {
-    margin-top: 0;
+    margin: 0;
 }
 
 .summary-row {
@@ -407,7 +402,7 @@ SUMMARY + TIMELINE
 }
 
 .timeline li {
-    padding: 10px 0;
+    padding: 5px 0;
     border-left: 2px solid #e2e8f0;
     padding-left: 14px;
     margin-left: 4px;
