@@ -13,6 +13,8 @@ const ENDPOINTS = {
     APPROVAL_LIST: "/approval/requests",
     APPROVAL_DETAILS: (txnId) => `/approval/requests/${txnId}`,
     APPROVAL_ACTION: "/approval/action",
+
+    APPROVAL_SUBMIT: "/approval/submit"   // ✅ ✅ ADD THIS LINE
 };
 
 export default ENDPOINTS;

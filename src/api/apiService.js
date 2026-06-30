@@ -9,14 +9,10 @@ export const departmentLogin = async (payload) => {
     );
 };
 
-export const departmentLogout = async (
-    sessionId
-) => {
+export const departmentLogout = async (sessionId) => {
     return await API.post(
         ENDPOINTS.DEPARTMENT_LOGOUT,
-        {
-            sessionId
-        }
+        { sessionId }
     );
 };
 
@@ -29,15 +25,12 @@ export const institutionLogin = async (payload) => {
     );
 };
 
-export const institutionLogout =
-    async (payload) => {
-
-        return await API.post(
-            ENDPOINTS.INSTITUTION_LOGOUT,
-            payload
-        );
-
-    };
+export const institutionLogout = async (payload) => {
+    return await API.post(
+        ENDPOINTS.INSTITUTION_LOGOUT,
+        payload
+    );
+};
 
 
 // ---------------------- CITIZEN OTP ----------------------
@@ -48,11 +41,7 @@ export const sendOtp = async (phoneNo) => {
     );
 };
 
-export const verifyOtp = async (
-    phoneNo,
-    otp,
-    user_name,
-) => {
+export const verifyOtp = async (phoneNo, otp, user_name) => {
     return await API.post(
         ENDPOINTS.VERIFY_OTP,
         {
@@ -63,9 +52,7 @@ export const verifyOtp = async (
     );
 };
 
-export const resendOtp = async (
-    phoneNo
-) => {
+export const resendOtp = async (phoneNo) => {
     return await API.post(
         ENDPOINTS.SEND_OTP,
         { phoneNo }
@@ -73,10 +60,12 @@ export const resendOtp = async (
 };
 
 
-// ✅ Get list
-export const getApprovalRequests = async () => {
+// ---------------------- APPROVAL ----------------------
+
+// ✅ Get list (role-based)
+export const getApprovalRequests = async (role) => {
     return await API.get(
-        ENDPOINTS.APPROVAL_LIST
+        `${ENDPOINTS.APPROVAL_LIST}?role=${role}`
     );
 };
 
@@ -91,6 +80,14 @@ export const getApprovalDetails = async (txnId) => {
 export const submitApproval = async (payload) => {
     return await API.post(
         ENDPOINTS.APPROVAL_ACTION,
+        payload
+    );
+};
+
+// ✅ Send for approval
+export const submitForApproval = async (payload) => {
+    return await API.post(
+        ENDPOINTS.APPROVAL_SUBMIT,
         payload
     );
 };

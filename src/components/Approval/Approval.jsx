@@ -16,7 +16,8 @@ import {
 import {
     getApprovalRequests,
     getApprovalDetails,
-    submitApproval
+    submitApproval,
+    submitForApproval   // ✅ ADD THIS
 } from "../../api/apiService";
 
 const Approval = () => {
@@ -44,18 +45,31 @@ const Approval = () => {
     const [dateFilter, setDateFilter] = useState("");
     const [requestedByFilter, setRequestedByFilter] = useState("");
 
+    const isFinal =
+        selectedRequest?.rawStatus === "DISTRICT_APPROVED" ||
+        selectedRequest?.rawStatus === "REJECTED";
 
     // ✅ FETCH LIST
     useEffect(() => {
         fetchRequests();
     }, []);
 
+    const formatDate = (date) => {
+        if (!date) return "-";
+
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    };
+
     const fetchRequests = async () => {
         try {
             setLoading(true);
 
-            const res = await getApprovalRequests();
-
+            const res = await getApprovalRequests(user.role.code);
             console.log("API RESPONSE:", res); // 👈 DEBUG
 
             // ✅ handle multiple possible formats
@@ -70,14 +84,15 @@ const Approval = () => {
                 txn_type: row.txn_type,
                 plotNo: row.plot_no,
                 mouza: row.mouza,
-                jlNo: "-",
                 requestedBy: row.requested_by,
-                requestedDate: row.requested_date
-                    ? new Date(row.requested_date).toLocaleDateString()
-                    : "-",
-                status: row.status || "Pending",
-                areaChange: "-"
+
+                requestedDateRaw: row.requested_date,   // ✅ ✅ ADD THIS
+                requestedDate: formatDate(row.requested_date),
+
+                status: mapStatus(row.status),
+                rawStatus: row.status
             }));
+
 
             setRequests(formatted);
 
@@ -104,22 +119,49 @@ const Approval = () => {
 
     // ✅ APPROVE / REJECT
     const handleAction = async (status) => {
+
         try {
             await submitApproval({
                 txnId: selectedRequest.requestId,
-                role: user.role.name,
+                role: user.role.code,
                 status,
-                remarks: reviewComment,
-                userId: user.userId
+                remarks: reviewComment
             });
 
             alert(`Request ${status} ✅`);
 
+            // ✅ DETERMINE NEXT STATUS
+            let updatedStatus = selectedRequest.rawStatus;
+
+            if (status === "REJECTED") {
+                updatedStatus = "REJECTED";
+            } else if (status === "APPROVED") {
+
+                if (user.role.code === "SUBDIVISION_EDITOR") {
+                    updatedStatus = "SUBDIVISION_APPROVED";
+                }
+
+                else if (user.role.code === "DISTRICT_EDITOR") {
+                    updatedStatus = "DISTRICT_APPROVED";
+                }
+            }
+
+            // ✅ UPDATE LOCAL STATE
+            setRequests(prev =>
+                prev.map(r =>
+                    r.requestId === selectedRequest.requestId
+                        ? {
+                            ...r,
+                            rawStatus: updatedStatus,
+                            status: mapStatus(updatedStatus)
+                        }
+                        : r
+                )
+            );
+
             setSelectedRequest(null);
             setReviewData(null);
             setReviewComment("");
-
-            fetchRequests();
 
         } catch (err) {
             alert("Error while processing!");
@@ -135,17 +177,45 @@ const Approval = () => {
         );
     };
 
-    const handleSendForApproval = (txnId) => {
-        alert("Sent for approval ✅");
+    const handleSendForApproval = async (txnId) => {
 
-        // temporary status update
-        setRequests(prev =>
-            prev.map(r =>
-                r.requestId === txnId
-                    ? { ...r, status: "SUBMITTED" }
-                    : r
-            )
-        );
+        try {
+            await submitForApproval({ txnId: Number(txnId) });
+
+            alert("Sent for approval ✅");
+
+            // ✅ UPDATE LOCAL STATE (NO REFRESH)
+            setRequests(prev =>
+                prev.map(r =>
+                    r.requestId === txnId
+                        ? {
+                            ...r,
+                            rawStatus: "SUBMITTED",
+                            status: mapStatus("SUBMITTED")
+                        }
+                        : r
+                )
+            );
+
+        } catch (err) {
+            console.error("SUBMIT ERROR:", err.response?.data);
+            alert(err.response?.data?.message || "Error sending for approval!");
+        }
+    };
+
+    const mapStatus = (status) => {
+        switch (status) {
+            case "SUBMITTED":
+                return "Pending Subdivision";
+            case "SUBDIVISION_APPROVED":
+                return "Pending District";
+            case "DISTRICT_APPROVED":
+                return "APPROVED";
+            case "REJECTED":
+                return "REJECTED";
+            default:
+                return "Draft";
+        }
     };
 
     const handleLogout = () => {
@@ -155,14 +225,6 @@ const Approval = () => {
 
         navigate("/department", { replace: true });
     };
-
-    const totalCount = requests?.length || 0;
-    const pendingCount =
-        requests?.filter(r => r.status === "Pending")?.length || 0;
-    const approvedCount =
-        requests?.filter(r => r.status === "APPROVED")?.length || 0;
-    const rejectedCount =
-        requests?.filter(r => r.status === "REJECTED")?.length || 0;
 
     /** Filters */
     const mouzaOptions = [
@@ -179,8 +241,41 @@ const Approval = () => {
                 .filter(Boolean)
         )
     ];
-    const filteredRequests = requests.filter(row => {
 
+    const roleBasedRequests = requests.filter(row => {
+
+        // ✅ EDITOR → sees all
+        if (isEditor) return true;
+
+        // ✅ SUBDIVISION
+        if (user.role.code === "SUBDIVISION_EDITOR") {
+            return ["SUBMITTED", "SUBDIVISION_APPROVED"].includes(row.rawStatus);
+        }
+
+        // ✅ DISTRICT
+        if (user.role.code === "DISTRICT_EDITOR") {
+            return ["SUBDIVISION_APPROVED", "DISTRICT_APPROVED"].includes(row.rawStatus);
+        }
+
+        return true;
+    });
+
+    const statusPriority = {
+        "APPROVED": 1,
+        "Pending District": 2,
+        "Pending Subdivision": 3,
+        "Draft": 4
+    };
+
+    const sortedRequests = [...roleBasedRequests].sort((a, b) => {
+
+        const priorityA = statusPriority[a.status] || 99;
+        const priorityB = statusPriority[b.status] || 99;
+
+        return priorityA - priorityB;   // ✅ lower number first
+    });
+
+    const filteredRequests = sortedRequests.filter(row => {
         const matchesPlot =
             !plotFilter ||
             row.plotNo
@@ -218,6 +313,66 @@ const Approval = () => {
             matchesDate
         );
     });
+
+    const totalCount = roleBasedRequests.length;
+
+    const pendingCount = roleBasedRequests.filter(r => {
+
+        if (user.role.code === "SUBDIVISION_EDITOR") {
+            return r.rawStatus === "SUBMITTED";
+        }
+
+        if (user.role.code === "DISTRICT_EDITOR") {
+            return r.rawStatus === "SUBDIVISION_APPROVED";
+        }
+
+        // Editor
+        return r.rawStatus === "DRAFT";
+
+    }).length;
+
+    const todayStr = new Date().toISOString().split("T")[0];
+
+    const approvedCount = roleBasedRequests.filter(r => {
+
+        let isApproved = false;
+
+        // ✅ FIELD / BLRO (Editor)
+        if (isEditor) {
+            isApproved =
+                r.rawStatus === "SUBMITTED" ||
+                r.rawStatus === "SUBDIVISION_APPROVED" ||
+                r.rawStatus === "DISTRICT_APPROVED";
+        }
+
+        // ✅ SUBDIVISION
+        else if (user.role.code === "SUBDIVISION_EDITOR") {
+            isApproved = r.rawStatus === "SUBDIVISION_APPROVED";
+        }
+
+        // ✅ DISTRICT
+        else if (user.role.code === "DISTRICT_EDITOR") {
+            isApproved = r.rawStatus === "DISTRICT_APPROVED";
+        }
+
+        if (!isApproved) return false;
+
+        if (!r.requestedDateRaw) return false;
+
+        const d = new Date(r.requestedDateRaw);
+        if (isNaN(d.getTime())) return false;
+
+        const dateStr = d.toISOString().split("T")[0];
+
+        return dateStr === todayStr;
+
+    }).length;
+
+    const rejectedCount =
+        roleBasedRequests.filter(r =>
+            r.rawStatus === "REJECTED"
+        ).length;
+
 
 
     return (
@@ -308,8 +463,8 @@ const Approval = () => {
 
                             <div className="summary-row">
                                 <span>Status</span>
-                                <strong className="status-pending">
-                                    Pending Approval
+                                <strong>
+                                    {mapStatus(selectedRequest.rawStatus)}
                                 </strong>
                             </div>
                         </div>
@@ -414,6 +569,7 @@ const Approval = () => {
                     <div className="action-panel">
 
                         <button
+                            disabled={isFinal}
                             className="reject-btn"
                             onClick={() => handleAction("REJECTED")}
                         >
@@ -421,6 +577,7 @@ const Approval = () => {
                         </button>
 
                         <button
+                            disabled={isFinal}
                             className="approve-btn"
                             onClick={() => handleAction("APPROVED")}
                         >
@@ -573,13 +730,22 @@ const Approval = () => {
                                         <td>{row.requestedDate}</td>
 
                                         <td>
-                                            <span className="pending-badge">
+                                            <span className={
+                                                row.status === "APPROVED"
+                                                    ? "approved-badge"
+                                                    : row.status === "REJECTED"
+                                                        ? "rejected-badge"
+                                                        : "pending-badge"
+                                            }>
                                                 {row.status}
                                             </span>
                                         </td>
 
                                         <td style={{ display: "flex", height: '55px' }}>
-                                            {isEditor ? (
+
+                                            {/* ✅ EDITOR */}
+                                            {/* ✅ EDITOR */}
+                                            {isEditor && row.rawStatus === "DRAFT" && (
                                                 <>
                                                     <button
                                                         className="reject-btn"
@@ -596,14 +762,30 @@ const Approval = () => {
                                                         Send for Approval
                                                     </button>
                                                 </>
-                                            ) : (
-                                                <button
-                                                    className="review-btn"
-                                                    onClick={() => handleReview(row)}
-                                                >
-                                                    Review
-                                                </button>
                                             )}
+
+                                            {/* ✅ SUBDIVISION */}
+                                            {user.role.code === "SUBDIVISION_EDITOR" &&
+                                                row.rawStatus === "SUBMITTED" && (
+                                                    <button
+                                                        className="review-btn"
+                                                        onClick={() => handleReview(row)}
+                                                    >
+                                                        Review
+                                                    </button>
+                                                )}
+
+                                            {/* ✅ DISTRICT */}
+                                            {user.role.code === "DISTRICT_EDITOR" &&
+                                                row.rawStatus === "SUBDIVISION_APPROVED" && (
+                                                    <button
+                                                        className="review-btn"
+                                                        onClick={() => handleReview(row)}
+                                                    >
+                                                        Review
+                                                    </button>
+                                                )}
+
                                         </td>
 
                                     </tr>
