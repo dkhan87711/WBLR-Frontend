@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Approval.css";
 
@@ -13,62 +13,148 @@ import {
     FaArrowLeft
 } from "react-icons/fa";
 
-
-const requests = [
-    {
-        requestId: "MOD-2026-0001",
-        plotNo: "235",
-        mouza: "Rajarhat",
-        jlNo: "12",
-        requestedBy: "Danish Khan",
-        requestedDate: "28-Jun-2026",
-        status: "Pending",
-        areaChange: "+22.71 sqm"
-    },
-    {
-        requestId: "MOD-2026-0002",
-        plotNo: "671",
-        mouza: "Rajarhat",
-        jlNo: "08",
-        requestedBy: "Ashish",
-        requestedDate: "27-Jun-2026",
-        status: "Pending",
-        areaChange: "-14.22 sqm"
-    },
-    {
-        requestId: "MOD-2026-0003",
-        plotNo: "902",
-        mouza: "New Town",
-        jlNo: "44",
-        requestedBy: "Kishan",
-        requestedDate: "26-Jun-2026",
-        status: "Pending",
-        areaChange: "+8.15 sqm"
-    }
-];
+import {
+    getApprovalRequests,
+    getApprovalDetails,
+    submitApproval
+} from "../../api/apiService";
 
 const Approval = () => {
 
     const navigate = useNavigate();
+
     const storedUser = JSON.parse(
         localStorage.getItem("user") || "null"
     );
 
     const user = storedUser?.user;
+    const isFieldUser =
+        user?.userSubType?.code === "FIELD_USER" || "BLRO";
 
-    const [selectedRequest, setSelectedRequest] =
-        useState(null);
-    const [reviewComment, setReviewComment] =
-        useState("");
+    const [requests, setRequests] = useState([]);
+    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [reviewData, setReviewData] = useState(null);
+    const [reviewComment, setReviewComment] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // ✅ FETCH LIST
+    useEffect(() => {
+        fetchRequests();
+    }, []);
+
+    const fetchRequests = async () => {
+        try {
+            setLoading(true);
+
+            const res = await getApprovalRequests();
+
+            console.log("API RESPONSE:", res); // 👈 DEBUG
+
+            // ✅ handle multiple possible formats
+            const list =
+                res.data?.data ||
+                res.data ||
+                res.data?.result ||
+                [];
+
+            const formatted = list.map((row) => ({
+                requestId: row.txn_id,
+                txn_type: row.txn_type,
+                plotNo: row.plot_no,
+                mouza: row.mouza,
+                jlNo: "-",
+                requestedBy: row.requested_by,
+                requestedDate: row.requested_date
+                    ? new Date(row.requested_date).toLocaleDateString()
+                    : "-",
+                status: row.status || "Pending",
+                areaChange: "-"
+            }));
+
+            setRequests(formatted);
+
+        } catch (err) {
+            console.error("FETCH ERROR:", err);
+            setRequests([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // ✅ REVIEW CLICK
+    const handleReview = async (row) => {
+        try {
+            const res = await getApprovalDetails(row.requestId);
+
+            setSelectedRequest(row);
+            setReviewData(res.data.data);
+
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // ✅ APPROVE / REJECT
+    const handleAction = async (status) => {
+        try {
+            await submitApproval({
+                txnId: selectedRequest.requestId,
+                role: user.role.name,
+                status,
+                remarks: reviewComment,
+                userId: user.userId
+            });
+
+            alert(`Request ${status} ✅`);
+
+            setSelectedRequest(null);
+            setReviewData(null);
+            setReviewComment("");
+
+            fetchRequests();
+
+        } catch (err) {
+            alert("Error while processing!");
+        }
+    };
+
+    const handleDelete = (txnId) => {
+        if (!window.confirm("Are you sure to delete?")) return;
+
+        // temporary UI remove (backend later)
+        setRequests(prev =>
+            prev.filter(r => r.requestId !== txnId)
+        );
+    };
+
+    const handleSendForApproval = (txnId) => {
+        alert("Sent for approval ✅");
+
+        // temporary status update
+        setRequests(prev =>
+            prev.map(r =>
+                r.requestId === txnId
+                    ? { ...r, status: "SUBMITTED" }
+                    : r
+            )
+        );
+    };
 
     const handleLogout = () => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         localStorage.removeItem("sessionId");
-        navigate("/department", {
-            replace: true
-        });
+
+        navigate("/department", { replace: true });
     };
+
+    const totalCount = requests?.length || 0;
+    const pendingCount =
+        requests?.filter(r => r.status === "Pending")?.length || 0;
+    const approvedCount =
+        requests?.filter(r => r.status === "APPROVED")?.length || 0;
+    const rejectedCount =
+        requests?.filter(r => r.status === "REJECTED")?.length || 0;
 
     return (
         <div className="approval-page">
@@ -76,13 +162,10 @@ const Approval = () => {
             {/* HEADER */}
             <div className="app-header">
                 <div className="header-left">
-                    <span className="menu-icon">
-                        ☰
-                    </span>
+                    <span className="menu-icon">☰</span>
 
                     <h2 className="map-title-header">
-                        Bhu-Manchitra :
-                        Approval Flow Management
+                        Bhu-Manchitra : Approval Flow Management
                     </h2>
                 </div>
 
@@ -97,7 +180,6 @@ const Approval = () => {
                                 {user?.firstName} {user?.lastName}
                             </div>
                             <div className="user-meta">
-
                                 <FaUserShield />
                                 <span>
                                     {user?.role?.name}
@@ -113,126 +195,91 @@ const Approval = () => {
                         </button>
                     </div>
                 </div>
-
             </div>
 
-            {/* REVIEW SCREEN */}
+            {/* ================= REVIEW SCREEN ================= */}
             {selectedRequest ? (
                 <div className="review-page">
+
                     <div className="review-header">
                         <button
                             className="back-btn"
-                            onClick={() =>
-                                setSelectedRequest(null)
-                            }
+                            onClick={() => {
+                                setSelectedRequest(null);
+                                setReviewData(null);
+                            }}
                         >
-                            <FaArrowLeft />
-                            Back to Queue
+                            <FaArrowLeft /> Back to Queue
                         </button>
 
                         <div>
-                            <h2>
-                                Plot #{selectedRequest.plotNo}
-                            </h2>
+                            <h2>Plot #{selectedRequest.plotNo}</h2>
                             <p>
-                                Requested By :
-                                {" "}
-                                {selectedRequest.requestedBy}
-                                {" "}
-                                | Date :
-                                {" "}
-                                {selectedRequest.requestedDate}
+                                Requested By: {selectedRequest.requestedBy} |
+                                Date: {selectedRequest.requestedDate}
                             </p>
                         </div>
                     </div>
 
+                    {/* SUMMARY */}
                     <div className="review-top-grid">
+
                         <div className="summary-card">
-                            <h3>
-                                Change Summary
-                            </h3>
+                            <h3>Change Summary</h3>
+
                             <div className="summary-row">
                                 <span>Request ID</span>
-                                <strong>
-                                    {selectedRequest.requestId}
-                                </strong>
+                                <strong>{selectedRequest.requestId}</strong>
                             </div>
+
                             <div className="summary-row">
                                 <span>Submitted By</span>
-                                <strong>
-                                    {selectedRequest.requestedBy}
-                                </strong>
+                                <strong>{selectedRequest.requestedBy}</strong>
                             </div>
+
                             <div className="summary-row">
                                 <span>Submitted On</span>
-                                <strong>
-                                    {selectedRequest.requestedDate}
-                                </strong>
+                                <strong>{selectedRequest.requestedDate}</strong>
                             </div>
-                            <div className="summary-row">
-                                <span>Area Difference</span>
-                                <strong>
-                                    {selectedRequest.areaChange}
-                                </strong>
-                            </div>
+
                             <div className="summary-row">
                                 <span>Status</span>
                                 <strong className="status-pending">
                                     Pending Approval
                                 </strong>
                             </div>
-                            <div className="summary-reason">
-                                Boundary correction
-                                based on DGPS survey
-                                and field verification.
-                            </div>
                         </div>
 
+                        {/* Workflow static (can sync later) */}
                         <div className="timeline-card">
-                            <h3>
-                                Approval Workflow
-                            </h3>
+                            <h3>Approval Workflow</h3>
+
                             <ul className="timeline">
-                                <li className="completed">
-                                    ✓ Submitted
-                                </li>
-                                <li className="completed">
-                                    ✓ Survey Verification
-                                </li>
-                                <li className="active">
-                                    ● Pending at Section Officer
-                                </li>
-                                <li>
-                                    ○ District Officer
-                                </li>
-                                <li>
-                                    ○ Final Approval
-                                </li>
+                                <li className="completed">✓ Submitted</li>
+                                <li className="completed">✓ Survey</li>
+                                <li className="active">● Review</li>
+                                <li>○ DLRO</li>
+                                <li>○ Final</li>
                             </ul>
                         </div>
 
                     </div>
 
+                    {/* MAP (UNCHANGED ✅) */}
                     <div className="comparison-section">
+
                         <div className="map-panel">
-                            <div className="map-panel-header">
-                                BEFORE EDIT
-                            </div>
+                            <div className="map-panel-header">BEFORE EDIT</div>
                             <div className="approval-map">
                                 <div className="map-placeholder">
                                     Existing Plot Boundary
-                                    <div className="legend">
-                                        Blue Polygon
-                                    </div>
+                                    <div className="legend">Blue Polygon</div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="map-panel">
-                            <div className="map-panel-header">
-                                AFTER EDIT
-                            </div>
-
+                            <div className="map-panel-header">AFTER EDIT</div>
                             <div className="approval-map">
                                 <div className="map-placeholder">
                                     Proposed Plot Boundary
@@ -245,140 +292,131 @@ const Approval = () => {
 
                     </div>
 
+                    {/* 🔥 DYNAMIC TABLE FROM DB */}
                     <div className="attribute-card">
-                        <h3>
-                            Attribute Changes
-                        </h3>
+                        <h3>Transaction Details</h3>
 
                         <table className="attribute-table">
                             <thead>
                                 <tr>
-                                    <th>Field</th>
-                                    <th>Old Value</th>
-                                    <th>New Value</th>
+                                    <th>Old Plot No</th>
+                                    <th>New Plot No</th>
+                                    <th>Mouza</th>
+                                    <th>Khatihan No</th>
+                                    <th>Owner Name</th>
+                                    <th>ROR Area  (hec)</th>
+                                    <th>GIS Area  (hec)</th>
+                                    <th>Area Diff (hec)</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <tr>
-                                    <td>Plot Area</td>
-                                    <td>512.12 sq.m</td>
-                                    <td>534.83 sq.m</td>
-                                </tr>
-                                <tr>
-                                    <td>Plot Number</td>
-                                    <td>235</td>
-                                    <td>235</td>
-                                </tr>
-                                <tr>
-                                    <td>Owner Name</td>
-                                    <td>XYZ</td>
-                                    <td>XYZ</td>
-                                </tr>
-                                <tr>
-                                    <td>Boundary Vertices</td>
-                                    <td>18</td>
-                                    <td>22</td>
-                                </tr>
+                                {reviewData?.transaction?.map((row, i) => (
+                                    <tr key={i}>
+                                        <td>{row?.old_plot_no}</td>
+                                        <td>{row?.new_plot_no}</td>
+                                        <td>{row?.mouza}</td>
+                                        <td>{row?.khatian_no}</td>
+                                        <td>{row?.owner_name}</td>
+                                        <td>{row?.ror_area}</td>
+                                        <td>{row?.gis_area}</td>
+                                        <td>
+                                            {(
+                                                (parseFloat(row?.gis_area || 0) -
+                                                    parseFloat(row?.ror_area || 0)
+                                                ).toFixed(4)
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
 
                     </div>
 
+                    {/* COMMENTS */}
                     <div className="comment-card">
-                        <h3>
-                            Reviewer Comments
-                        </h3>
+                        <h3>Reviewer Comments</h3>
                         <textarea
                             value={reviewComment}
                             onChange={(e) =>
-                                setReviewComment(
-                                    e.target.value
-                                )
+                                setReviewComment(e.target.value)
                             }
                             placeholder="Enter approval/rejection remarks..."
                         />
                     </div>
 
+                    {/* ACTION */}
                     <div className="action-panel">
-                        <button className="reject-btn">
-                            <FaTimesCircle />
-                            Reject Request
+
+                        <button
+                            className="reject-btn"
+                            onClick={() => handleAction("REJECTED")}
+                        >
+                            <FaTimesCircle /> Reject Request
                         </button>
 
-                        <button className="approve-btn">
-                            <FaCheckCircle />
-                            Approve Request
+                        <button
+                            className="approve-btn"
+                            onClick={() => handleAction("APPROVED")}
+                        >
+                            <FaCheckCircle /> Approve Request
                         </button>
+
                     </div>
 
                 </div>
 
             ) : (
 
+                /* ================= LIST SCREEN ================= */
                 <div className="approval-content">
+
                     <div className="page-title-card">
-                        <div>
-                            <h2>
-                                Approval Flow Management
-                            </h2>
-                            <p>
-                                Review and approve cadastral plot modifications
-                            </p>
-                        </div>
+                        <h2>Approval Flow Management</h2>
+                        <p>Review and approve cadastral plot modifications</p>
                     </div>
 
                     <div className="kpi-grid">
                         <div className="kpi-card pending">
                             <FaClock />
                             <span>Pending</span>
-                            <h2>24</h2>
+                            <h2>{pendingCount}</h2>
                         </div>
+
                         <div className="kpi-card approved">
                             <FaCheckCircle />
                             <span>Approved Today</span>
-                            <h2>12</h2>
+                            <h2>{approvedCount}</h2>
                         </div>
+
                         <div className="kpi-card rejected">
                             <FaTimesCircle />
                             <span>Rejected</span>
-                            <h2>3</h2>
+                            <h2>{rejectedCount}</h2>
                         </div>
+
                         <div className="kpi-card total">
                             <FaSearch />
                             <span>Total Changes</span>
-                            <h2>89</h2>
+                            <h2>{totalCount}</h2>
                         </div>
                     </div>
 
-                    <div className="filter-panel">
-                        <input
-                            placeholder="Search Plot Number"
-                        />
-
-                        <select>
-                            <option>Mouza</option>
-                        </select>
-                        <select>
-                            <option>Status</option>
-                        </select>
-                        <input type="date" />
-                        <input
-                            placeholder="Requested By"
-                        />
-                    </div>
 
                     <div className="request-grid-card">
+
                         <div className="section-title">
                             Plot Modification Requests
                         </div>
 
                         <table className="approval-table">
+
                             <thead>
                                 <tr>
+                                    <th>Edit Type</th>
                                     <th>Plot No</th>
                                     <th>Mouza</th>
-                                    <th>JL</th>
                                     <th>Requested By</th>
                                     <th>Date</th>
                                     <th>Status</th>
@@ -390,45 +428,57 @@ const Approval = () => {
                                 {requests.map((row) => (
 
                                     <tr key={row.requestId}>
-                                        <td>
-                                            {row.plotNo}
-                                        </td>
-                                        <td>
-                                            {row.mouza}
-                                        </td>
-                                        <td>
-                                            {row.jlNo}
-                                        </td>
-                                        <td>
-                                            {row.requestedBy}
-                                        </td>
-                                        <td>
-                                            {row.requestedDate}
-                                        </td>
+                                        <td>{row.txn_type}</td>
+                                        <td>{row.plotNo}</td>
+                                        <td>{row.mouza}</td>
+                                        <td>{row.requestedBy}</td>
+                                        <td>{row.requestedDate}</td>
+
                                         <td>
                                             <span className="pending-badge">
                                                 {row.status}
                                             </span>
                                         </td>
 
-                                        <td>
-                                            <button
-                                                className="review-btn"
-                                                onClick={() =>
-                                                    setSelectedRequest(row)
-                                                }
-                                            >
-                                                Review
-                                            </button>
+                                        <td style={{ display: "flex", height: '55px' }}>
+                                            {isFieldUser ? (
+                                                <>
+                                                    <button
+                                                        className="reject-btn"
+                                                        onClick={() => handleDelete(row.requestId)}
+                                                    >
+                                                        Delete
+                                                    </button>
+
+                                                    <button
+                                                        className="approve-btn"
+                                                        onClick={() => handleSendForApproval(row.requestId)}
+                                                        style={{ marginLeft: "6px" }}
+                                                    >
+                                                        Send for Approval
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button
+                                                    className="review-btn"
+                                                    onClick={() => handleReview(row)}
+                                                >
+                                                    Review
+                                                </button>
+                                            )}
                                         </td>
+
                                     </tr>
                                 ))}
                             </tbody>
+
                         </table>
 
                     </div>
+
                 </div>
             )}
+
         </div>
     );
 };

@@ -71,3 +71,26 @@ export const resendOtp = async (
         { phoneNo }
     );
 };
+
+
+// ✅ Get list
+export const getApprovalRequests = async () => {
+    return await API.get(
+        ENDPOINTS.APPROVAL_LIST
+    );
+};
+
+// ✅ Get details
+export const getApprovalDetails = async (txnId) => {
+    return await API.get(
+        ENDPOINTS.APPROVAL_DETAILS(txnId)
+    );
+};
+
+// ✅ Approve / Reject
+export const submitApproval = async (payload) => {
+    return await API.post(
+        ENDPOINTS.APPROVAL_ACTION,
+        payload
+    );
+};

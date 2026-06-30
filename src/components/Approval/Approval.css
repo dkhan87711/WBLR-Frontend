@@ -552,6 +552,19 @@ ACTIONS
     gap: 10px;
 }
 
+.delete-btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .reject-btn {
     background: #dc2626;
 }
