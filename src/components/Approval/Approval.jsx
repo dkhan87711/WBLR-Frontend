@@ -22,20 +22,28 @@ import {
 const Approval = () => {
 
     const navigate = useNavigate();
-
     const storedUser = JSON.parse(
         localStorage.getItem("user") || "null"
     );
 
     const user = storedUser?.user;
-    const isFieldUser =
-        user?.userSubType?.code === "FIELD_USER" || "BLRO";
+    const isEditor =
+        ["FIELD_USER", "BLRO"].includes(
+            user?.userSubType?.code
+        );
 
     const [requests, setRequests] = useState([]);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [reviewData, setReviewData] = useState(null);
     const [reviewComment, setReviewComment] = useState("");
     const [loading, setLoading] = useState(false);
+
+    const [plotFilter, setPlotFilter] = useState("");
+    const [mouzaFilter, setMouzaFilter] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [dateFilter, setDateFilter] = useState("");
+    const [requestedByFilter, setRequestedByFilter] = useState("");
+
 
     // ✅ FETCH LIST
     useEffect(() => {
@@ -155,6 +163,62 @@ const Approval = () => {
         requests?.filter(r => r.status === "APPROVED")?.length || 0;
     const rejectedCount =
         requests?.filter(r => r.status === "REJECTED")?.length || 0;
+
+    /** Filters */
+    const mouzaOptions = [
+        ...new Set(
+            requests
+                .map(r => r.mouza)
+                .filter(Boolean)
+        )
+    ];
+    const statusOptions = [
+        ...new Set(
+            requests
+                .map(r => r.status)
+                .filter(Boolean)
+        )
+    ];
+    const filteredRequests = requests.filter(row => {
+
+        const matchesPlot =
+            !plotFilter ||
+            row.plotNo
+                ?.toString()
+                .toLowerCase()
+                .includes(plotFilter.toLowerCase());
+
+        const matchesMouza =
+            !mouzaFilter ||
+            row.mouza === mouzaFilter;
+
+        const matchesStatus =
+            !statusFilter ||
+            row.status === statusFilter;
+
+        const matchesRequestedBy =
+            !requestedByFilter ||
+            row.requestedBy
+                ?.toLowerCase()
+                .includes(
+                    requestedByFilter.toLowerCase()
+                );
+
+        const matchesDate =
+            !dateFilter ||
+            new Date(row.requestedDate)
+                .toISOString()
+                .split("T")[0] === dateFilter;
+
+        return (
+            matchesPlot &&
+            matchesMouza &&
+            matchesStatus &&
+            matchesRequestedBy &&
+            matchesDate
+        );
+    });
+
 
     return (
         <div className="approval-page">
@@ -403,6 +467,80 @@ const Approval = () => {
                         </div>
                     </div>
 
+                    {/* ================= FILTERS ================= */}
+                    <div className="filter-panel">
+                        <input
+                            type="text"
+                            placeholder="Search Plot Number"
+                            value={plotFilter}
+                            onChange={(e) =>
+                                setPlotFilter(e.target.value)
+                            }
+                        />
+
+                        <select
+                            value={mouzaFilter}
+                            onChange={(e) =>
+                                setMouzaFilter(e.target.value)
+                            }
+                        >
+                            <option value="">
+                                All Mouza
+                            </option>
+
+                            {mouzaOptions.map((mouza) => (
+                                <option
+                                    key={mouza}
+                                    value={mouza}
+                                >
+                                    {mouza}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={statusFilter}
+                            onChange={(e) =>
+                                setStatusFilter(e.target.value)
+                            }
+                        >
+                            <option value="">
+                                All Status
+                            </option>
+
+                            {statusOptions.map((status) => (
+                                <option
+                                    key={status}
+                                    value={status}
+                                >
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+
+                        <input
+                            type="date"
+                            value={dateFilter}
+                            onChange={(e) =>
+                                setDateFilter(e.target.value)
+                            }
+                        />
+
+                        <button
+                            className="review-btn"
+                            onClick={() => {
+                                setPlotFilter("");
+                                setMouzaFilter("");
+                                setStatusFilter("");
+                                setDateFilter("");
+                                setRequestedByFilter("");
+                            }}
+                        >
+                            Reset
+                        </button>
+
+                    </div>
+
 
                     <div className="request-grid-card">
 
@@ -425,7 +563,7 @@ const Approval = () => {
                             </thead>
 
                             <tbody>
-                                {requests.map((row) => (
+                                {filteredRequests.map((row) => (
 
                                     <tr key={row.requestId}>
                                         <td>{row.txn_type}</td>
@@ -441,7 +579,7 @@ const Approval = () => {
                                         </td>
 
                                         <td style={{ display: "flex", height: '55px' }}>
-                                            {isFieldUser ? (
+                                            {isEditor ? (
                                                 <>
                                                     <button
                                                         className="reject-btn"
