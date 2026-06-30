@@ -113,7 +113,6 @@ export const Department = () => {
 
     return (
         <div className="login-page">
-
             {/* ===== LEFT VISUAL PANEL ===== */}
             <div className="left-panel">
 
@@ -329,7 +328,7 @@ export const Department = () => {
                                     className="explore-btn acquisition-btn"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        navigate("/map");
+                                        navigate("/approval");
                                     }}
                                 >
                                     Explore ↗
