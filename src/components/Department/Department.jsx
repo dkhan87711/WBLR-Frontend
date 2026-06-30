@@ -213,7 +213,7 @@ export const Department = () => {
                                         }`}
                                     onClick={() => goTo("/department")}
                                 >
-                                    🏛 &nbsp;Department
+                                    🏛 Department
                                 </div>
 
                                 <div
