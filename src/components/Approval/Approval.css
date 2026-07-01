@@ -117,7 +117,7 @@ PAGE CONTENT
 .review-page {
     flex: 1;
     overflow-y: auto;
-    padding: 15px;
+    padding: 10px;
 }
 
 .page-title-card {
@@ -515,7 +515,7 @@ COMMENTS
 
 .comment-card textarea {
     width: 100%;
-    min-height: 60px;
+    height: 50px;
     border: 1px solid #dbe2ea;
     border-radius: 10px;
     padding: 14px;

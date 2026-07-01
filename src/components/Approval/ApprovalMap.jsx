@@ -95,7 +95,7 @@ const ApprovalMap = ({ mode, geoData }) => {
         };
     }, [mode, geoData]);
 
-    return <div style={{ height: "300px", width: "100%" }} ref={mapRef} />;
+    return <div style={{ height: "350px", width: "100%" }} ref={mapRef} />;
 };
 
 const addPolygonWithLabels = (ringsArray, plotLabel, color, graphicsLayer) => {
