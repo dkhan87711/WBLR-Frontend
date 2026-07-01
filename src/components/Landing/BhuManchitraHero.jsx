@@ -16,7 +16,7 @@ export const BhuManchitraHero = () => {
           Bhu-<span>Manchitra</span>
         </h2>
 
-        <p className="description-header">
+        <p className="title-badge">
           Integrated Geospatial Platform for Land Governance,
           Monitoring and Decision Support System.
         </p>

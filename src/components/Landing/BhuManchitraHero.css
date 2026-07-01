@@ -43,36 +43,36 @@
 .header-text {
   position: relative;
   top: 3%;
-  left: 25%;
+  left: 22%;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 9px 12px;
-  max-width: 50%;
+  max-width: 56%;
   border-radius: 16px;
   /* box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); */
 }
 
 /* Small Badge */
 .title-badge {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 1.1px;
   text-transform: uppercase;
-  color: #00d9ff;
+  color: #d6efff;
   font-weight: 500;
   margin-bottom: 0px;
+  font-weight: 600;
 }
 
 /* Main Title */
 .main-title-header {
   margin: 0;
-  font-size: 35px;
+  font-size: 38px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.5px;
   color: #fff;
   /* color: #082ae6; */
-
 }
 
 .main-title-header span {
