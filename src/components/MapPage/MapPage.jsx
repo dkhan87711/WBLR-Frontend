@@ -98,78 +98,78 @@ const MapPage = () => {
 
     }, []);   // ✅ RUN ONCE ONLY
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        const sessionId = localStorage.getItem("sessionId");
+    // useEffect(() => {
+    //     const storedUser = localStorage.getItem("user");
+    //     const sessionId = localStorage.getItem("sessionId");
 
-        const redirectToLogin = () => {
+    //     const redirectToLogin = () => {
 
-            setSessionExpired(true);
+    //         setSessionExpired(true);
 
-            let seconds = 10;
+    //         let seconds = 10;
 
-            const countdown =
-                setInterval(() => {
+    //         const countdown =
+    //             setInterval(() => {
 
-                    seconds--;
+    //                 seconds--;
 
-                    setRedirectSeconds(
-                        seconds
-                    );
+    //                 setRedirectSeconds(
+    //                     seconds
+    //                 );
 
-                    if (seconds <= 0) {
+    //                 if (seconds <= 0) {
 
-                        clearInterval(
-                            countdown
-                        );
+    //                     clearInterval(
+    //                         countdown
+    //                     );
 
-                        localStorage.removeItem(
-                            "user"
-                        );
+    //                     localStorage.removeItem(
+    //                         "user"
+    //                     );
 
-                        localStorage.removeItem(
-                            "token"
-                        );
+    //                     localStorage.removeItem(
+    //                         "token"
+    //                     );
 
-                        localStorage.removeItem(
-                            "sessionId"
-                        );
+    //                     localStorage.removeItem(
+    //                         "sessionId"
+    //                     );
 
-                        navigate(
-                            "/department",
-                            {
-                                replace: true
-                            }
-                        );
-                    }
+    //                     navigate(
+    //                         "/department",
+    //                         {
+    //                             replace: true
+    //                         }
+    //                     );
+    //                 }
 
-                }, 1000);
-        };
+    //             }, 1000);
+    //     };
 
-        if (
-            !storedUser ||
-            !sessionId
-        ) {
-            redirectToLogin();
-            return;
-        }
+    //     if (
+    //         !storedUser ||
+    //         !sessionId
+    //     ) {
+    //         redirectToLogin();
+    //         return;
+    //     }
 
-        try {
+    //     try {
 
-            const parsed =
-                JSON.parse(storedUser);
+    //         const parsed =
+    //             JSON.parse(storedUser);
 
-            if (!parsed?.user) {
-                redirectToLogin();
-            }
+    //         if (!parsed?.user) {
+    //             redirectToLogin();
+    //         }
 
-        } catch {
+    //     } catch {
 
-            redirectToLogin();
+    //         redirectToLogin();
 
-        }
+    //     }
 
-    }, [navigate]);
+    // }, [navigate]);
 
     useEffect(() => {
 
@@ -489,147 +489,147 @@ const MapPage = () => {
         }
     };
 
-    if (sessionExpired) {
-        return (
-            <div
-                style={{
-                    height: "100vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "#f8fafc"
-                }}
-            >
-                <div
-                    style={{
-                        width: "460px",
-                        background: "#ffffff",
-                        borderRadius: "16px",
-                        padding: "36px",
-                        textAlign: "center",
-                        boxShadow:
-                            "0 12px 32px rgba(0, 0, 0, 0.08)",
-                        border:
-                            "1px solid #e5e7eb"
-                    }}
-                >
-                    <div
-                        style={{
-                            fontSize: "52px",
-                            marginBottom: "16px"
-                        }}
-                    >
-                        🔒
-                    </div>
+    // if (sessionExpired) {
+    //     return (
+    //         <div
+    //             style={{
+    //                 height: "100vh",
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 justifyContent: "center",
+    //                 background: "#f8fafc"
+    //             }}
+    //         >
+    //             <div
+    //                 style={{
+    //                     width: "460px",
+    //                     background: "#ffffff",
+    //                     borderRadius: "16px",
+    //                     padding: "36px",
+    //                     textAlign: "center",
+    //                     boxShadow:
+    //                         "0 12px 32px rgba(0, 0, 0, 0.08)",
+    //                     border:
+    //                         "1px solid #e5e7eb"
+    //                 }}
+    //             >
+    //                 <div
+    //                     style={{
+    //                         fontSize: "52px",
+    //                         marginBottom: "16px"
+    //                     }}
+    //                 >
+    //                     🔒
+    //                 </div>
 
-                    <h2
-                        style={{
-                            margin: "0 0 12px",
-                            color: "#111827",
-                            fontWeight: "600",
-                            fontSize: "24px"
-                        }}
-                    >
-                        Session Expired
-                    </h2>
+    //                 <h2
+    //                     style={{
+    //                         margin: "0 0 12px",
+    //                         color: "#111827",
+    //                         fontWeight: "600",
+    //                         fontSize: "24px"
+    //                     }}
+    //                 >
+    //                     Session Expired
+    //                 </h2>
 
-                    <p
-                        style={{
-                            margin: 0,
-                            color: "#6b7280",
-                            lineHeight: "1.7",
-                            fontSize: "15px"
-                        }}
-                    >
-                        Your session is no longer valid
-                        or has expired due to inactivity.
-                        <br />
-                        Please sign in again to continue
-                        using Bhu-Manchitra.
-                    </p>
+    //                 <p
+    //                     style={{
+    //                         margin: 0,
+    //                         color: "#6b7280",
+    //                         lineHeight: "1.7",
+    //                         fontSize: "15px"
+    //                     }}
+    //                 >
+    //                     Your session is no longer valid
+    //                     or has expired due to inactivity.
+    //                     <br />
+    //                     Please sign in again to continue
+    //                     using Bhu-Manchitra.
+    //                 </p>
 
-                    <div
-                        style={{
-                            marginTop: "28px",
-                            padding: "20px",
-                            background: "#f8fafc",
-                            borderRadius: "12px",
-                            border:
-                                "1px solid #e2e8f0"
-                        }}
-                    >
-                        <div
-                            style={{
-                                fontSize: "42px",
-                                fontWeight: "700",
-                                color: "#2563eb",
-                                lineHeight: 1
-                            }}
-                        >
-                            {redirectSeconds}
-                        </div>
+    //                 <div
+    //                     style={{
+    //                         marginTop: "28px",
+    //                         padding: "20px",
+    //                         background: "#f8fafc",
+    //                         borderRadius: "12px",
+    //                         border:
+    //                             "1px solid #e2e8f0"
+    //                     }}
+    //                 >
+    //                     <div
+    //                         style={{
+    //                             fontSize: "42px",
+    //                             fontWeight: "700",
+    //                             color: "#2563eb",
+    //                             lineHeight: 1
+    //                         }}
+    //                     >
+    //                         {redirectSeconds}
+    //                     </div>
 
-                        <div
-                            style={{
-                                marginTop: "10px",
-                                color: "#64748b",
-                                fontSize: "14px"
-                            }}
-                        >
-                            Redirecting to Sign In in{" "}
-                            <strong>
-                                {redirectSeconds}
-                            </strong>{" "}
-                            second
-                            {redirectSeconds !== 1
-                                ? "s"
-                                : ""}
-                        </div>
+    //                     <div
+    //                         style={{
+    //                             marginTop: "10px",
+    //                             color: "#64748b",
+    //                             fontSize: "14px"
+    //                         }}
+    //                     >
+    //                         Redirecting to Sign In in{" "}
+    //                         <strong>
+    //                             {redirectSeconds}
+    //                         </strong>{" "}
+    //                         second
+    //                         {redirectSeconds !== 1
+    //                             ? "s"
+    //                             : ""}
+    //                     </div>
 
-                        <div
-                            style={{
-                                width: "100%",
-                                height: "6px",
-                                background:
-                                    "#e5e7eb",
-                                borderRadius:
-                                    "999px",
-                                marginTop: "18px",
-                                overflow:
-                                    "hidden"
-                            }}
-                        >
-                            <div
-                                style={{
-                                    height: "100%",
-                                    width: `${(redirectSeconds /
-                                        10) *
-                                        100
-                                        }%`,
-                                    background:
-                                        "#2563eb",
-                                    transition:
-                                        "width 1s linear"
-                                }}
-                            />
-                        </div>
-                    </div>
+    //                     <div
+    //                         style={{
+    //                             width: "100%",
+    //                             height: "6px",
+    //                             background:
+    //                                 "#e5e7eb",
+    //                             borderRadius:
+    //                                 "999px",
+    //                             marginTop: "18px",
+    //                             overflow:
+    //                                 "hidden"
+    //                         }}
+    //                     >
+    //                         <div
+    //                             style={{
+    //                                 height: "100%",
+    //                                 width: `${(redirectSeconds /
+    //                                     10) *
+    //                                     100
+    //                                     }%`,
+    //                                 background:
+    //                                     "#2563eb",
+    //                                 transition:
+    //                                     "width 1s linear"
+    //                             }}
+    //                         />
+    //                     </div>
+    //                 </div>
 
-                    <div
-                        style={{
-                            marginTop: "18px",
-                            color: "#94a3b8",
-                            fontSize: "13px"
-                        }}
-                    >
-                        For security reasons, inactive
-                        sessions are automatically
-                        terminated.
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    //                 <div
+    //                     style={{
+    //                         marginTop: "18px",
+    //                         color: "#94a3b8",
+    //                         fontSize: "13px"
+    //                     }}
+    //                 >
+    //                     For security reasons, inactive
+    //                     sessions are automatically
+    //                     terminated.
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="map-page">
@@ -675,7 +675,7 @@ const MapPage = () => {
 
                         <div className="user-details">
                             <div className="user-display-name">
-                                {user?.firstName} {user?.lastName}
+                                {user?.firstName || "Citizen"} {user?.lastName || "Login"}
                             </div>
                             <div className="user-meta">
                                 <FaUserShield />

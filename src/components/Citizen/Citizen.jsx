@@ -2,6 +2,13 @@ import "./Citizen.css";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import leftLogo from "../../assets/department-left-logo.png";
+import {
+    FaMapMarkedAlt,
+    FaTasks,
+    FaDatabase,
+    FaChartLine,
+    FaUserCircle
+} from "react-icons/fa";
 
 import {
     sendOtp as sendOtpApi,
@@ -373,13 +380,6 @@ export const Citizen = () => {
             ) : (
 
                 <div className="application-launcher citizen-launcher">
-
-                    {/* <div className="launcher-header">
-                        <p>
-                            Select an application to continue
-                        </p>
-                    </div> */}
-
                     <div
                         style={{
                             display: "flex",
@@ -388,29 +388,20 @@ export const Citizen = () => {
                     >
                         <div className="app-card citizen-app">
 
-                            <div className="app-icon citizen-icon">
-                                👥
+                            <div className="app-icon geospatial-icon">
+                                <FaMapMarkedAlt />
                             </div>
 
-                            <h3>
-                                Landstack Web Application
-                                for Citizen
-                            </h3>
-
+                            <h3>Bhu-Manchitra Web Portal</h3>
                             <p>
-                                Citizen-centric land
-                                information and services
+                                Unified GIS platform for map visualization, spatial layers, and land information services.
                             </p>
 
                             <button
-                                className="explore-btn citizen-btn-new"
+                                className="explore-btn geospatial-btn"
                                 onClick={(e) => {
                                     e.stopPropagation();
-
-                                    window.open(
-                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=dd63f5172f4342799a8204ccc02b8d3e",
-                                        "_blank"
-                                    );
+                                    navigate("/map");
                                 }}
                             >
                                 Explore ↗
@@ -418,7 +409,6 @@ export const Citizen = () => {
 
                         </div>
                     </div>
-
                 </div>
 
             )}
