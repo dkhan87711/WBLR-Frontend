@@ -30,8 +30,14 @@ import { useNavigate } from "react-router-dom";
 
 import "./MapPage.css";
 
+/** Development */
 const SERVICE_URL =
     "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/WBLR/Rajarhat_Plot";
+
+/** Production */
+// const SERVICE_URL =
+//     "/arcgis/rest/services/WBLR/Rajarhat_Plot";
+
 
 const FEATURE_LAYER_URL =
     `${SERVICE_URL}/FeatureServer/0`;

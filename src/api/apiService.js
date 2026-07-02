@@ -91,3 +91,11 @@ export const submitForApproval = async (payload) => {
         payload
     );
 };
+
+// ✅ Import GeoJSON
+export const importGeoJson = async (features) => {
+    return await API.post(
+        ENDPOINTS.APPROVAL_IMPORT_GEOJSON,
+        { features }
+    );
+};

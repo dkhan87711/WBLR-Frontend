@@ -14,7 +14,10 @@ const ENDPOINTS = {
     APPROVAL_DETAILS: (txnId) => `/approval/requests/${txnId}`,
     APPROVAL_ACTION: "/approval/action",
 
-    APPROVAL_SUBMIT: "/approval/submit"   // ✅ ✅ ADD THIS LINE
+    APPROVAL_SUBMIT: "/approval/submit",
+    // NEW
+    APPROVAL_IMPORT_GEOJSON: "/approval/import-geojson"
+
 };
 
 export default ENDPOINTS;

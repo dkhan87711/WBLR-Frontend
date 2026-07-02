@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import ApprovalMap from "./ApprovalMap";
 import "./Approval.css";
 
+import geoJsonData from "../../config/land_txn_geojson.json";
+
 import {
     FaUserCircle,
     FaUserShield,
@@ -18,11 +20,12 @@ import {
     getApprovalRequests,
     getApprovalDetails,
     submitApproval,
-    submitForApproval   // ✅ ADD THIS
+    submitForApproval,
+    importGeoJson
 } from "../../api/apiService";
 
-const Approval = () => {
 
+const Approval = () => {
     const navigate = useNavigate();
     const storedUser = JSON.parse(
         localStorage.getItem("user") || "null"
@@ -58,7 +61,32 @@ const Approval = () => {
 
     // ✅ FETCH LIST
     useEffect(() => {
-        fetchRequests();
+
+        const initializeData = async () => {
+
+            try {
+
+                await importGeoJson(
+                    geoJsonData.features
+                );
+
+                console.log(
+                    "✅ GeoJSON imported successfully"
+                );
+
+            } catch (err) {
+
+                console.error(
+                    "❌ GeoJSON import failed",
+                    err
+                );
+            }
+
+            await fetchRequests();
+        };
+
+        initializeData();
+
     }, []);
 
     useEffect(() => {
@@ -75,8 +103,6 @@ const Approval = () => {
         interval = setInterval(() => {
             setTimeLeft(prev => {
                 const newTime = prev - 1;
-
-                console.log("⏱ Approval:", newTime);
 
                 if (newTime === WARNING_TIME) {
                     setShowWarning(true);

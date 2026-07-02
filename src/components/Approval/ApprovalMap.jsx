@@ -10,8 +10,13 @@ import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
 
+/** Development */
 const SERVICE_URL =
     "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/WBLR/Rajarhat_Plot";
+
+/** Production */
+// const SERVICE_URL =
+//     "/arcgis/rest/services/WBLR/Rajarhat_Plot";
 
 const FEATURE_LAYER_URL = `${SERVICE_URL}/FeatureServer/0`;
 const MAP_SERVER_URL = `${SERVICE_URL}/MapServer`;
