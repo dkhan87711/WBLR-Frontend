@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
+import '@arcgis/core/assets/esri/themes/light/main.css';
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
+
+import WebMap from "@arcgis/core/WebMap";
+import Editor from "@arcgis/core/widgets/Editor";
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils";
+import esriConfig from "@arcgis/core/config.js";
 
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
@@ -30,6 +36,12 @@ import { useNavigate } from "react-router-dom";
 
 import "./MapPage.css";
 
+
+esriConfig.portalUrl =
+  "https://indcs0152.atrapa.deloitte.com/gisportal";
+
+
+
 /** Development */
 const SERVICE_URL =
     "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/WBLR/Rajarhat_Plot";
@@ -46,6 +58,7 @@ const MAP_SERVER_URL =
     `${SERVICE_URL}/MapServer`;
 
 const MapPage = () => {
+    console.log("MapPage Render");
     const mapDiv = useRef(null);
 
     const [sessionExpired, setSessionExpired] =
@@ -202,154 +215,110 @@ const MapPage = () => {
         let view;
 
         const initializeMap = async () => {
-            const graphicsLayer =
-                new GraphicsLayer();
 
-            const featureLayer =
-                new FeatureLayer({
-                    url: FEATURE_LAYER_URL,
-                    outFields: ["*"],
-                    popupEnabled: true,
-                    gdbVersion: "sde.DEFAULT",
+            console.log("Map Initialized");
 
-                    popupTemplate: {
-                        title:
-                            "Plot No: {plot_no}",
-
-                        content: [
-                            {
-                                type: "fields",
-                                fieldInfos: [
-                                    {
-                                        fieldName:
-                                            "plot_no",
-                                        label:
-                                            "Plot Number"
-                                    },
-                                    {
-                                        fieldName:
-                                            "sheet_no",
-                                        label:
-                                            "Sheet Number"
-                                    },
-                                    {
-                                        fieldName:
-                                            "idn",
-                                        label:
-                                            "IDN"
-                                    },
-                                    {
-                                        fieldName:
-                                            "dist_name",
-                                        label:
-                                            "District"
-                                    },
-                                    {
-                                        fieldName:
-                                            "ps_name",
-                                        label:
-                                            "Police Station"
-                                    },
-                                    {
-                                        fieldName:
-                                            "block_name",
-                                        label:
-                                            "Block"
-                                    },
-                                    {
-                                        fieldName:
-                                            "mouza_name",
-                                        label:
-                                            "Mouza"
-                                    },
-                                    {
-                                        fieldName:
-                                            "jl_no",
-                                        label:
-                                            "JL No"
-                                    }
-                                ]
-                            }
-                        ],
-
-                        actions: [
-                            {
-                                id: "zoom-to",
-                                icon:
-                                    "zoom-in-magnifying-glass"
-                            }
-                        ]
-                    }
-                });
-
-            const mapImageLayer =
-                new MapImageLayer({
-                    url: MAP_SERVER_URL
-                });
-
-            const map = new Map({
-                basemap: "hybrid",
-                layers: [
-                    mapImageLayer,
-                    featureLayer,
-                    graphicsLayer
-                ]
+            const webmap = new WebMap({
+                portalItem: {
+                    id: "82368e996eab4c7e86b6cc5fef8bd07f"
+                }
             });
 
             view = new MapView({
-                container:
-                    mapDiv.current,
-                map
+                container: mapDiv.current,
+                map: webmap
             });
+
+            
+            const editLayerObj = new FeatureLayer({
+                url: "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/Hosted/land_txn_request_WBLR/FeatureServer/0",
+                title: "Plot Edit Layer",
+                outFields: ["*"]
+            });
+
+            await webmap.load();
+
+            // Add editable layer to webmap
+
+
             view.ui.remove("zoom");
             view.ui.add("zoom", "bottom-right");
+
             await view.when();
-            await featureLayer.load();
+            await webmap.load();
 
-            // Zoom to layer extent
+            console.log(
+                "WebMap Layers",
+                webmap.layers.map(layer => ({
+                    title: layer.title,
+                    id: layer.id
+                }))
+            );
+
+            webmap.add(editLayerObj);
+
+            const parcelLayer = webmap.layers.find(
+                layer =>
+                    layer.title ===
+                    "Rajarhat Plot Layer"
+            );
+
+            if (!parcelLayer) {
+                console.error(
+                    "Rajarhat Plot Layer not found"
+                );
+                return;
+            }
+
+            // CHANGE THIS TO YOUR TARGET EDIT LAYER NAME
+            const editLayer = webmap.layers.find(
+                layer =>
+                    layer.title ===
+                    "Plot Edit Layer"
+            );
+
+            if (!editLayer) {
+                console.error(
+                    "Edit Layer not found"
+                );
+                return;
+            }
+
             try {
-                const extentResponse =
-                    await featureLayer.queryExtent();
 
-                if (
-                    extentResponse?.extent
-                ) {
+                const extentResponse =
+                    await parcelLayer.queryExtent();
+
+                if (extentResponse?.extent) {
                     await view.goTo(
                         extentResponse.extent.expand(
                             1.1
                         )
                     );
                 }
-            } catch (error) {
-                console.error(
-                    "Failed to load extent:",
-                    error
-                );
+
+            } catch (err) {
+                console.error(err);
             }
 
-            /* -----------------------------
-               Widgets
-            ----------------------------- */
             const search =
                 new Search({
                     view,
-                    includeDefaultSources: false,
+                    includeDefaultSources:
+                        false,
                     sources: [
                         {
                             layer:
-                                featureLayer,
-                            searchFields:
-                                [
-                                    "plot_no",
-                                    "idn"
-                                ],
+                                parcelLayer,
+                            searchFields: [
+                                "plot_no",
+                                "idn"
+                            ],
                             displayField:
                                 "plot_no",
                             exactMatch:
                                 false,
-                            outFields: [
-                                "*"
-                            ],
+                            outFields: ["*"],
                             name:
                                 "Plot Search",
                             placeholder:
@@ -358,20 +327,15 @@ const MapPage = () => {
                     ]
                 });
 
-            const home = new Home({ view });
-            const compass = new Compass({ view });
-            const locate = new Locate({ view });
-            const fullscreen = new Fullscreen({ view });
+            const fullscreen =
+                new Fullscreen({ view });
+
             const scaleBar =
                 new ScaleBar({
                     view,
-                    unit:
-                        "metric"
+                    unit: "metric"
                 });
 
-            /* -----------------------------
-               Expand Widgets
-            ----------------------------- */
             const layerListExpand =
                 new Expand({
                     view,
@@ -387,11 +351,9 @@ const MapPage = () => {
                 new Expand({
                     view,
                     content:
-                        new BasemapGallery(
-                            {
-                                view
-                            }
-                        ),
+                        new BasemapGallery({
+                            view
+                        }),
                     expandTooltip:
                         "Basemaps"
                 });
@@ -420,26 +382,321 @@ const MapPage = () => {
                         "Print"
                 });
 
-            /* -----------------------------
-               UI Placement
-            ----------------------------- */
-            view.ui.add(search, "top-left");
-            view.ui.add(
-                [
-                    // home,
-                    // locate,
-                    // compass
-                ],
-                "bottom-right"
+            const editor = new Editor({
+                view,
+                layerInfos: [
+                    {
+                        layer: parcelLayer,
+                        enabled: true
+                    }
+                ]
+            });
+
+            const editorExpand = new Expand({
+                view,
+                content: editor,
+                expandIconClass: "esri-icon-edit",
+                expandTooltip: "Editor",
+                expanded: false
+            });
+
+            let switchingWorkflow = false;
+            let openingEditLayerFeature = false;
+
+            reactiveUtils.watch(
+                () => editor.activeWorkflow,
+                async (workflow) => {
+
+                    if (
+                        !workflow ||
+                        workflow.type !== "update"
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        switchingWorkflow ||
+                        openingEditLayerFeature
+                    ) {
+                        return;
+                    }
+
+                    const rootFeatures =
+                        workflow?.data?.rootFeatures;
+
+                        
+                console.log("====== WATCHER FIRED ======");
+                console.log("Workflow:", workflow);
+
+
+                    if (
+                        !rootFeatures ||
+                        rootFeatures.length === 0
+                    ) {
+                        return;
+                    }
+
+                    try {
+
+                        switchingWorkflow = true;
+
+                        const selectedFeatures =
+                            rootFeatures.toArray();
+
+                        const rajarhatFeatures =
+                            selectedFeatures.filter(
+                                feature =>
+                                    feature.layer.id ===
+                                    parcelLayer.id
+                            );
+
+                        // Ignore if workflow already belongs to Plot Edit Layer
+                        if (
+                            rajarhatFeatures.length === 0
+                        ) {
+                            switchingWorkflow = false;
+                            return;
+                        }
+
+                        const addFeatures = [];
+                        const createdFeatureIds = [];
+
+                        for (const sourceFeature of rajarhatFeatures) {
+
+                            const plotNo =
+                                sourceFeature.attributes.plot_no;
+
+                            // Prevent duplicate creation
+                            const checkQuery =
+                                editLayer.createQuery();
+
+                            checkQuery.where =
+                                `old_plot_n='${plotNo}'`;
+
+                            const existing =
+                                await editLayer.queryFeatures(
+                                    checkQuery
+                                );
+
+                            if (
+                                existing.features.length > 0
+                            ) {
+
+                                createdFeatureIds.push(
+                                    existing.features[0]
+                                        .attributes.OBJECTID
+                                );
+
+                                continue;
+                            }
+
+                            addFeatures.push({
+
+                                geometry:
+                                    sourceFeature.geometry,
+
+                                attributes: {
+
+                                    old_plot_n:
+                                        plotNo,
+
+                                    txn_type:
+                                        "EDIT",
+
+                                    status:
+                                        "DRAFT",
+
+                                    created_by:
+                                        user?.firstName ||
+                                        user?.username ||
+                                        "SYSTEM",
+
+                                    created_da:
+                                        new Date()
+                                            .toISOString()
+                                }
+                            });
+                        }
+
+                        // Create features
+                        if (
+                            addFeatures.length > 0
+                        ) {
+
+                            const result =
+                                await editLayer.applyEdits({
+                                    addFeatures
+                                });
+
+                            console.log(
+                                "Add Result",
+                                result
+                            );
+
+                           
+                    
+                            result.addFeatureResults.forEach(r => {
+
+                                if (r.objectId) {
+
+                                    createdFeatureIds.push(
+                                        r.objectId
+                                    );
+                                }
+
+                            });
+
+
+                        }
+
+                        await editLayer.refresh();
+
+                        // Open first Plot Edit Layer feature
+                        if (
+                            createdFeatureIds.length > 0
+                        ) {
+
+                            const query =
+                                editLayer.createQuery();
+
+                            query.objectIds = [
+                                createdFeatureIds[0]
+                            ];
+
+                            query.returnGeometry = true;
+
+                            const featureResult =
+                                await editLayer.queryFeatures(
+                                    query
+                                );
+
+                            const editableFeature =
+                                featureResult.features[0];
+
+                                                            console.log(
+                                "Retrieved Edit Feature:",
+                                editableFeature
+                            );
+
+                            console.log(
+                                "Retrieved Layer:",
+                                editableFeature.layer?.title
+                            );
+
+                            console.log(
+                                "Edit Layer Title:",
+                                editLayer.title
+                            );
+
+                            console.log(
+                                "Edit Layer Id:",
+                                editLayer.id
+                            );
+
+                            if (
+                                editableFeature
+                            ) {
+
+                                openingEditLayerFeature = true;
+
+                                // Critical
+                                editableFeature.layer =
+                                    editLayer;
+
+                                    
+
+                                console.log(
+                                    "Opening Plot Edit Layer Feature",
+                                    editableFeature
+                                );
+
+                                editor.cancelWorkflow();
+
+                                setTimeout(
+                                    async () => {
+
+                                        try {
+
+                                            
+                                            console.log(
+                                                "STARTING UPDATE WORKFLOW"
+                                            );
+
+                                            console.log(
+                                                "Feature Layer:",
+                                                editableFeature.layer?.title
+                                            );
+
+                                            console.log(
+                                                "Feature OID:",
+                                                editableFeature.attributes?.OBJECTID
+                                            );
+
+                                            await editor.startUpdateWorkflowAtFeatureEdit(
+                                                editableFeature
+                                            );
+
+                                        } catch (
+                                            err
+                                        ) {
+
+                                            console.error(
+                                                "Failed to switch to Plot Edit Layer",
+                                                err
+                                            );
+                                        }
+
+                                        setTimeout(() => {
+
+                                            openingEditLayerFeature =
+                                                false;
+
+                                            switchingWorkflow =
+                                                false;
+
+                                        }, 1000);
+
+                                    },
+                                    500
+                                );
+
+                                return;
+                            }
+                        }
+
+                        switchingWorkflow = false;
+
+                    } catch (error) {
+
+                        console.error(
+                            "Workflow Error",
+                            error
+                        );
+
+                        switchingWorkflow = false;
+                        openingEditLayerFeature = false;
+                    }
+                }
             );
-            view.ui.add(scaleBar, "bottom-left");
+
+            view.ui.add(
+                search,
+                "top-left"
+            );
+
+            view.ui.add(
+                scaleBar,
+                "bottom-left"
+            );
+
             view.ui.add(
                 [
                     fullscreen,
                     layerListExpand,
                     basemapExpand,
                     legendExpand,
-                    printExpand
+                    printExpand,
+                    editorExpand
                 ],
                 "top-right"
             );

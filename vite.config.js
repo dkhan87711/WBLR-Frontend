@@ -11,6 +11,16 @@ export default defineConfig({
         changeOrigin: true,
         secure: false
       },
+      "/gisportal": {
+        target:
+          "https://indcs0152.atrapa.deloitte.com",
+        changeOrigin: true,
+        secure: false
+      }
     },
+     
   },
 })
+
+
+
