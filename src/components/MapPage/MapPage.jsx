@@ -12,6 +12,7 @@ import esriConfig from "@arcgis/core/config.js";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
 
 import Sketch from "@arcgis/core/widgets/Sketch";
 import Search from "@arcgis/core/widgets/Search";
@@ -78,6 +79,13 @@ const MapPage = () => {
 
     const [timeLeft, setTimeLeft] = useState(60); // 60 sec test
     const [showWarning, setShowWarning] = useState(false);
+
+    const [showNotification, setShowNotification] =
+    useState(false);
+
+    const [notificationMessage, setNotificationMessage] =
+        useState("");
+
     useEffect(() => {
         let interval;
 
@@ -230,10 +238,61 @@ const MapPage = () => {
             });
 
             
-            const editLayerObj = new FeatureLayer({
-                url: "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/Hosted/land_txn_request_WBLR/FeatureServer/0",
-                title: "Plot Edit Layer",
-                outFields: ["*"]
+        const editLayerObj = new FeatureLayer({
+            url: "http://services3.arcgis.com/CRMq5Hjc17l7gSou/ArcGIS/rest/services/land_txn_request_v1/FeatureServer/0",
+
+            title: "Plot Edit Layer",
+
+            outFields: ["*"],
+
+                renderer: {
+                    type: "simple",
+
+                    symbol: {
+                        type: "simple-fill",
+
+                        // Yellow transparent fill
+                        color: [255, 255, 0, 0.2],
+
+                        // Yellow border
+                        outline: {
+                            color: [255, 255, 0, 1],
+                            width: 2
+                        }
+                    }
+                },
+
+                formTemplate: {
+                    title: "Plot Edit Details",
+
+                    elements: [
+                        {
+                            type: "field",
+                            fieldName: "txn_id",
+                            label: "Transaction ID"
+                        },
+                        {
+                            type: "field",
+                            fieldName: "txn_type",
+                            label: "Transaction Type"
+                        },
+                        {
+                            type: "field",
+                            fieldName: "mouza",
+                            label: "Mouza"
+                        },
+                        {
+                            type: "field",
+                            fieldName: "old_plot_n",
+                            label: "Old Plot Number"
+                        },
+                        {
+                            type: "field",
+                            fieldName: "new_plot_n",
+                            label: "New Plot Number"
+                        }
+                    ]
+                }
             });
 
             await webmap.load();
@@ -245,6 +304,9 @@ const MapPage = () => {
             view.ui.add("zoom", "bottom-right");
 
             await view.when();
+
+       
+                        
             await webmap.load();
 
             console.log(
@@ -255,7 +317,7 @@ const MapPage = () => {
                 }))
             );
 
-            webmap.add(editLayerObj);
+            webmap.add(editLayerObj,1);
 
             const parcelLayer = webmap.layers.find(
                 layer =>
@@ -284,6 +346,305 @@ const MapPage = () => {
                 return;
             }
 
+                // =====================================================
+        // RECENT SURVEY123 APPLICATIONS (CLIENT SIDE FILTERING)
+        // =====================================================
+
+        const highlightLayer = new GraphicsLayer({
+            title: "Recent Survey123 Applications"
+        });
+
+        webmap.add(highlightLayer);
+
+        try {
+
+            const surveyLayer = new FeatureLayer({
+                url: "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/Hosted/survey123_10f8b78c926f45348cb751ea44b7bd0a_results/FeatureServer/0"
+            });
+
+            // ---------------------------------------
+            // GET RECENT RECORDS
+            // ---------------------------------------
+
+            const surveyQuery =
+                surveyLayer.createQuery();
+
+            surveyQuery.where = "1=1";
+
+            surveyQuery.outFields = [
+                "*"
+            ];
+
+            surveyQuery.returnGeometry = false;
+
+            surveyQuery.orderByFields = [
+                "created_date DESC"
+            ];
+
+            const surveyResult =
+                await surveyLayer.queryFeatures(
+                    surveyQuery
+                );
+
+            console.log(
+                "Total Survey Records:",
+                surveyResult.features.length
+            );
+
+            // ---------------------------------------
+            // FILTER LAST 30 MINUTES
+            // ---------------------------------------
+
+            const thirtyMinutesAgo =
+                Date.now() -
+                (30 * 60 * 1000);
+
+            const recentFeatures =
+                surveyResult.features.filter(
+                    (feature) => {
+
+                        const createdDate =
+                            feature.attributes
+                                ?.created_date;
+
+                        return (
+                            createdDate &&
+                            createdDate >=
+                            thirtyMinutesAgo
+                        );
+                    }
+                );
+
+            // ---------------------------------------
+// LOOKUP SURVEY ATTRIBUTES BY PLOT NO
+// ---------------------------------------
+
+            const surveyLookup = {};
+
+            recentFeatures.forEach((f) => {
+
+                const plotNo = f.attributes?.plot_no;
+
+                if (plotNo) {
+
+                    surveyLookup[plotNo] =
+                        f.attributes;
+                }
+            });
+
+            console.log(
+                "Recent Records:",
+                recentFeatures
+            );
+
+            if (
+                recentFeatures.length === 0
+            ) {
+
+                console.log(
+                    "No Survey123 records found in the last 30 minutes."
+                );
+
+            } else {
+
+                setNotificationMessage(
+                    `${recentFeatures.length} new application(s) received`
+                );
+
+                setShowNotification(true);
+
+                setTimeout(() => {
+                    setShowNotification(false);
+                }, 5000);
+            }
+
+            // ---------------------------------------
+            // EXTRACT PLOT NUMBERS
+            // ---------------------------------------
+
+            const plotNumbers =
+                [
+                    ...new Set(
+                        recentFeatures
+                            .map(
+                                (f) =>
+                                    f.attributes
+                                        ?.plot_no
+                            )
+                            .filter(Boolean)
+                    )
+                ];
+
+            console.log(
+                "Plot Numbers:",
+                plotNumbers
+            );
+
+          if (plotNumbers.length === 0) {
+
+                console.log(
+                    "No plot numbers found."
+                );
+
+            } else {
+
+    // parcel query code
+
+
+            // ---------------------------------------
+            // QUERY RAJARHAT LAYER
+            // ---------------------------------------
+
+            const parcelQuery =
+                parcelLayer.createQuery();
+
+            parcelQuery.where =
+                `plot_no IN (${plotNumbers.join(
+                    ","
+                )})`;
+
+            parcelQuery.outFields =
+                ["*"];
+
+            parcelQuery.returnGeometry =
+                true;
+
+            const parcelResult =
+                await parcelLayer.queryFeatures(
+                    parcelQuery
+                );
+
+            console.log(
+                "Matching Parcels:",
+                parcelResult.features
+            );
+        
+
+            // ---------------------------------------
+            // CLEAR OLD GRAPHICS
+            // ---------------------------------------
+
+            highlightLayer.removeAll();
+
+            // ---------------------------------------
+            // ADD CENTROIDS ONLY
+            // ---------------------------------------
+
+            parcelResult.features.forEach(
+                (feature) => {
+
+                    const centroid =
+                        feature.geometry?.centroid;
+
+                    if (!centroid) {
+                        return;
+                    }
+                    const surveyAttributes =
+                        surveyLookup[
+                            feature.attributes.plot_no
+                        ] || {};
+
+                    const mergedAttributes = {
+
+                        ...feature.attributes,
+
+                        ...surveyAttributes,
+
+                        document_url:
+                            "https://indcs0152.atrapa.deloitte.com/land-records/land-deed.pdf"
+                    };
+
+                    const fieldInfos =
+                        Object.keys(
+                            mergedAttributes
+                        ).map(field => ({
+
+                            fieldName: field,
+
+                            label:
+                                field
+                                    .replaceAll("_", " ")
+                                    .toUpperCase()
+                        }));
+
+                    const graphic =
+                        new Graphic({
+
+                            geometry:
+                                centroid,
+
+                            attributes:
+                                mergedAttributes,
+
+                            symbol: {
+                                type:
+                                    "simple-marker",
+
+                                style:
+                                    "circle",
+
+                                size: 12,
+
+                                color:
+                                    [255, 0, 0, 0.9],
+
+                                outline: {
+                                    color:
+                                        [255, 255, 255],
+                                    width: 2
+                                }
+                            },
+
+                            popupTemplate: {
+
+                                title:
+                                    "Citizen Application - {plot_no}",
+
+                                content: [
+
+                                    {
+                                        type:
+                                            "fields",
+
+                                        fieldInfos:
+                                            fieldInfos
+                                    }
+                                ]
+                            }
+                        });
+
+                    highlightLayer.add(
+                        graphic
+                    );
+                }
+            );
+        }
+
+            // ---------------------------------------
+            // ZOOM TO RESULTS
+            // ---------------------------------------
+
+            if (
+                highlightLayer.graphics.length > 0
+            ) {
+
+                await view.goTo(
+                    highlightLayer.graphics.toArray(),
+                    {
+                        duration: 1500
+                    }
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed loading recent Survey123 applications",
+                error
+            );
+        }
+        
+    
             try {
 
                 const extentResponse =
@@ -376,7 +737,7 @@ const MapPage = () => {
                         new Print({
                             view,
                             printServiceUrl:
-                                "https://utility.arcgisonline.com/ArcGIS/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task"
+                               "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/WBLR_3690/GPServer/Export%20Web%20Map"
                         }),
                     expandTooltip:
                         "Print"
@@ -389,7 +750,10 @@ const MapPage = () => {
                         layer: parcelLayer,
                         enabled: true
                     }
-                ]
+                ],
+                tooltipOptions: {
+                    enabled: true
+                }
             });
 
             const editorExpand = new Expand({
@@ -400,6 +764,47 @@ const MapPage = () => {
                 expanded: false
             });
 
+            
+            reactiveUtils.watch(
+                () => editorExpand.expanded,
+                async (expanded) => {
+
+                    if (!expanded) {
+
+                        console.log(
+                            "Editor closed - clearing selection"
+                        );
+
+                        try {
+
+                            await editor.cancelWorkflow();
+
+                            view.popup.close();
+
+                            view.graphics.removeAll();
+
+                        } catch (err) {
+
+                            console.error(
+                                "Error clearing editor state",
+                                err
+                            );
+                        }
+                    }
+                }
+            );
+
+          const targetLayer = webmap.layers.find(
+                layer => layer.title === "Plot Sketch"
+            );
+
+            if (targetLayer) {
+                webmap.reorder(
+                    targetLayer,
+                    webmap.layers.length - 1
+                );
+            }
+            
             let switchingWorkflow = false;
             let openingEditLayerFeature = false;
 
@@ -427,6 +832,37 @@ const MapPage = () => {
                         
                 console.log("====== WATCHER FIRED ======");
                 console.log("Workflow:", workflow);
+
+                setTimeout(() => {
+
+                    const sketchVM =
+                        editor.viewModel?.sketchViewModel;
+
+                    console.log("SketchVM", sketchVM);
+
+                    if (sketchVM) {
+
+                        sketchVM.polygonSymbol = {
+                            type: "simple-fill",
+
+                            // FULLY TRANSPARENT
+                            color: [0, 0, 0, 0],
+
+                            outline: {
+                                color: [0, 255, 255, 1],
+                                width: 3
+                            }
+                        };
+
+                    }
+
+                }, 500);
+
+                view.graphics.items.forEach(g => {
+            
+                    console.log(g.symbol);
+                
+                    });
 
 
                     if (
@@ -461,12 +897,36 @@ const MapPage = () => {
                         const addFeatures = [];
                         const createdFeatureIds = [];
 
+
+                        const txnQuery = editLayer.createQuery();
+
+                        txnQuery.where = "1=1";
+                        txnQuery.outFields = ["txn_id"];
+                        txnQuery.orderByFields = ["txn_id DESC"];
+                        txnQuery.num = 1;
+
+                        const txnResult =
+                            await editLayer.queryFeatures(txnQuery);
+
+                        let nextTxnId = 1;
+
+                        if (txnResult.features.length > 0) {
+
+                            nextTxnId =
+                                Number(
+                                    txnResult.features[0]
+                                        .attributes.txn_id
+                                ) + 1;
+                        }
+
+                        console.log("Next Transaction ID:", nextTxnId);
+
+
                         for (const sourceFeature of rajarhatFeatures) {
 
                             const plotNo =
                                 sourceFeature.attributes.plot_no;
 
-                            // Prevent duplicate creation
                             const checkQuery =
                                 editLayer.createQuery();
 
@@ -483,8 +943,9 @@ const MapPage = () => {
                             ) {
 
                                 createdFeatureIds.push(
-                                    existing.features[0]
-                                        .attributes.OBJECTID
+                                    existing.features[0].attributes[
+                                        editLayer.objectIdField
+                                    ]
                                 );
 
                                 continue;
@@ -497,11 +958,17 @@ const MapPage = () => {
 
                                 attributes: {
 
+                                    txn_id: nextTxnId,   // same txn id
+
                                     old_plot_n:
                                         plotNo,
 
                                     txn_type:
                                         "EDIT",
+   
+                                    mouza:
+                                    sourceFeature?.attributes?.mouza_name,
+
 
                                     status:
                                         "DRAFT",
@@ -518,6 +985,8 @@ const MapPage = () => {
                             });
                         }
 
+
+
                         // Create features
                         if (
                             addFeatures.length > 0
@@ -527,6 +996,7 @@ const MapPage = () => {
                                 await editLayer.applyEdits({
                                     addFeatures
                                 });
+
 
                             console.log(
                                 "Add Result",
@@ -629,7 +1099,7 @@ const MapPage = () => {
 
                                             console.log(
                                                 "Feature OID:",
-                                                editableFeature.attributes?.OBJECTID
+                                                editableFeature.attributes?.FID
                                             );
 
                                             await editor.startUpdateWorkflowAtFeatureEdit(
@@ -746,6 +1216,20 @@ const MapPage = () => {
         }
     };
 
+        const launchBhuSaarthi = () => {
+        window.open(
+            "http://indcs0152:7000/bhuBot/",
+            "_blank",
+        );
+    };
+
+    const launchAnalyticsPortal = () => {
+        window.open(
+            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=5d03bf99a23f48d6add523bbf772bc8d",
+            "_blank",
+            "noopener,noreferrer"
+        );
+    };
     // if (sessionExpired) {
     //     return (
     //         <div
@@ -925,6 +1409,22 @@ const MapPage = () => {
                         </div>
                     )}
 
+                    <div className="header-actions">
+                        <button
+                            className="header-launch-btn"
+                            onClick={launchBhuSaarthi}
+                        >
+                            Launch BhuSaarthi
+                        </button>
+
+                        <button
+                            className="header-launch-btn analytics-btn"
+                            onClick={launchAnalyticsPortal}
+                        >
+                            Launch Analytics Portal
+                        </button>
+                    </div>
+
                     <div className="user-profile-card">
                         <div className="user-avatar">
                             <FaUserCircle />
@@ -966,6 +1466,46 @@ const MapPage = () => {
                     </div>
                 </div>
             </div>
+            {showNotification && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: "80px",
+                        right: "20px",
+                        background: "#0079c1",
+                        color: "#fff",
+                        padding: "12px 16px",
+                        borderRadius: "8px",
+                        zIndex: 99999,
+                        boxShadow:
+                            "0 4px 12px rgba(0,0,0,0.2)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px"
+                    }}
+                >
+                    <span>🔔</span>
+
+                    <span>
+                        {notificationMessage}
+                    </span>
+
+                    <button
+                        onClick={() =>
+                            setShowNotification(false)
+                        }
+                        style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "#fff",
+                            cursor: "pointer",
+                            fontSize: "16px"
+                        }}
+                    >
+                        ✕
+                    </button>
+                </div>
+            )}
 
             <div className="map-content">
                 <div

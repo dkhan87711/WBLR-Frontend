@@ -398,12 +398,14 @@ export const Citizen = () => {
                             </p>
 
                             <button
-                                className="explore-btn geospatial-btn"
                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate("/map");
-                                }}
-                            >
+                                e.stopPropagation();
+                                window.open(
+                                    "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=02e8e0f8d4ec4417a01072d1ba84de17",
+                                    "_blank"
+                                );
+                            }}
+                                                        >
                                 Explore ↗
                             </button>
 

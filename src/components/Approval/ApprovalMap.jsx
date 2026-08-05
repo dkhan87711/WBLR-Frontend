@@ -9,6 +9,7 @@ import TextSymbol from "@arcgis/core/symbols/TextSymbol";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import Point from "@arcgis/core/geometry/Point";
 import Polygon from "@arcgis/core/geometry/Polygon";
+import WebMap from "@arcgis/core/WebMap";
 
 /** Development */
 const SERVICE_URL =
@@ -28,7 +29,7 @@ const ApprovalMap = ({ mode, geoData }) => {
         let view;
 
         const initMap = async () => {
-            const graphicsLayer = new GraphicsLayer();
+            
 
             const featureLayer = new FeatureLayer({
                 url: FEATURE_LAYER_URL,
@@ -39,17 +40,24 @@ const ApprovalMap = ({ mode, geoData }) => {
                 url: MAP_SERVER_URL
             });
 
-            const map = new Map({
-                basemap: "hybrid",
-                layers: [mapImageLayer, featureLayer, graphicsLayer]
-            });
+            const graphicsLayer = new GraphicsLayer();
 
-            view = new MapView({
-                container: mapRef.current,
-                map
-            });
+                const webmap = new WebMap({
+                    portalItem: {
+                        id: "82368e996eab4c7e86b6cc5fef8bd07f"
+                    }
+                });
 
-            await view.when();
+                await webmap.load();
+
+                webmap.add(graphicsLayer);
+
+                view = new MapView({
+                    container: mapRef.current,
+                    map: webmap
+                });
+
+                await view.when();
 
             const polygons = [];
 
@@ -79,7 +87,7 @@ const ApprovalMap = ({ mode, geoData }) => {
                     const poly = addPolygonWithLabels(
                         item.shape.coordinates[0],
                         item.new_plot_no,
-                        [0, 150, 0],
+                        [150, 0, 0],
                         graphicsLayer
                     );
 
