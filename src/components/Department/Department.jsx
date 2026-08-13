@@ -5,6 +5,17 @@ import { departmentLogin, departmentLogout } from "../../api/apiService";
 import leftLogo from "../../assets/department-left-logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+import appConfig from "../../assets/config/url.json";
+
+import logo1 from "../../assets/images/property.png";
+import logo2 from "../../assets/images/weather.png";
+import logo3 from "../../assets/images/flood.png";
+import logo4 from "../../assets/images/lake.png";
+import logo5 from "../../assets/images/urban.png";
+import logo6 from "../../assets/images/3d.png";
+import logo7 from "../../assets/images/aseet.png";
+import logo8 from "../../assets/images/road.png";
+
 import {
     FaMapMarkedAlt,
     FaTasks,
@@ -31,6 +42,30 @@ export const Department = () => {
     const goTo = (path) => {
         navigate(path);
     };
+
+    const logoMap = [
+        logo1,
+        logo2,
+        logo3,
+        logo4,
+        logo5,
+        logo6,
+        logo7,
+        logo8
+    ];
+
+    const sizeMap = [
+        45, 45, 45, 45,
+        45, 45, 40, 45
+    ];
+
+    const appLogos = appConfig.map((app, index) => ({
+        src: logoMap[index],
+        size: sizeMap[index],
+        title: app.title,
+        description: app.description,
+        url: app.url,
+    }));
 
     const handleLogin = async () => {
         try {
@@ -156,50 +191,40 @@ export const Department = () => {
 
     return (
         <div className="login-page">
-            {/* ===== LEFT VISUAL PANEL ===== */}
-            <div className="left-panel">
 
-                {/* ICON */}
-                <div className="left-icon">
-                    <img src={leftLogo} alt="landstack-icon" />
-                </div>
-
-                {/* TEXT */}
-                <div className="left-text">
-                    <p className="welcome-text">Welcome to</p>
-                    <h2 className="main-title-header-login">
-                        Bhu-<span>Manchitra</span>
-                    </h2>
-
-                    <h5 className="sub-title-header-login">
-                        Land Records, Survey & Analytics Platform
-                    </h5>
-                    <div className="underline-header-login"></div>
-                    <p className="description-header-login">
-                        Integrated Geospatial Platform for Land Governance,
-                        Monitoring and Decision Support System.
-                        It enables seamless integration of land records,
-                        cadastral maps, survey data, and spatial analytics
-                        to support transparent administration, evidence-based
-                        planning, and efficient land management across departments.
-                    </p>
-                </div>
-
+            <div className="header-text">
+                <div className="title-badge">GeoSpatial Intelligence Platform</div>
+                <h2 className="main-title-header">
+                    ULMP : Unified Land Management Platform<span></span>
+                </h2>
             </div>
+
+            {/* ===== LEFT VISUAL PANEL ===== */}
+            {!showApps && (
+                <div className="left-panel">
+                    <div className="left-text">
+                        <h5 className="sub-title-header-login">
+                            Unified Land Management Platform
+                        </h5>
+                        <div className="underline-header-login"></div>
+                        <p className="description-header-login">
+                            Integrated Geospatial Platform for Land Governance, Monitoring,
+                            Spatial Planning and Decision Support, enabling a unified view of
+                            Land Records, Cadastral Mapping, ULPIN, DIGIPIN, Property
+                            Intelligence, Citizen Services and Cross-Department Governance.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {
                 !showApps ? (
-
                     <div className="login-card">
+                        <div className="login-icon-department">
+                            <span>🏛</span>
+                        </div>
                         <div className="login-header">
-                            <div className="login-icon-department">
-                                <span>🏛</span>
-                            </div>
-                            <p>
-                                Welcome! Please sign in to your account
-                                <br />
-                                to continue
-                            </p>
+                            <p>Department Login</p>
                             <div className="divider"></div>
                         </div>
 
@@ -279,7 +304,6 @@ export const Department = () => {
                                 <input type="checkbox" />
                                 Remember me
                             </label>
-
                             <a href="#">
                                 Forgot Password?
                             </a>
@@ -304,155 +328,66 @@ export const Department = () => {
                                 ? "Logging In..."
                                 : "Login"}
                         </button>
-
-                        <div className="or-divider">
-                            <span></span>
-                            <p>or</p>
-                            <span></span>
-                        </div>
-
-                        <div className="footer-help">
-                            Need help?
-                            <a href="#">
-                                &nbsp; Contact Support
-                            </a>
-                        </div>
-
                         <button
                             className="back-home-btn"
                             onClick={handleLogout}
                         >
                             ⬅ Back to Home
                         </button>
-
                     </div>
-
                 ) : (
-
                     <div className="application-launcher">
-                        <div className="launcher-header">
-                            <h2>Welcome To Bhu-Manchitra</h2>
-                            <p>
-                                Select an application to continue
-                            </p>
-                        </div>
-
                         <div className="app-grid">
-                            <div className="app-card geospatial">
-                                <div className="app-icon geospatial-icon">
-                                    <FaMapMarkedAlt />
+                            {appLogos.map((app, index) => (
+                                <div className="app-card-custom" key={index}>
+                                    <div className="app-header-row">
+                                        <div className="app-icon-img">
+                                            <img
+                                                src={app.src}
+                                                alt={app.title}
+                                                style={{
+                                                    width: `${app.size}px`,
+                                                    objectFit: "contain"
+                                                }}
+                                            />
+                                        </div>
+                                        <h3 className="app-title-inline">
+                                            {app.title}
+                                        </h3>
+                                    </div>
+
+                                    <p className="app-desc">
+                                        {app.description}
+                                    </p>
+
+                                    <button
+                                        className="explore-btn-custom"
+                                        onClick={() => window.open(app.url, "_blank")}
+                                    >
+                                        Explore ↗
+                                    </button>
+
                                 </div>
-                                <h3>Bhu-Manchitra Web Portal</h3>
-                                <p>
-                                    Unified GIS platform for map visualization, spatial layers, and land information services.
-                                </p>
-
-                                <button
-                                    className="explore-btn geospatial-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate("/map");
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
-                            </div>
-
-                            <div className="app-card acquisition">
-                                <div className="app-icon acquisition-icon">
-                                    <FaTasks />
-                                </div>
-                                <h3>Bhu-Manchitra Approval Flow</h3>
-                                <p>
-                                    Streamlined approval system for reviewing, validating, and tracking land-related requests.
-                                </p>
-
-                                <button
-                                    className="explore-btn acquisition-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate("/approval");
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
-                            </div>
-
-                            <div className="app-card compliance">
-                                <div className="app-icon compliance-icon">
-                                    <FaDatabase />
-                                </div>
-                                <h3>Bhu-Manchitra Data Hub</h3>
-                                <p>
-                                    Centralized repository for managing, integrating, and sharing geospatial datasets.
-                                </p>
-
-                                <button
-                                    className="explore-btn compliance-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/sites/#/unified-land-management-system",
-                                            "_blank"
-                                        );
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
-                            </div>
-
-                            <div className="app-card citizen-app">
-                                <div className="app-icon citizen-icon">
-                                    <FaChartLine />
-                                </div>
-                                <h3>Bhu-Manchitra Dashboard</h3>
-                                <p>
-                                    Interactive dashboards and analytics for monitoring land information and activities.
-                                </p>
-
-                                <button
-                                    className="explore-btn citizen-btn-new"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=df3ec4af1a6f4061a6e6d905f6ed843a",
-                                            "_blank"
-                                        );
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
-                            </div>
+                            ))}
                         </div>
                     </div>
-
                 )
             }
+
+            <div className="session-timer">
+                ⏱ Session expires in: {formattedTime}
+            </div>
 
             {
                 loggedInUser && (
                     <div className="logged-user-card">
-
-                        <div className="session-timer">
-                            ⏱ Session expires in: {formattedTime}
-                        </div>
-
-                        <div className="user-avatar">
+                        <div className="user-avatar-login">
                             <FaUserCircle size={48} />
                         </div>
-
                         <div>
-                            <div className="logged-label">
-                                Logged in as
-                            </div>
-
                             <div className="logged-name">
                                 {loggedInUser?.user?.firstName}{" "}
                                 {loggedInUser?.user?.lastName}
-                            </div>
-
-                            <div className="logged-role">
-                                {loggedInUser?.user?.userType?.name} User
                             </div>
 
                             <button

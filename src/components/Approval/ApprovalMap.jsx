@@ -29,7 +29,7 @@ const ApprovalMap = ({ mode, geoData }) => {
         let view;
 
         const initMap = async () => {
-            
+
 
             const featureLayer = new FeatureLayer({
                 url: FEATURE_LAYER_URL,
@@ -42,22 +42,22 @@ const ApprovalMap = ({ mode, geoData }) => {
 
             const graphicsLayer = new GraphicsLayer();
 
-                const webmap = new WebMap({
-                    portalItem: {
-                        id: "82368e996eab4c7e86b6cc5fef8bd07f"
-                    }
-                });
+            const webmap = new WebMap({
+                portalItem: {
+                    id: "82368e996eab4c7e86b6cc5fef8bd07f"
+                }
+            });
 
-                await webmap.load();
+            await webmap.load();
 
-                webmap.add(graphicsLayer);
+            webmap.add(graphicsLayer);
 
-                view = new MapView({
-                    container: mapRef.current,
-                    map: webmap
-                });
+            view = new MapView({
+                container: mapRef.current,
+                map: webmap
+            });
 
-                await view.when();
+            await view.when();
 
             const polygons = [];
 
