@@ -389,7 +389,7 @@ export const Citizen = () => {
                                 <FaMapMarkedAlt />
                             </div>
 
-                            <h3>Bhu-Manchitra Web Portal</h3>
+                            <h3>ULMP : Unified Land Management Platform</h3>
                             <p>
                                 Unified GIS platform for map visualization, spatial layers, and land information services.
                             </p>

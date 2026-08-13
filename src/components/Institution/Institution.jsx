@@ -275,7 +275,7 @@ export const Institution = () => {
                 <div className="application-launcher">
 
                     <div className="launcher-header">
-                        <h2>Welcome To Bhu-Manchitra</h2>
+                        <h2>Welcome To ULMS</h2>
                         <p>
                             Select an application to continue
                         </p>
@@ -286,7 +286,7 @@ export const Institution = () => {
                             <div className="app-icon geospatial-icon">
                                 <FaMapMarkedAlt />
                             </div>
-                            <h3>Bhu-Manchitra Web Portal</h3>
+                            <h3>Unified Land Management Platform</h3>
                             <p>
                                 Unified GIS platform for map visualization, spatial layers, and land information services.
                             </p>
@@ -306,7 +306,7 @@ export const Institution = () => {
                             <div className="app-icon acquisition-icon">
                                 <FaTasks />
                             </div>
-                            <h3>Bhu-Manchitra Data Hub</h3>
+                            <h3>ULMS Data Hub</h3>
                             <p>
                                 Centralized repository for managing, integrating, and sharing geospatial datasets.
                             </p>

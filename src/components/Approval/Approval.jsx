@@ -59,129 +59,129 @@ const Approval = () => {
     const [timeLeft, setTimeLeft] = useState(60);
     const [showWarning, setShowWarning] = useState(false);
 
-       const fetchArcGISFeatures = async () => {
-            try {
-                const url =
-                    "http://services3.arcgis.com/CRMq5Hjc17l7gSou/ArcGIS/rest/services/land_txn_request_v1/FeatureServer/0/query";
+    const fetchArcGISFeatures = async () => {
+        try {
+            const url =
+                "http://services3.arcgis.com/CRMq5Hjc17l7gSou/ArcGIS/rest/services/land_txn_request_v1/FeatureServer/0/query";
 
-                const params = new URLSearchParams({
-                    where: "1=1",
-                    outFields: "*",
-                    returnGeometry: true,
-                    f: "json"
-                });
+            const params = new URLSearchParams({
+                where: "1=1",
+                outFields: "*",
+                returnGeometry: true,
+                f: "json"
+            });
 
-                const response = await fetch(
-                    `${url}?${params.toString()}`
-                );
+            const response = await fetch(
+                `${url}?${params.toString()}`
+            );
 
-                if (!response.ok) {
-                    throw new Error(
-                        `Failed to fetch data (${response.status})`
-                    );
-                }
-
-                const esriData = await response.json();
-
-                console.log("ArcGIS Response:", esriData);
-
-                const validFeatures = (esriData?.features || []).filter(
-                    (feature, index) => {
-                        const isValid =
-                            feature &&
-                            feature.attributes &&
-                            feature.geometry &&
-                            Array.isArray(feature.geometry.rings) &&
-                           // feature.attributes.id &&
-                            feature.geometry.rings.length > 0;
-
-                        if (!isValid) {
-                            console.warn(
-                                `Skipping invalid feature at index ${index}:`,
-                                feature
-                            );
-                        }
-
-                        return isValid;
-                    }
-                );
-
-                console.log(
-                    `Valid Features Found: ${validFeatures.length}`
-                );
-
-                const geoJson = {
-                    type: "FeatureCollection",
-                    name: "land_txn_geojson",
-                    crs: {
-                        type: "4326",
-                        properties: {
-                            name: "urn:ogc:def:crs:OGC:1.3:CRS84"
-                        }
-                    },
-                    features: validFeatures.map(feature => ({
-                        type: "Feature",
-
-                        properties: {
-                            id: feature.attributes.FID,
-                            txn_id: feature.attributes.txn_id,
-                            txn_type: feature.attributes.txn_type,
-                            old_plot_no: feature.attributes.old_plot_n,
-                            new_plot_no: feature.attributes.new_plot_n,
-                            owner_name: feature.attributes.owner_name,
-                            father_name: feature.attributes.father_nam,
-                            address: feature.attributes.address,
-                            khatian_no: feature.attributes.khatian_no,
-                            landuse: feature.attributes.landuse,
-                            total_area: feature.attributes.total_area,
-                            shared_area: feature.attributes.shared_are,
-                            created_by: feature.attributes.created_by,
-                            created_date: feature.attributes.created_da,
-                            ror_area: feature.attributes.ror_area,
-                            gis_area: feature.attributes.gis_area,
-                            mouza: feature.attributes.mouza,
-                            status: feature.attributes.status
-                        },
-
-                        geometry: {
-                            type: "MultiPolygon",
-                            coordinates: [
-                                [
-                                    ...feature.geometry.rings
-                                ]
-                            ]
-                        }
-                    }))
-                };
-
-                console.log(
-                    "Converted GeoJSON:",
-                    geoJson
-                );
-
-                if (!geoJson.features.length) {
-                    console.warn(
-                        "No valid features found to import."
-                    );
-                    return;
-                }
-
-                await importGeoJson(
-                    geoJson.features
-                );
-
-                console.log(
-                    `✅ Imported ${geoJson.features.length} features successfully`
-                );
-            } catch (err) {
-                console.error(
-                    "❌ ArcGIS import failed",
-                    err
+            if (!response.ok) {
+                throw new Error(
+                    `Failed to fetch data (${response.status})`
                 );
             }
-        };
-        // ✅ FETCH LIST
-        useEffect(() => {
+
+            const esriData = await response.json();
+
+            console.log("ArcGIS Response:", esriData);
+
+            const validFeatures = (esriData?.features || []).filter(
+                (feature, index) => {
+                    const isValid =
+                        feature &&
+                        feature.attributes &&
+                        feature.geometry &&
+                        Array.isArray(feature.geometry.rings) &&
+                        // feature.attributes.id &&
+                        feature.geometry.rings.length > 0;
+
+                    if (!isValid) {
+                        console.warn(
+                            `Skipping invalid feature at index ${index}:`,
+                            feature
+                        );
+                    }
+
+                    return isValid;
+                }
+            );
+
+            console.log(
+                `Valid Features Found: ${validFeatures.length}`
+            );
+
+            const geoJson = {
+                type: "FeatureCollection",
+                name: "land_txn_geojson",
+                crs: {
+                    type: "4326",
+                    properties: {
+                        name: "urn:ogc:def:crs:OGC:1.3:CRS84"
+                    }
+                },
+                features: validFeatures.map(feature => ({
+                    type: "Feature",
+
+                    properties: {
+                        id: feature.attributes.FID,
+                        txn_id: feature.attributes.txn_id,
+                        txn_type: feature.attributes.txn_type,
+                        old_plot_no: feature.attributes.old_plot_n,
+                        new_plot_no: feature.attributes.new_plot_n,
+                        owner_name: feature.attributes.owner_name,
+                        father_name: feature.attributes.father_nam,
+                        address: feature.attributes.address,
+                        khatian_no: feature.attributes.khatian_no,
+                        landuse: feature.attributes.landuse,
+                        total_area: feature.attributes.total_area,
+                        shared_area: feature.attributes.shared_are,
+                        created_by: feature.attributes.created_by,
+                        created_date: feature.attributes.created_da,
+                        ror_area: feature.attributes.ror_area,
+                        gis_area: feature.attributes.gis_area,
+                        mouza: feature.attributes.mouza,
+                        status: feature.attributes.status
+                    },
+
+                    geometry: {
+                        type: "MultiPolygon",
+                        coordinates: [
+                            [
+                                ...feature.geometry.rings
+                            ]
+                        ]
+                    }
+                }))
+            };
+
+            console.log(
+                "Converted GeoJSON:",
+                geoJson
+            );
+
+            if (!geoJson.features.length) {
+                console.warn(
+                    "No valid features found to import."
+                );
+                return;
+            }
+
+            await importGeoJson(
+                geoJson.features
+            );
+
+            console.log(
+                `✅ Imported ${geoJson.features.length} features successfully`
+            );
+        } catch (err) {
+            console.error(
+                "❌ ArcGIS import failed",
+                err
+            );
+        }
+    };
+    // ✅ FETCH LIST
+    useEffect(() => {
 
         const initializeData = async () => {
 
@@ -204,7 +204,7 @@ const Approval = () => {
 
     }, []);
 
-    
+
 
     useEffect(() => {
         let interval;
@@ -567,7 +567,7 @@ const Approval = () => {
                     <span className="menu-icon">☰</span>
 
                     <h2 className="map-title-header">
-                        Bhu-Manchitra : Approval Flow Management
+                        ULMP : Unified Land Management Platform
                     </h2>
                 </div>
 
@@ -795,7 +795,7 @@ const Approval = () => {
                                         <td>{row?.old_plot_no}</td>
                                         <td>{row?.new_plot_no}</td>
                                         <td>{row?.mouza}</td>
-                                      
+
                                     </tr>
                                 ))}
                             </tbody>
