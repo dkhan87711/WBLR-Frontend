@@ -1,234 +1,220 @@
 const pmayData = [
-  {
-    "applicationId": "APP001",
-    "applicantName": "Rajesh Shaw",
-    "disbursementStatus": null,
-    "aadhaar": "452187654321",
-    "addressAsPerAadhaar": "CE-42, Street Number 222, CE Block(Newtown), Action Area 1C, Newtown, Kolkata, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.579451,
-    "long": 88.480321,
-    "geom": null,
-    "plotNumber": "CE-42",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Application Submitted",
-    "constructionDate": null,
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": null,
-    "extractedImageLong": null,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP002",
-    "applicantName": "Pooja Shaw",
-    "disbursementStatus": null,
-    "aadhaar": "452187654322",
-    "addressAsPerAadhaar": "CE-43, Street Number 222, CE Block(Newtown), Action Area 1C, Newtown, Kolkata, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.579451,
-    "long": 88.480321,
-    "geom": null,
-    "plotNumber": "CE-43",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Application Submitted",
-    "constructionDate": null,
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": null,
-    "extractedImageLong": null,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP003",
-    "applicantName": "Priyanka Ghosh",
-    "disbursementStatus": null,
-    "aadhaar": "451278963145",
-    "addressAsPerAadhaar": "CE/A55, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.577643,
-    "long": 88.481234,
-    "geom": null,
-    "plotNumber": "CE/A55",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Under Construction",
-    "constructionDate": "2026-05-15",
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": 22.577645,
-    "extractedImageLong": 88.481236,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP004",
-    "applicantName": "Sanjay Das",
-    "disbursementStatus": null,
-    "aadhaar": "895632147852",
-    "addressAsPerAadhaar": "HFF4+XJ7, Street Number 247, CE Block(Newtown), Action Area I, Newtown, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.580322,
-    "long": 88.479876,
-    "geom": null,
-    "plotNumber": "HFF4+XJ7",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Under Construction",
-    "constructionDate": "2026-05-22",
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": 22.622145,
-    "extractedImageLong": 88.402356,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP005",
-    "applicantName": "Anil Dey",
-    "disbursementStatus": null,
-    "aadhaar": "673245891234",
-    "addressAsPerAadhaar": "CE/B41, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.578901,
-    "long": 88.481556,
-    "geom": null,
-    "plotNumber": "CE/B41",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Application Submitted",
-    "constructionDate": null,
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": null,
-    "extractedImageLong": null,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP006",
-    "applicantName": "Sunita Roy",
-    "disbursementStatus": null,
-    "aadhaar": "673245891235",
-    "addressAsPerAadhaar": "CE/B41, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.578901,
-    "long": 88.481556,
-    "geom": null,
-    "plotNumber": "CE/B41",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Application Submitted",
-    "constructionDate": null,
-    "completionDate": null,
-    "completionCertificateGenerated": null,
-    "extractedImageLat": null,
-    "extractedImageLong": null,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP007",
-    "applicantName": "Arindam Bose",
-    "disbursementStatus": null,
-    "aadhaar": "823145769852",
-    "addressAsPerAadhaar": "CE/B35, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.578112,
-    "long": 88.482013,
-    "geom": null,
-    "plotNumber": "CE/B35",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Completed",
-    "constructionDate": "2026-02-10",
-    "completionDate": "2026-07-15",
-    "completionCertificateGenerated": true,
-    "extractedImageLat": 22.578114,
-    "extractedImageLong": 88.482015,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP008",
-    "applicantName": "Mousumi Roy",
-    "disbursementStatus": null,
-    "aadhaar": "785412369852",
-    "addressAsPerAadhaar": "CE/B36, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.578320,
-    "long": 88.482100,
-    "geom": null,
-    "plotNumber": "CE/B36",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Completed",
-    "constructionDate": "2026-01-25",
-    "completionDate": "2026-06-20",
-    "completionCertificateGenerated": true,
-    "extractedImageLat": 22.578321,
-    "extractedImageLong": 88.482101,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP009",
-    "applicantName": "Rina Paul",
-    "disbursementStatus": null,
-    "aadhaar": "562341789654",
-    "addressAsPerAadhaar": "CE/A70, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.577950,
-    "long": 88.481520,
-    "geom": null,
-    "plotNumber": "CE/A70",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Completed",
-    "constructionDate": "2026-02-20",
-    "completionDate": "2026-07-10",
-    "completionCertificateGenerated": false,
-    "extractedImageLat": 22.620100,
-    "extractedImageLong": 88.401500,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  },
-  {
-    "applicationId": "APP010",
-    "applicantName": "Kaushik Dutta",
-    "disbursementStatus": null,
-    "aadhaar": "698745231458",
-    "addressAsPerAadhaar": "CE/A71, Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
-    "digipin": null,
-    "ulpin": null,
-    "lat": 22.578520,
-    "long": 88.482250,
-    "geom": null,
-    "plotNumber": "CE/A71",
-    "verificationDate": null,
-    "verifiedStatus": null,
-    "constructionStatus": "Completed",
-    "constructionDate": "2026-01-18",
-    "completionDate": "2026-06-18",
-    "completionCertificateGenerated": false,
-    "extractedImageLat": 22.618400,
-    "extractedImageLong": 88.395800,
-    "extractedImageDigipin": null,
-    "extractedImageUlpin": null
-  }
+    {
+        applicationId: "APP001",
+        applicantName: "Ramesh Kumar",
+        aadhaar: "123412341234",
+
+        plotNumber: "CE/A45",
+
+        addressAsPerAadhaar:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        certificateAddress:
+            "Flat 102, Rajarhat, Kolkata, West Bengal 700135",
+
+        lat: 22.575031,
+        long: 88.457433,
+
+        extractedImageLat: 22.575537,
+        extractedImageLong: 88.455632,
+
+        ulpin: "",
+        digipin: "",
+
+        imageUlpin: "",
+        imageDigipin: "",
+
+        verificationCompleted: false,
+        constructionVerified: false,
+        completionVerified: false,
+
+        verificationRemarks: "",
+        constructionRemarks: "",
+        completionRemarks: "",
+
+        verificationDate: "",
+
+        verifiedStatus: "",
+        disbursementStatus: "",
+        constructionStatus: "",
+        completionStatus: "",
+
+        completionCertificateGenerated: false
+    },
+
+    // Duplicate Scenario
+    {
+        applicationId: "APP003",
+        applicantName: "Priyanka Ghosh",
+        aadhaar: "345634563456",
+
+        plotNumber: "CE/A46",
+
+        addressAsPerAadhaar:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        certificateAddress:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        lat: 22.575031,
+        long: 88.457433,
+
+        extractedImageLat: 22.575537,
+        extractedImageLong: 88.455632,
+
+        ulpin: "",
+        digipin: "",
+
+        imageUlpin: "",
+        imageDigipin: "",
+
+        verificationCompleted: false,
+        constructionVerified: false,
+        completionVerified: false,
+
+        verificationRemarks: "",
+        constructionRemarks: "",
+        completionRemarks: "",
+
+        verificationDate: "",
+
+        verifiedStatus: "",
+        disbursementStatus: "",
+        constructionStatus: "",
+        completionStatus: "",
+
+        completionCertificateGenerated: false
+    },
+
+    {
+        applicationId: "APP005",
+        applicantName: "Amit Sen",
+        aadhaar: "567856785678",
+
+        plotNumber: "CE/A30",
+
+        addressAsPerAadhaar:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        certificateAddress:
+            "CE/A30, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        lat: 22.575537,
+        long: 88.455632,
+
+        extractedImageLat: 22.575267,
+        extractedImageLong: 88.456561,
+
+        ulpin: "",
+        digipin: "",
+
+        imageUlpin: "",
+        imageDigipin: "",
+
+        verificationCompleted: false,
+        constructionVerified: false,
+        completionVerified: false,
+
+        verificationRemarks: "",
+        constructionRemarks: "",
+        completionRemarks: "",
+
+        verificationDate: "",
+
+        verifiedStatus: "",
+        disbursementStatus: "",
+        constructionStatus: "",
+        completionStatus: "",
+
+        completionCertificateGenerated: false
+    },
+
+    // SUCCESS SCENARIO FOR ALL 3 STAGES
+    {
+        applicationId: "APP006",
+        applicantName: "Rahul Pal",
+        aadhaar: "678967896789",
+
+        plotNumber: "CE/B26",
+
+        addressAsPerAadhaar:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        certificateAddress:
+            "Block CE, Action Area 1C, Bidhannagar, West Bengal 700107",
+
+        lat: 22.575267,
+        long: 88.456561,
+
+        extractedImageLat: 22.575267,
+        extractedImageLong: 88.456561,
+
+        ulpin: "",
+        digipin: "",
+
+        imageUlpin: "",
+        imageDigipin: "",
+
+        verificationCompleted: false,
+        constructionVerified: false,
+        completionVerified: false,
+
+        verificationRemarks: "",
+        constructionRemarks: "",
+        completionRemarks: "",
+
+        verificationDate: "",
+
+        verifiedStatus: "",
+        disbursementStatus: "",
+        constructionStatus: "",
+        completionStatus: "",
+
+        completionCertificateGenerated: false
+    },
+
+    {
+        applicationId: "APP007",
+        applicantName: "Debashis Dey",
+        aadhaar: "789078907890",
+
+        plotNumber: "59",
+
+        addressAsPerAadhaar:
+            "59 Street Number 224, CE Block, Action Area 1C, New Town, West Bengal 700107",
+
+        certificateAddress:
+            "Flat 4B, New Town, Kolkata, West Bengal 700156",
+
+        lat: 22.575412,
+        long: 88.457664,
+
+        extractedImageLat: 22.575537,
+        extractedImageLong: 88.455632,
+
+        ulpin: "",
+        digipin: "",
+
+        imageUlpin: "",
+        imageDigipin: "",
+
+        verificationCompleted: false,
+        constructionVerified: false,
+        completionVerified: false,
+
+        verificationRemarks: "",
+        constructionRemarks: "",
+        completionRemarks: "",
+
+        verificationDate: "",
+
+        verifiedStatus: "",
+        disbursementStatus: "",
+        constructionStatus: "",
+        completionStatus: "",
+
+        completionCertificateGenerated: false
+    }
 ];
 
 export default pmayData;

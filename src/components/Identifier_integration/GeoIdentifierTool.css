@@ -265,3 +265,11 @@
 .application-item-body strong {
     color: #12326b;
 }
+.approve-btn:disabled {
+
+    background: #bdbdbd;
+
+    cursor: not-allowed;
+
+    opacity: 0.7;
+}

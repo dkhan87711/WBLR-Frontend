@@ -711,7 +711,236 @@ const GeoIdentifierTool = ({
         );
     };
 
+    const verifyConstructionImage =
+        async application => {
 
+            try {
+
+                const point4326 =
+                    new Point({
+                        latitude:
+                            application.extractedImageLat,
+
+                        longitude:
+                            application.extractedImageLong,
+
+                        spatialReference: {
+                            wkid: 4326
+                        }
+                    });
+
+                const point =
+                    webMercatorUtils.geographicToWebMercator(
+                        point4326
+                    );
+
+                clearHighlights();
+
+                showPin(
+                    point,
+                    [255, 0, 0]
+                );
+
+                const parcel =
+                    await getParcel(point);
+
+                if (!parcel) {
+
+                    alert(
+                        "Parcel not found."
+                    );
+
+                    return;
+                }
+
+                highlightParcel(
+                    parcel.geometry
+                );
+
+                const building =
+                    await getBuildingFromPoint(
+                        point
+                    );
+
+                if (!building) {
+
+                    alert(
+                        "Building not found."
+                    );
+
+                    return;
+                }
+
+                highlightBuilding(
+                    building.geometry
+                );
+
+                let geometry4326 =
+                    parcel.geometry;
+
+                const wkid =
+                    parcel.geometry
+                        ?.spatialReference
+                        ?.wkid ||
+                    parcel.geometry
+                        ?.spatialReference
+                        ?.latestWkid;
+
+                if (
+                    wkid === 3857 ||
+                    wkid === 102100
+                ) {
+
+                    geometry4326 =
+                        webMercatorUtils.webMercatorToGeographic(
+                            parcel.geometry
+                        );
+                }
+
+                const ulpinResponse =
+                    await generateUlpin({
+                        type: "Polygon",
+                        coordinates:
+                            geometry4326.rings
+                    });
+
+                const imageUlpin =
+                    ulpinResponse?.data
+                        ?.ulpin ||
+                    ulpinResponse?.data
+                        ?.data?.ulpin ||
+                    ulpinResponse?.data
+                        ?.data ||
+                    "";
+
+                let centroid =
+                    building.geometry
+                        .centroid;
+
+                const centroidWkid =
+                    centroid
+                        ?.spatialReference
+                        ?.wkid ||
+                    centroid
+                        ?.spatialReference
+                        ?.latestWkid;
+
+                if (
+                    centroidWkid ===
+                    3857 ||
+                    centroidWkid ===
+                    102100
+                ) {
+
+                    centroid =
+                        webMercatorUtils.webMercatorToGeographic(
+                            centroid
+                        );
+                }
+
+                const digipinResponse =
+                    await generateDigipin(
+                        centroid.y,
+                        centroid.x
+                    );
+
+                const imageDigipin =
+                    digipinResponse?.data
+                        ?.digipin ||
+                    digipinResponse?.data
+                        ?.data?.digipin ||
+                    digipinResponse?.data
+                        ?.data ||
+                    "";
+
+                const matched =
+                    imageUlpin?.trim() ===
+                    application.ulpin?.trim() &&
+                    imageDigipin?.trim() ===
+                    application.digipin?.trim();
+
+                updateApplication(
+                    application.applicationId,
+                    {
+                        imageUlpin,
+                        imageDigipin,
+
+                        constructionVerified:
+                            matched,
+
+                        constructionRemarks:
+                            matched
+                                ? "Geotag Verified"
+                                : "Photo Location Mismatch"
+                    }
+                );
+
+                if (matched) {
+
+                    alert(
+                        "Application successfully verified."
+                    );
+
+                } else {
+
+                    alert(
+                        "Geotagged photo does not match DIGIPIN."
+                    );
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Verification failed."
+                );
+            }
+        };
+
+    const verifyCompletionCertificate =
+        application => {
+
+            const aadhaarAddress =
+                application.addressAsPerAadhaar
+                    ?.trim()
+                    ?.toLowerCase();
+
+            const certificateAddress =
+                application.certificateAddress
+                    ?.trim()
+                    ?.toLowerCase();
+
+            const matched =
+                aadhaarAddress ===
+                certificateAddress;
+
+            updateApplication(
+                application.applicationId,
+                {
+                    completionVerified:
+                        matched,
+
+                    completionRemarks:
+                        matched
+                            ? "Certificate Address Matched"
+                            : "Certificate Address Mismatch"
+                }
+            );
+
+            if (matched) {
+
+                alert(
+                    "Certificate address matches Aadhaar address."
+                );
+
+            } else {
+
+                alert(
+                    "Certificate address does not match Aadhaar address."
+                );
+            }
+        };
 
     const enableSelection = () => {
 
@@ -844,11 +1073,31 @@ const GeoIdentifierTool = ({
 
     const approveConstruction =
         applicationId => {
+
+            const app =
+                applications.find(
+                    a =>
+                        a.applicationId ===
+                        applicationId
+                );
+
+            if (
+                !app?.constructionVerified
+            ) {
+
+                alert(
+                    "Please verify construction image first."
+                );
+
+                return;
+            }
+
             updateApplication(
                 applicationId,
                 {
                     constructionStatus:
                         "Approved",
+
                     disbursementStatus:
                         "Intermediate"
                 }
@@ -868,12 +1117,34 @@ const GeoIdentifierTool = ({
 
     const approveCompletion =
         applicationId => {
+
+            const app =
+                applications.find(
+                    a =>
+                        a.applicationId ===
+                        applicationId
+                );
+
+            if (
+                !app?.completionVerified
+            ) {
+
+                alert(
+                    "Please verify completion certificate first."
+                );
+
+                return;
+            }
+
             updateApplication(
                 applicationId,
                 {
                     completionStatus:
                         "Approved",
-                    completionCertificateGenerated: true,
+
+                    completionCertificateGenerated:
+                        true,
+
                     disbursementStatus:
                         "Final"
                 }
@@ -891,6 +1162,196 @@ const GeoIdentifierTool = ({
                 }
             );
         };
+
+    const verifyApplication = async application => {
+
+        try {
+
+            const point4326 =
+                new Point({
+                    longitude: application.long,
+                    latitude: application.lat,
+                    spatialReference: {
+                        wkid: 4326
+                    }
+                });
+
+            const point =
+                webMercatorUtils
+                    .geographicToWebMercator(
+                        point4326
+                    );
+
+            clearHighlights();
+
+            showPin(
+                point,
+                [0, 0, 255]
+            );
+
+            // Get parcel from point
+            const parcel =
+                await getParcel(point);
+
+            if (!parcel) {
+
+                alert("Parcel not found.");
+
+                return;
+            }
+
+            highlightParcel(
+                parcel.geometry
+            );
+
+            // Get building from SAME point
+            const building =
+                await getBuildingFromPoint(
+                    point
+                );
+
+            if (!building) {
+
+                alert("Building not found.");
+
+                return;
+            }
+
+            highlightBuilding(
+                building.geometry
+            );
+
+            // Convert parcel geometry if needed
+            let geometry4326 =
+                parcel.geometry;
+
+            const parcelWkid =
+                parcel.geometry
+                    ?.spatialReference?.wkid ||
+                parcel.geometry
+                    ?.spatialReference
+                    ?.latestWkid;
+
+            if (
+                parcelWkid === 3857 ||
+                parcelWkid === 102100
+            ) {
+
+                geometry4326 =
+                    webMercatorUtils.webMercatorToGeographic(
+                        parcel.geometry
+                    );
+            }
+
+            // Generate ULPIN
+            const ulpinResponse =
+                await generateUlpin({
+                    type: "Polygon",
+                    coordinates:
+                        geometry4326.rings
+                });
+
+            const ulpin =
+                ulpinResponse?.data?.ulpin ||
+                ulpinResponse?.data?.data?.ulpin ||
+                ulpinResponse?.data?.data ||
+                "";
+
+            // Generate DIGIPIN
+            let centroid =
+                building.geometry.centroid;
+
+            const centroidWkid =
+                centroid
+                    ?.spatialReference?.wkid ||
+                centroid
+                    ?.spatialReference
+                    ?.latestWkid;
+
+            if (
+                centroidWkid === 3857 ||
+                centroidWkid === 102100
+            ) {
+
+                centroid =
+                    webMercatorUtils.webMercatorToGeographic(
+                        centroid
+                    );
+            }
+
+            const digipinResponse =
+                await generateDigipin(
+                    centroid.y,
+                    centroid.x
+                );
+
+            const digipin =
+                digipinResponse?.data
+                    ?.digipin ||
+                digipinResponse?.data
+                    ?.data?.digipin ||
+                digipinResponse?.data
+                    ?.data ||
+                "";
+
+            // Duplicate check
+            const duplicate =
+                applications.find(
+                    app =>
+                        app.applicationId !==
+                        application.applicationId &&
+                        app.ulpin === ulpin &&
+                        app.digipin ===
+                        digipin
+                );
+
+            // Update current record
+            updateApplication(
+                application.applicationId,
+                {
+                    ulpin,
+                    digipin,
+
+                    verificationCompleted:
+                        !duplicate,
+
+                    verificationRemarks:
+                        duplicate
+                            ? "Duplicate Plot"
+                            : "Verified Successfully",
+
+                    verificationDate:
+                        new Date()
+                            .toISOString()
+                            .split("T")[0]
+                }
+            );
+
+            if (duplicate) {
+
+                alert(
+                    "Application already exists for the plot."
+                );
+
+            } else {
+
+                alert(
+                    "Application successfully verified."
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Verification Error",
+                error
+            );
+
+            alert(
+                "Verification failed."
+            );
+        }
+    };
 
     const renderCard = (
         application,
