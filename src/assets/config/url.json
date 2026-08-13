@@ -3,13 +3,13 @@
     "logo": "../../assets/images/weather.png",
     "title": "ULMP Web Portal",
     "description": "Unified Platform for Land Governance, Monitoring and Decision Support.",
-    "url": "ulms/map"
+    "url": "http://localhost:5173/ulms/map"
   },
   {
     "logo": "../../assets/images/flood.png",
     "title": "ULMP Approval Flow",
     "description": "Streamlines the approval process for land development projects.",
-    "url": "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=c6813c51508a4673920332d025d056fd"
+    "url": "http://localhost:5173/ulms/approval"
   },
   {
     "logo": "../../assets/images/lake.png",
