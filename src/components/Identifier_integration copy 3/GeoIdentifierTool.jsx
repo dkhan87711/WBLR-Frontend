@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 import {
     generateDigipin,
@@ -11,50 +11,12 @@ import Point from "@arcgis/core/geometry/Point";
 import Graphic from "@arcgis/core/Graphic";
 import * as webMercatorUtils from "@arcgis/core/geometry/support/webMercatorUtils";
 import TextSymbol from "@arcgis/core/symbols/TextSymbol";
-import data from "../../config/pmayData";
 
 const GeoIdentifierTool = ({
     view,
     landStackLayer,
-    buildingLayer,
+    buildingLayer
 }) => {
-
-        const [applications, setApplications] =
-        useState(data || []);
-
-
-        const [expandedSection, setExpandedSection] =
-
-        useState("application");
-
-        const toggleSection = section => {
-
-        setExpandedSection(
-
-        expandedSection === section
-
-        ? null
-        : section
-        );
-    };
-
-    const [expandedApplication, setExpandedApplication] =
-    useState(null);
-
-const [selectedImage, setSelectedImage] =
-    useState(null);
-
-const toggleApplication = (
-    applicationId
-) => {
-
-    setExpandedApplication(prev =>
-        prev === applicationId
-            ? null
-            : applicationId
-    );
-};
-
 
     const [loading, setLoading] =
         useState(false);
@@ -764,460 +726,199 @@ const highlightBuilding = (
         );
 };
 
-
-    const applicationRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    !app.disbursementStatus &&
-                    app.verifiedStatus !==
-                        "Rejected"
-            );
-        }, [applications]);
-
-    const constructionRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    app.disbursementStatus ===
-                        "Initial" &&
-                    app.verifiedStatus ===
-                        "Approved"
-            );
-        }, [applications]);
-
-    const completionRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    app.disbursementStatus ===
-                        "Intermediate" &&
-                    app.constructionStatus ===
-                        "Approved"
-            );
-        }, [applications]);
-
-    const updateApplication =
-        (applicationId, updates) => {
-            setApplications(prev =>
-                prev.map(app =>
-                    app.applicationId ===
-                    applicationId
-                        ? {
-                              ...app,
-                              ...updates
-                          }
-                        : app
-                )
-            );
-        };
-
-    const approveApplication =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    verifiedStatus:
-                        "Approved",
-                    disbursementStatus:
-                        "Initial",
-                    verificationDate:
-                        new Date()
-                            .toISOString()
-                            .split(
-                                "T"
-                            )[0]
-                }
-            );
-        };
-
-    const rejectApplication =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    verifiedStatus:
-                        "Rejected"
-                }
-            );
-        };
-
-    const approveConstruction =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    constructionStatus:
-                        "Approved",
-                    disbursementStatus:
-                        "Intermediate"
-                }
-            );
-        };
-
-    const rejectConstruction =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    constructionStatus:
-                        "Rejected"
-                }
-            );
-        };
-
-    const approveCompletion =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    completionStatus:
-                        "Approved",
-                    completionCertificateGenerated: true,
-                    disbursementStatus:
-                        "Final"
-                }
-            );
-        };
-
-    const rejectCompletion =
-        applicationId => {
-            updateApplication(
-                applicationId,
-                {
-                    completionStatus:
-                        "Rejected",
-                    completionCertificateGenerated: false
-                }
-            );
-        };
-
-    const renderCard = (
-    application,
-    verifyBtnText,
-    approveHandler,
-    rejectHandler,
-    showGeoFields = false
-) => {
-
-    const isExpanded =
-        expandedApplication ===
-        application.applicationId;
-
     return (
-        <div
-            key={application.applicationId}
-            className="application-item"
+
+        <div className="geo-tool-container">
+
+            <div className="geo-tool-body">
+
+    <div className="geo-tool-tabs">
+
+        <button
+            className={
+                selectionMode === "plot"
+                    ? "active"
+                    : ""
+            }
+            onClick={() =>
+                setSelectionMode(
+                    "plot"
+                )
+            }
         >
+            Plot Based
+        </button>
 
-            <div
-                className="application-item-header"
-                onClick={() =>
-                    toggleApplication(
-                        application.applicationId
-                    )
-                }
-            >
+        <button
+            className={
+                selectionMode ===
+                "property"
+                    ? "active"
+                    : ""
+            }
+            onClick={() =>
+                setSelectionMode(
+                    "property"
+                )
+            }
+        >
+            Property Based
+        </button>
 
-                <span>
-                    {
-                        application.applicationId
-                    }
-                </span>
+    </div>
 
-                <span>
-                    {isExpanded
-                        ? "▼"
-                        : "▶"}
-                </span>
+    <p>
+        {
+            selectionMode ===
+            "plot"
+                ? "ULPIN Search"
+                : "Digipin Search"
+        }
+    </p>
 
-            </div>
+    <button
+        className="geo-search-btn"
+        onClick={
+            enableSelection
+        }
+        disabled={
+            loading
+        }
+    >
+        {
+            loading
+                ? "Processing..."
+                : selectionMode ===
+                  "plot"
+                ? "Select Plot"
+                : "Select Property"
+        }
+    </button>
 
-            {isExpanded && (
-                <div className="application-item-body">
+</div>
 
-                    <p>
-                        <strong>
-                            Applicant Name:
-                        </strong>{" "}
-                        {
-                            application.applicantName
-                        }
-                    </p>
+            <div className="geo-tool-results">
 
-                    <p>
-                        <strong>
-                            Aadhaar:
-                        </strong>{" "}
-                        {
-                            application.aadhaar
-                        }
-                    </p>
+                <h4>
+                    Results
+                </h4>
 
-                    <p>
-                        <strong>
-                            Plot Number:
-                        </strong>{" "}
-                        {
-                            application.plotNumber
-                        }
-                    </p>
+                {error && (
 
-                    <p>
-                        <strong>
-                            Address:
-                        </strong>{" "}
-                        {
-                            application.addressAsPerAadhaar
-                        }
-                    </p>
+                    <div className="geo-error">
+                        {error}
+                    </div>
 
-                    <p>
-                        <strong>
-                            ULPIN:
-                        </strong>{" "}
-                        {
-                            application.ulpin ||
-                            "-"
-                        }
-                    </p>
+                )}
 
-                    <p>
-                        <strong>
-                            DIGIPIN:
-                        </strong>{" "}
-                        {
-                            application.digipin ||
-                            "-"
-                        }
-                    </p>
+                {result && (
 
-                    {showGeoFields && (
-                        <>
-                            <p>
-                                <strong>
-                                    Image Lat:
-                                </strong>{" "}
+                    <>
+
+                        <div className="result-row">
+                            <strong>
+                                ULPIN
+                            </strong>
+
+                            <span>
                                 {
-                                    application.extractedImageLat
+                                    result.ulpin
                                 }
-                            </p>
-
-                            <p>
-                                <strong>
-                                    Image Long:
-                                </strong>{" "}
-                                {
-                                    application.extractedImageLong
-                                }
-                            </p>
-                        </>
-                    )}
-
-                    <div className="action-panel">
-
-                        <button
-                            className="verify-btn"
-                            onClick={() => {
-
-                                if (
-                                    verifyBtnText ===
-                                    "Verify Application"
-                                ) {
-                                    setSelectionMode(
-                                        "plot"
-                                    );
-                                } else {
-                                    setSelectionMode(
-                                        "property"
-                                    );
-                                }
-
-                                enableSelection();
-                            }}
-                        >
-                            {verifyBtnText}
-                        </button>
-
-                        <div className="decision-buttons">
-
-                            <button
-                                className="approve-btn"
-                                onClick={() =>
-                                    approveHandler(
-                                        application.applicationId
-                                    )
-                                }
-                            >
-                                Approve
-                            </button>
-
-                            <button
-                                className="reject-btn"
-                                onClick={() =>
-                                    rejectHandler(
-                                        application.applicationId
-                                    )
-                                }
-                            >
-                                Reject
-                            </button>
-
+                            </span>
                         </div>
 
-                    </div>
+                        <div className="result-row">
+                            <strong>
+                                Plot No
+                            </strong>
 
-                </div>
-            )}
+                            <span>
+                                {
+                                    result.plotNo
+                                }
+                            </span>
+                        </div>
+
+                        <div className="result-row">
+                            <strong>
+                                Mouza
+                            </strong>
+
+                            <span>
+                                {
+                                    result.mouza
+                                }
+                            </span>
+                        </div>
+
+                        <div className="result-row">
+                            <strong>
+                                Khatian
+                            </strong>
+
+                            <span>
+                                {
+                                    result.khatian
+                                }
+                            </span>
+                        </div>
+
+                        <div className="result-row">
+                            <strong>
+                                DIGIPIN Count
+                            </strong>
+
+                            <span>
+                                {
+                                    result.digipinCount
+                                }
+                            </span>
+                        </div>
+
+                        {result.digipins?.map(
+                            (
+                                digipin,
+                                index
+                            ) => (
+                                <div
+                                    key={
+                                        digipin
+                                    }
+                                    className="result-row"
+                                >
+                                    <strong>
+                                        DIGIPIN{" "}
+                                        {index +
+                                            1}
+                                    </strong>
+
+                                    <span>
+                                        {
+                                            digipin
+                                        }
+                                    </span>
+                                </div>
+                            )
+                        )}
+
+                    </>
+
+                )}
+
+                {!loading &&
+                    !error &&
+                    !result && (
+
+                        <div className="no-results">
+                            No data available
+                        </div>
+
+                    )}
+
+            </div>
 
         </div>
     );
 };
-
-    return (
-        <div className="housing-verification-container">
-
-            <h2>
-                Urban Housing Scheme
-            </h2>
-
-            <div className="sub-title">
-                View Application
-            </div>
-
-            {/* Section 1 */}
-
-            <div className="verification-section">
-                <div
-                    className="section-header"
-                    onClick={() =>
-                        toggleSection(
-                            "application"
-                        )
-                    }
-                >
-                    <span>
-                        Verify
-                        Application -
-                        1st
-                        Installment
-                    </span>
-
-                    <span>
-                        {expandedSection ===
-                        "application"
-                            ? "▼"
-                            : "▶"}
-                    </span>
-                </div>
-
-                {expandedSection ===
-                    "application" && (
-                    <div className="section-content">
-                        {applicationRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Application",
-                                    approveApplication,
-                                    rejectApplication
-                                )
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Section 2 */}
-
-            <div className="verification-section">
-                <div
-                    className="section-header"
-                    onClick={() =>
-                        toggleSection(
-                            "construction"
-                        )
-                    }
-                >
-                    <span>
-                        Verify
-                        Construction
-                        Area - 2nd
-                        Installment
-                    </span>
-
-                    <span>
-                        {expandedSection ===
-                        "construction"
-                            ? "▼"
-                            : "▶"}
-                    </span>
-                </div>
-
-                {expandedSection ===
-                    "construction" && (
-                    <div className="section-content">
-                        {constructionRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Construction Area",
-                                    approveConstruction,
-                                    rejectConstruction,
-                                    true
-                                )
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Section 3 */}
-
-            <div className="verification-section">
-                <div
-                    className="section-header"
-                    onClick={() =>
-                        toggleSection(
-                            "completion"
-                        )
-                    }
-                >
-                    <span>
-                        Verify
-                        Completion
-                        Certificate -
-                        3rd
-                        Installment
-                    </span>
-
-                    <span>
-                        {expandedSection ===
-                        "completion"
-                            ? "▼"
-                            : "▶"}
-                    </span>
-                </div>
-
-                {expandedSection ===
-                    "completion" && (
-                    <div className="section-content">
-                        {completionRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Completion Certificate",
-                                    approveCompletion,
-                                    rejectCompletion,
-                                    true
-                                )
-                        )}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-
-
 
 export default GeoIdentifierTool;
