@@ -165,6 +165,28 @@ const GeoIdentifierTool = ({
         return response.features || [];
     };
 
+    const getBuildingFromPoint = async point => {
+    const query =
+        buildingLayer.createQuery();
+
+    query.geometry = point;
+
+    query.spatialRelationship =
+        "intersects";
+
+    query.returnGeometry = true;
+
+    query.outFields = ["*"];
+
+    const response =
+        await buildingLayer.queryFeatures(
+            query
+        );
+
+    return response.features?.[0];
+};
+
+
 
     const processPlot = async (
         point
@@ -1472,6 +1494,24 @@ const GeoIdentifierTool = ({
                                         application.extractedImageLong
                                     }
                                 </p>
+
+                                {application.imageUlpin && (
+                                    <p>
+                                        <strong>
+                                            Image ULPIN:
+                                        </strong>{" "}
+                                        {application.imageUlpin}
+                                    </p>
+                                )}
+
+                                {application.imageDigipin && (
+                                    <p>
+                                        <strong>
+                                            Image DIGIPIN:
+                                        </strong>{" "}
+                                        {application.imageDigipin}
+                                    </p>
+                                )}
                             </>
                         )}
 
@@ -1479,22 +1519,33 @@ const GeoIdentifierTool = ({
 
                             <button
                                 className="verify-btn"
-                                onClick={() => {
-
+                                                            onClick={() => {
                                     if (
                                         verifyBtnText ===
-                                        "Verify Application"
+                                        "Verify Construction Area"
                                     ) {
-                                        setSelectionMode(
-                                            "plot"
+
+                                        verifyConstructionImage(
+                                            application
                                         );
+
+                                    } else if (
+
+                                        verifyBtnText ===
+                                        "Verify Completion Certificate"
+
+                                    ) {
+
+                                        verifyCompletionCertificate(
+                                            application
+                                        );
+
                                     } else {
-                                        setSelectionMode(
-                                            "property"
+
+                                        verifyApplication(
+                                            application
                                         );
                                     }
-
-                                    enableSelection();
                                 }}
                             >
                                 {verifyBtnText}
@@ -1503,13 +1554,21 @@ const GeoIdentifierTool = ({
                             <div className="decision-buttons">
 
                                 <button
-                                    className="approve-btn-urban"
-                                    onClick={() =>
-                                        approveHandler(
-                                            application.applicationId
-                                        )
-                                    }
-                                >
+                                className="approve-btn-urban"
+                                disabled={
+                                    verifyBtnText ===
+                                    "Verify Completion Certificate"
+                                        ? !application.completionVerified
+                                        : showGeoFields
+                                        ? !application.constructionVerified
+                                        : !application.verificationCompleted
+                                }
+                                onClick={() =>
+                                    approveHandler(
+                                        application.applicationId
+                                    )
+                                }
+>
                                     Approve
                                 </button>
 
