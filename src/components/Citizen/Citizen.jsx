@@ -181,28 +181,27 @@ export const Citizen = () => {
 
     return (
         <div className="login-page">
+            <div className="header-text">
+                <div className="title-badge" style={{ marginLeft: "10rem" }}>
+                    GeoSpatial Intelligence Platform</div>
+                <h2 className="main-title-header" style={{ marginLeft: "10rem" }}>
+                    Unified Land Management Platform
+                </h2>
+            </div>
 
             <div className="left-panel">
-                <div className="left-icon">
-                    <img src={leftLogo} alt="landstack-icon" />
-                </div>
-
                 <div className="left-text">
-                    <p className="welcome-text">Welcome to</p>
-                    <h2 className="main-title-header-login">
-                        Bhu-<span>Manchitra</span>
-                    </h2>
-
                     <h5 className="sub-title-header-login">
-                        Land Records, Survey & Analytics Platform
+                        Unified Land Management Platform
                     </h5>
                     <div className="underline-header-login"></div>
                     <p className="description-header-login">
-                        Bhu Manchitra is an integrated Geospatial Web Platform for Land Governance, survey,
-                        Monitoring and Decision Support System.
+                        Integrated Geospatial Platform for Land Governance, Monitoring,
+                        Spatial Planning and Decision Support, enabling a unified view of
+                        Land Records, Cadastral Mapping, ULPIN, DIGIPIN, Property
+                        Intelligence, Citizen Services and Cross-Department Governance.
                     </p>
                 </div>
-
             </div>
 
             {!showApps ? (
@@ -215,9 +214,7 @@ export const Citizen = () => {
                         </div>
 
                         <p>
-                            Welcome Citizen! Please verify your mobile
-                            <br />
-                            to continue
+                            Welcome Citizen! Please verify your mobile to continue
                         </p>
 
                         <div className="divider-citizen"></div>
@@ -399,13 +396,13 @@ export const Citizen = () => {
 
                             <button
                                 onClick={(e) => {
-                                e.stopPropagation();
-                                window.open(
-                                    "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=02e8e0f8d4ec4417a01072d1ba84de17",
-                                    "_blank"
-                                );
-                            }}
-                                                        >
+                                    e.stopPropagation();
+                                    window.open(
+                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=02e8e0f8d4ec4417a01072d1ba84de17",
+                                        "_blank"
+                                    );
+                                }}
+                            >
                                 Explore ↗
                             </button>
 

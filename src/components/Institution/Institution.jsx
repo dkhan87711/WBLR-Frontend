@@ -113,32 +113,27 @@ export const Institution = () => {
 
     return (
         <div className="login-page">
+            <div className="header-text">
+                <div className="title-badge" style={{ marginLeft: "10rem" }}>
+                    GeoSpatial Intelligence Platform</div>
+                <h2 className="main-title-header" style={{ marginLeft: "10rem" }}>
+                    Unified Land Management Platform
+                </h2>
+            </div>
+
             <div className="left-panel">
-
-                <div className="left-icon">
-                    <img src={leftLogo} alt="landstack-icon" />
-                </div>
-
                 <div className="left-text">
-                    <p className="welcome-text">Welcome to</p>
-                    <h2 className="main-title-header-login">
-                        Bhu-<span>Manchitra</span>
-                    </h2>
-
                     <h5 className="sub-title-header-login">
-                        Land Records, Survey & Analytics Platform
+                        Unified Land Management Platform
                     </h5>
                     <div className="underline-header-login"></div>
                     <p className="description-header-login">
-                        Integrated Geospatial Platform for Land Governance,
-                        Monitoring and Decision Support System.
-                        It enables seamless integration of land records,
-                        cadastral maps, survey data, and spatial analytics
-                        to support transparent administration, evidence-based
-                        planning, and efficient land management across departments.
+                        Integrated Geospatial Platform for Land Governance, Monitoring,
+                        Spatial Planning and Decision Support, enabling a unified view of
+                        Land Records, Cadastral Mapping, ULPIN, DIGIPIN, Property
+                        Intelligence, Citizen Services and Cross-Department Governance.
                     </p>
                 </div>
-
             </div>
 
             {!showApps ? (
@@ -150,12 +145,7 @@ export const Institution = () => {
                             <span>🏢</span>
                         </div>
 
-                        <p>
-                            Welcome! Please sign in to your
-                            account
-                            <br />
-                            to continue
-                        </p>
+                        <p>Institutional Login</p>
                         <div className="divider-institution"></div>
                     </div>
 
@@ -272,26 +262,12 @@ export const Institution = () => {
                             : "Login"}
                     </button>
 
-                    <div className="or-divider">
-                        <span></span>
-                        <p>or</p>
-                        <span></span>
-                    </div>
-
-                    <div className="footer-help">
-                        Need help?
-                        <a href="#">
-                            &nbsp; Contact Support
-                        </a>
-                    </div>
-
                     <button
                         className="back-home-btn"
                         onClick={handleLogout}
                     >
                         ⬅ Back to Home
                     </button>
-
                 </div>
 
             ) : (
@@ -330,23 +306,23 @@ export const Institution = () => {
                             <div className="app-icon acquisition-icon">
                                 <FaTasks />
                             </div>
-                       <h3>Bhu-Manchitra Data Hub</h3>
-                                <p>
-                                    Centralized repository for managing, integrating, and sharing geospatial datasets.
-                                </p>
+                            <h3>Bhu-Manchitra Data Hub</h3>
+                            <p>
+                                Centralized repository for managing, integrating, and sharing geospatial datasets.
+                            </p>
 
-                                <button
-                                    className="explore-btn compliance-btn"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/sites/#/unified-land-management-system",
-                                            "_blank"
-                                        );
-                                    }}
-                                >
-                                    Explore ↗
-                                </button>
+                            <button
+                                className="explore-btn compliance-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open(
+                                        "https://indcs0152.atrapa.deloitte.com/gisportal/apps/sites/#/unified-land-management-system",
+                                        "_blank"
+                                    );
+                                }}
+                            >
+                                Explore ↗
+                            </button>
                         </div>
 
                     </div>

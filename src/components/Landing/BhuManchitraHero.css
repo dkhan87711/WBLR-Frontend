@@ -1,117 +1,271 @@
 .hero-container {
   width: 100%;
   height: 631px;
-  background: url('../../assets/landing9.png') center/cover no-repeat;
+  background: url("../../assets/land8.png") center center/cover no-repeat;
   position: relative;
+  overflow: hidden;
 }
 
-.btn {
-  position: absolute;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
-/* Department Login */
-.department-btn {
-  top: 88%;
-  left: 21%;
-  width: 180px;
-  height: 42px;
-  /* background: rgba(255, 255, 255, 0.75); */
-}
-
-/* Institutional Login */
-.institution-btn {
-  top: 88%;
-  left: 46.5%;
-  width: 185px;
-  height: 42px;
-  /* background: rgba(255, 255, 255, 0.75); */
-}
-
-/* Citizen Login */
-.citizen-btn {
-  top: 88%;
-  left: 72.1%;
-  width: 175px;
-  height: 42px;
-  /* background: rgba(255, 255, 255, 0.75); */
-}
+/* ===========================
+   HEADER CONTENT
+=========================== */
 
 .header-text {
-  position: relative;
-  top: 3%;
-  left: 22%;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 9px 12px;
-  max-width: 56%;
-  border-radius: 16px;
-  /* box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); */
+  text-align: center;
+  z-index: 5;
 }
 
-/* Small Badge */
-.title-badge {
-  font-size: 10px;
-  letter-spacing: 1.1px;
-  text-transform: uppercase;
-  color: #d6efff;
-  font-weight: 500;
-  margin-bottom: 0px;
-  font-weight: 600;
-}
+/* ===========================
+   PLATFORM TITLE
+=========================== */
 
-/* Main Title */
 .main-title-header {
-  margin: 0;
-  font-size: 38px;
+  margin: 2px;
+  font-size: 25px;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: 0.5px;
-  color: #fff;
-  /* color: #082ae6; */
+  letter-spacing: -0.8px;
+  color: #070e53;
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
 }
 
 .main-title-header span {
   background: linear-gradient(90deg,
       #00d9ff 0%,
-      #3fa9ff 40%,
-      #11dc14 100%);
+      #42a5ff 50%,
+      #1fe76f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Subtitle */
-.sub-title-header {
-  margin: 6px 0 4px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #dce7ff;
-  /* letter-spacing: 0.4px; */
-}
+/* ===========================
+   TAGLINE
+=========================== */
 
-/* Accent Line */
-.underline-header {
-  width: 120px;
-  height: 3px;
-  margin: 4px 0 7px;
-  border-radius: 20px;
-  background: linear-gradient(90deg,
-      #00d9ff,
-      #00ffa6);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.5);
-}
-
-/* Description */
-.description-header {
-  font-size: 10px;
-  font-weight: 600;
-  color: #00d9ff;
+.tagline {
+  margin-top: 4px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #070e53;
+  letter-spacing: 0.25px;
   text-transform: uppercase;
 }
+
+/* ===========================
+   UNDERLINE
+=========================== */
+
+.underline-header {
+  width: 200px;
+  height: 2px;
+  margin: 2px 0;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #070e53, #070e53);
+  box-shadow: 0 0 16px rgba(0, 217, 255, 0.45);
+}
+
+/* ===========================
+   LOGIN CARDS CONTAINER
+=========================== */
+
+.login-cards-container {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1050px;
+  z-index: 10;
+}
+
+/* Shadow under cards */
+
+.login-cards-container::after {
+  content: "";
+  position: absolute;
+  bottom: -12px;
+  width: 70%;
+  height: 15px;
+  background: radial-gradient(ellipse at center,
+      rgba(0, 0, 0, 0.35),
+      transparent);
+  filter: blur(8px);
+  z-index: -1;
+}
+
+/* ===========================
+   LOGIN CARD
+=========================== */
+
+.login-card-home {
+  width: 330px;
+  height: 116px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 10px;
+  background: #f1f6f9;
+  backdrop-filter: blur(14px);
+  border: 1px solid #d0d8e6;
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.08); */
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s ease;
+}
+
+.login-card-home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg,
+      rgba(0, 217, 255, 0.06),
+      rgba(31, 231, 111, 0.06));
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.login-card-home:hover::before {
+  opacity: 1;
+}
+
+.login-card-home:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.3),
+    0 0 5px rgba(255, 217, 255, 0.25);
+}
+
+/* ===========================
+   CARD LOGO
+=========================== */
+
+.card-logo-wrapper {
+  width: 72px;
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.card-logo {
+  /* width: 52px; */
+  height: 100px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.login-card-home:hover .card-logo {
+  transform: scale(1.12);
+}
+
+/* ===========================
+   CARD CONTENT
+=========================== */
+
+.card-content {
+  flex: 1;
+  z-index: 1;
+}
+
+.card-content h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #004874;
+}
+
+.card-content p {
+  margin: 6px 0 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(0, 72, 116, 0.85);
+}
+
+/* ===========================
+   LOGIN BUTTON
+=========================== */
+
+.login-btn-home {
+  border: none;
+  cursor: pointer;
+
+  padding: 8px 18px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  color: white;
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg,
+      #00d9ff 0%,
+      #42a5ff 50%,
+      #1fe76f 100%);
+
+  transition: all 0.3s ease;
+
+  box-shadow: 0 4px 15px rgba(0, 217, 255, 0.35);
+}
+
+.login-btn-home:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 20px rgba(0, 217, 255, 0.5),
+    0 0 20px rgba(31, 231, 111, 0.3);
+}
+
+/* ===========================
+   OPTIONAL DESCRIPTION
+=========================== */
+
+.platform-desc {
+  max-width: 850px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: white;
+  text-align: center;
+}
+
+/* ===========================
+   OPTIONAL TITLE BADGE
+=========================== */
+
+.title-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #070e53;
+}
+
+/* ===========================
+   OPTIONAL LOGO
+=========================== */
 
 .logo-container {
   margin: 0;
@@ -124,10 +278,12 @@
   top: 5%;
   width: 500px;
   height: auto;
-  margin: 0;
-  /* filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25)); */
-  /* animation: floatLogo 8s ease-in-out infinite; */
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.25));
 }
+
+/* ===========================
+   FLOAT ANIMATION
+=========================== */
 
 @keyframes floatLogo {
 
@@ -139,4 +295,298 @@
   50% {
     transform: translateY(-6px);
   }
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width: 992px) {
+  .main-title-header {
+    font-size: 34px;
+  }
+
+  .login-cards-container {
+    flex-direction: column;
+    bottom: 20px;
+  }
+
+  .login-card-home {
+    width: 320px;
+  }
+
+  .hero-logo {
+    width: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-text {
+    top: 15px;
+    width: 92%;
+  }
+
+  .main-title-header {
+    font-size: 30px;
+  }
+
+  .tagline {
+    font-size: 10px;
+  }
+
+  .login-card-home {
+    width: 290px;
+    height: auto;
+    min-height: 110px;
+  }
+
+  .card-content h3 {
+    font-size: 16px;
+  }
+
+  .card-content p {
+    font-size: 10px;
+  }
+
+  .hero-logo {
+    width: 280px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* =========================================================
+   APPLICATION LOGOS
+========================================================= */
+
+.app-logos-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 60px;
+  position: absolute;
+  top: 38%;
+  left: 1%;
+}
+
+.app-logos-container2 {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 60px;
+  position: absolute;
+  top: 48%;
+  left: 8%;
+}
+
+
+/* =========================================================
+   INDIVIDUAL APPLICATION ITEM
+========================================================= */
+
+.app-logo-item {
+  position: relative;
+  width: 125px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+
+/* =========================================================
+   PERMANENT APPLICATION TITLE
+========================================================= */
+
+.app-logo-title {
+  position: relative;
+  width: 150px;
+  min-height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #202b5d;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  padding: 1px 5px;
+  background: rgba(255, 255, 255, 0.42);
+  /* backdrop-filter: blur(6px); */
+  /* border: 1px solid rgba(140, 140, 255, 0.55); */
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  white-space: normal;
+  z-index: 5;
+}
+
+
+/* =========================================================
+   CONNECTOR
+========================================================= */
+
+.app-logo-connector {
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+
+/* =========================================================
+   20px VERTICAL LINE
+========================================================= */
+
+.connector-line {
+  width: 2px;
+  height: 60px;
+  background: rgba(32, 43, 93, 0.55);
+  display: block;
+  order: 2;
+}
+
+
+/* =========================================================
+   CSS ARROW
+   Points UP toward the title
+========================================================= */
+
+.connector-arrow {
+  width: 7px;
+  height: 7px;
+
+  border-left: 1.5px solid #202b5d;
+  border-top: 1.5px solid #202b5d;
+
+  transform: rotate(45deg);
+
+  display: block;
+
+  margin-bottom: -4px;
+
+  order: 1;
+
+  transition: all 0.3s ease;
+}
+
+/* =========================================================
+   LOGO CIRCLE
+========================================================= */
+
+.app-logo-circle {
+  width: 72px !important;
+  height: 72px !important;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.88);
+
+  backdrop-filter: blur(7px);
+
+  border: 1px solid rgba(255, 255, 255, 0.65);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  position: relative;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.14);
+}
+
+
+/* normalize logo image */
+
+.app-logo-circle img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  padding: 5px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HOVER EFFECT
+========================================================= */
+
+.app-logo-item:hover {
+  transform: translateY(-4px);
+}
+
+.app-logo-item:hover .app-logo-circle {
+  transform: scale(1.08);
+
+  border-color: #00d9ff;
+
+  box-shadow:
+    0 7px 18px rgba(0, 0, 0, 0.25),
+    0 0 14px rgba(0, 217, 255, 0.45);
+}
+
+.app-logo-item:hover .app-logo-title {
+  background: rgba(255, 255, 255, 0.05);
+
+  box-shadow:
+    0 5px 14px rgba(0, 0, 0, 0.18);
+}
+
+
+/* =========================================================
+   CONNECTOR HOVER
+========================================================= */
+
+.app-logo-item:hover .connector-line {
+  background: #00a9d6;
+}
+
+.app-logo-item:hover .connector-arrow {
+  border-color: #00a9d6;
+
+  transform: rotate(45deg) translate(2px, 2px);
+}
+
+/* =========================================================
+   SUBTLE ROW GLOW
+========================================================= */
+
+.app-logos-container::after,
+.app-logos-container2::after {
+  content: "";
+
+  position: absolute;
+
+  left: 10%;
+
+  bottom: -15px;
+
+  width: 80%;
+
+  height: 15px;
+
+  background: radial-gradient(ellipse at center,
+      rgba(0, 217, 255, 0.18),
+      transparent 70%);
+
+  filter: blur(7px);
+
+  pointer-events: none;
 }

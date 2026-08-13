@@ -1,0 +1,38 @@
+[
+  {
+    "logo": "../../assets/images/weather.png",
+    "title": "ULMP Web Portal",
+    "description": "Unified Platform for Land Governance, Monitoring and Decision Support.",
+    "url": "https://gis.ghmc.gov.in/portal/apps/dashboards/ca700208652447ffa9c6bb877ca598ed"
+  },
+  {
+    "logo": "../../assets/images/flood.png",
+    "title": "ULMP Approval Flow",
+    "description": "Streamlines the approval process for land development projects.",
+    "url": "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=c6813c51508a4673920332d025d056fd"
+  },
+  {
+    "logo": "../../assets/images/lake.png",
+    "title": "ULMP Data Hub",
+    "description": "Central repository for land governance data and analytics.",
+    "url": "https://app.powerbi.com/groups/me/reports/91de6f84-66a9-4228-854a-f43c6cc52bdf?ctid=36da45f1-dd2c-4d1f-af13-5abe46b99921&OpenAppFromWindowsPCAndTablet=false&openReportSource=ReportInvitation"
+  },
+  {
+    "logo": "../../assets/images/3d.png",
+    "title": "3D Digital Twin",
+    "description": "Interactive 3D city model for planning, visualization, and analysis.",
+    "url": "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=70e044f89d2c4d6eb00e0826eee585f0"
+  },
+  {
+    "logo": "../../assets/images/urban.png",
+    "title": "Landstack Viewer",
+    "description": "Visualizes and analyzes land use and development data.",
+    "url": "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=e432463d8b0744b1baa8ae405d2dbe7a"
+  },
+  {
+    "logo": "../../assets/images/property.png",
+    "title": "Property Tax Intelligence",
+    "description": "AI-powered platform for property tax assessment and revenue intelligence.",
+    "url": "http://indcs0152:7000/property-tax-hmda/"
+  }
+]
