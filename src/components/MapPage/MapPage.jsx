@@ -1495,14 +1495,20 @@ const MapPage = () => {
     return (
         <div className="map-page">
             <div className="app-header">
-                <div className="header-text">
-                    <div className="title-badge">GeoSpatial Intelligence Platform</div>
-                    <h2 className="main-title-header">
-                        ULMP : Unified Land Management Platform<span></span>
-                    </h2>
+                <div className="header-left">
+                    <span className="menu-icon">
+                        ☰
+                    </span>
+                    <div className="header-text-page">
+                        <h2 className="main-title-header-page">
+                            ULMP : Unified Land Management Platform<span></span>
+                        </h2>
+                        {/* <div className="title-badge-page">GeoSpatial Intelligence Platform</div> */}
+                    </div>
                 </div>
 
                 <div className="header-right">
+
                     {/* ✅ WARNING (ONLY AT 30s) */}
                     {showWarning && (
                         <div style={{

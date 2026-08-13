@@ -24,6 +24,21 @@
   z-index: 5;
 }
 
+.header-text-page {
+  position: absolute;
+  top: 20px;
+  left: 16%;
+  transform: translateX(-50%);
+  width: 50%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 5;
+  color: #ffffff !important;
+}
+
 /* ===========================
    PLATFORM TITLE
 =========================== */
@@ -36,6 +51,16 @@
   letter-spacing: -0.8px;
   color: #070e53;
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+}
+
+.main-title-header-page {
+  margin: 2px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  /* letter-spacing: -0.8px; */
+  color: #ffffff;
+  /* text-shadow: 0 3px 12px rgba(255, 255, 255, 0.25); */
 }
 
 .main-title-header span {
@@ -203,30 +228,19 @@
   color: rgba(0, 72, 116, 0.85);
 }
 
-/* ===========================
-   LOGIN BUTTON
-=========================== */
-
 .login-btn-home {
   border: none;
   cursor: pointer;
-
   padding: 8px 18px;
-
   font-size: 12px;
   font-weight: 700;
-
   color: white;
-
   border-radius: 999px;
-
   background: linear-gradient(90deg,
       #00d9ff 0%,
       #42a5ff 50%,
       #1fe76f 100%);
-
   transition: all 0.3s ease;
-
   box-shadow: 0 4px 15px rgba(0, 217, 255, 0.35);
 }
 
@@ -261,6 +275,14 @@
   letter-spacing: 1px;
   text-transform: uppercase;
   color: #070e53;
+}
+
+.title-badge-page {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ffffff;
 }
 
 /* ===========================
