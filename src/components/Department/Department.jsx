@@ -7,12 +7,12 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import appConfig from "../../assets/config/url.json";
 
-import logo1 from "../../assets/images/property.png";
-import logo2 from "../../assets/images/weather.png";
-import logo3 from "../../assets/images/flood.png";
-import logo4 from "../../assets/images/lake.png";
+import logo1 from "../../assets/images/ulmp.png";
+import logo2 from "../../assets/images/ulmp-approval.png";
+import logo3 from "../../assets/images/datahub.png";
+import logo4 from "../../assets/images/3d.png";
 import logo5 from "../../assets/images/urban.png";
-import logo6 from "../../assets/images/3d.png";
+import logo6 from "../../assets/images/property.png";
 import logo7 from "../../assets/images/aseet.png";
 import logo8 from "../../assets/images/road.png";
 
