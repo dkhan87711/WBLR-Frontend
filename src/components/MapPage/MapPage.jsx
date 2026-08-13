@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
+import ReactDOM
+from "react-dom/client";
+
+import GeoIdentifierTool
+from "../Identifier_integration/GeoIdentifierTool";
+
 import '@arcgis/core/assets/esri/themes/light/main.css';
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
@@ -226,6 +232,12 @@ const MapPage = () => {
 
             console.log("Map Initialized");
 
+            let landStackLayer = null;
+            let buildingLayer = null;
+
+            let toolLayersLoaded = false;
+            let toolRendered = false;
+
             const webmap = new WebMap({
                 portalItem: {
                     id: "82368e996eab4c7e86b6cc5fef8bd07f"
@@ -303,9 +315,115 @@ const MapPage = () => {
             view.ui.remove("zoom");
             view.ui.add("zoom", "bottom-right");
 
-            await view.when();
 
-       
+
+            await view.when();
+        const geoToolDiv =
+            document.createElement("div");
+
+        geoToolDiv.style.width = "320px";
+
+        const geoToolExpand =
+            new Expand({
+                view,
+                content: geoToolDiv,
+                expandTooltip:
+                    "ULPIN / DIGIPIN Search",
+                expandIconClass:
+                    "esri-icon-search"
+            });
+
+            const loadIdentifierLayers =
+                async () => {
+
+                    if (toolLayersLoaded) {
+                        return;
+                    }
+
+                    landStackLayer =
+                        new FeatureLayer({
+                            url:
+                                "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/Hosted/LandStack/FeatureServer/2",
+
+                            title: "LandStack",
+
+                            outFields: ["*"]
+                        });
+
+                    buildingLayer =
+                        new FeatureLayer({
+                            url:
+                                "https://indcs0152.atrapa.deloitte.com/arcgis/rest/services/Hosted/Building_Footprint_with_RoR/FeatureServer/0",
+
+                            title:
+                                "Building Footprint",
+
+                            outFields: ["*"]
+                        });
+
+                    webmap.add(landStackLayer);
+
+                    webmap.add(buildingLayer);
+
+                    await landStackLayer.when();
+                    await buildingLayer.when();
+
+                    const extentResult =
+                        await landStackLayer.queryExtent();
+
+                    if (extentResult?.extent) {
+
+                        await view.goTo(
+                            extentResult.extent.expand(
+                                1.2
+                            )
+                        );
+                    }
+
+                    toolLayersLoaded = true;
+
+                    console.log(
+                        "Identifier layers loaded"
+                    );
+                };
+
+           reactiveUtils.watch(
+
+    () => geoToolExpand.expanded,
+
+    async expanded => {
+
+        if (!expanded) {
+            return;
+            }
+
+            await loadIdentifierLayers();
+
+            if (toolRendered) {
+                return;
+            }
+
+            ReactDOM
+                .createRoot(
+                    geoToolDiv
+                )
+                .render(
+
+                    <GeoIdentifierTool
+                        view={view}
+                        landStackLayer={
+                            landStackLayer
+                        }
+                        buildingLayer={
+                            buildingLayer
+                        }
+                    />
+
+                );
+
+            toolRendered = true;
+        }
+    );
                         
             await webmap.load();
 
@@ -1166,7 +1284,8 @@ const MapPage = () => {
                     basemapExpand,
                     legendExpand,
                     printExpand,
-                    editorExpand
+                    editorExpand,
+                    geoToolExpand
                 ],
                 "top-right"
             );
@@ -1179,6 +1298,7 @@ const MapPage = () => {
             }
         };
     }, []);
+
 
     const handleLogout = async () => {
         try {
