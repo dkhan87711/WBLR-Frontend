@@ -1,11 +1,9 @@
 .login-page {
     min-height: 100vh;
-    background: url('../../assets/login6.png') center/cover no-repeat;
-
+    background: url("../../assets/land8.png") center center/cover no-repeat;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-
     padding-right: 8%;
 }
 
@@ -32,41 +30,12 @@
     text-align: center;
 }
 
-.login-header h2 {
-    margin: 6px 0 4px;
-    font-size: 24px;
-    font-weight: 600;
-    color: #ffffff;
-}
-
-.login-header p {
-    margin: 0;
-    font-size: 12px;
-    line-height: 1.5;
-    color: #d0d8e6;
-}
-
 .divider-institution {
     width: 50px;
     height: 2px;
-    margin: 10px auto;
+    margin: 5px auto;
     border-radius: 10px;
     background: #37d468;
-}
-
-/* ======================================
-   LOGIN AS
-====================================== */
-
-.login-as {
-    margin-top: 0px;
-}
-
-.login-as span {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: white;
 }
 
 .user-type-All {
@@ -112,62 +81,8 @@
     transform: translateY(-1px);
 }
 
-/* ======================================
-   INPUTS
-====================================== */
-
 .input-group {
-    margin-top: 12px;
-}
-
-.input-group input {
-    width: 100%;
-    box-sizing: border-box;
-    height: 35px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.04);
-    color: white;
-    padding: 0 12px;
-    font-size: 12px;
-    outline: none;
-    margin-top: 10px;
-}
-
-.input-group input::placeholder {
-    color: #b4bfd3;
-}
-
-/* ======================================
-   REMEMBER ME
-====================================== */
-
-.login-options {
-    margin-top: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: white;
-}
-
-.remember-me input {
-    margin: 0;
-}
-
-.login-options a {
-    color: #37d468;
-    text-decoration: none;
-}
-
-.login-options a:hover {
-    text-decoration: underline;
+    margin-top: 5px;
 }
 
 /* ======================================
@@ -193,55 +108,13 @@
     opacity: 0.95;
 }
 
-/* ======================================
-   OR DIVIDER
-====================================== */
-
-.or-divider {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 8px;
-}
-
-.or-divider span {
-    flex: 1;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.or-divider p {
-    margin: 0;
-    font-size: 12px;
-    color: #d0d8e6;
-}
-
 /* Currently Selected Role */
 .active-role-institution {
-    background: rgba(55, 212, 104, 0.25);
+    background: rgba(55, 212, 104, 0.5);
     border: 1px solid #37d468;
     color: #37d468;
     font-weight: 600;
     box-shadow: 0 0 10px rgba(55, 212, 104, 0.55);
-}
-
-/* ======================================
-   FOOTER
-====================================== */
-.footer-help {
-    margin-top: 8px;
-    text-align: center;
-    font-size: 11px;
-    color: #d0d8e6;
-}
-
-.footer-help a {
-    color: #1f9cff;
-    text-decoration: none;
-}
-
-.footer-help a:hover {
-    text-decoration: underline;
 }
 
 /* ======================================
@@ -293,21 +166,6 @@
     .top-header p {
         font-size: 12px;
     }
-}
-
-/* ======================================
-   LEFT PANEL (MATCH IMAGE STYLE)
-====================================== */
-.left-panel {
-    position: absolute;
-    left: 2%;
-    top: 45%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    max-width: 600px;
-    color: white;
 }
 
 /* ICON (CIRCLE STYLE) */
@@ -465,22 +323,6 @@
     z-index: 10000;
 }
 
-.logged-label {
-    color: #8da4be;
-    font-size: 11px;
-}
-
-.logged-name {
-    color: white;
-    font-size: 15px;
-    font-weight: 600;
-}
-
-.logged-role {
-    color: #1f9cff;
-    font-size: 12px;
-}
-
 .back-home-btn2 {
     background: none;
     border: none;
@@ -503,19 +345,14 @@
     position: absolute;
     bottom: 12px;
     right: 12px;
-
     height: 30px;
     width: 110px;
     padding: 0 14px;
-
     border-radius: 20px;
     border: none;
-
     cursor: pointer;
-
     font-size: 12px;
     font-weight: 600;
-
     transition: all .25s ease;
 }
 
