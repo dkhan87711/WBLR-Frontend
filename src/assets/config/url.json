@@ -33,6 +33,6 @@
     "logo": "../../assets/images/property.png",
     "title": "Property Tax Intelligence",
     "description": "AI-powered platform for property tax assessment and revenue intelligence.",
-    "url": "http://indcs0152:7000/property-tax-hmda/"
+    "url": "http://indcs0152:7000/ulb/property-tax"
   }
 ]

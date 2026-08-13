@@ -36,6 +36,17 @@
     background: #d778ff;
 }
 
+.application-launcher-citizen {
+    width: 13.5%;
+    position: relative;
+    z-index: 2;
+    right: 15%;
+    margin: 0;
+    align-items: center;
+    /* top: 45px; 
+    /* margin-top: 73px; */
+}
+
 /* ======================================
    LOGIN AS
 ====================================== */
