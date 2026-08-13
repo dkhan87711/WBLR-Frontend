@@ -1539,7 +1539,7 @@ const MapPage = () => {
                             className="header-launch-btn analytics-btn"
                             onClick={launchAnalyticsPortal}
                         >
-                            Launch Analytics Portal
+                            Analytics Portal
                         </button>
                     </div>
 
