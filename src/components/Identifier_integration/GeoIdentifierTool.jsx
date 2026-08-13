@@ -19,48 +19,48 @@ const GeoIdentifierTool = ({
     buildingLayer,
 }) => {
 
-        const [applications, setApplications] =
+    const [applications, setApplications] =
         useState(data || []);
 
 
-        const [expandedSection, setExpandedSection] =
+    const [expandedSection, setExpandedSection] =
 
         useState("application");
 
-        const toggleSection = section => {
+    const toggleSection = section => {
 
         setExpandedSection(
 
-        expandedSection === section
+            expandedSection === section
 
-        ? null
-        : section
+                ? null
+                : section
         );
     };
 
     const [expandedApplication, setExpandedApplication] =
-    useState(null);
+        useState(null);
 
-const [selectedImage, setSelectedImage] =
-    useState(null);
+    const [selectedImage, setSelectedImage] =
+        useState(null);
 
-const toggleApplication = (
-    applicationId
-) => {
+    const toggleApplication = (
+        applicationId
+    ) => {
 
-    setExpandedApplication(prev =>
-        prev === applicationId
-            ? null
-            : applicationId
-    );
-};
+        setExpandedApplication(prev =>
+            prev === applicationId
+                ? null
+                : applicationId
+        );
+    };
 
 
     const [loading, setLoading] =
         useState(false);
 
     const [selectionMode, setSelectionMode] =
-    useState("plot");
+        useState("plot");
 
     const [result, setResult] =
         useState(null);
@@ -138,138 +138,186 @@ const toggleApplication = (
         );
     };
 
-const getBuildings = async (
-    geometry
-) => {
+    const getBuildings = async (
+        geometry
+    ) => {
 
-    const query =
-        buildingLayer.createQuery();
+        const query =
+            buildingLayer.createQuery();
 
-    query.geometry =
-        geometry;
+        query.geometry =
+            geometry;
 
-    query.spatialRelationship =
-        "intersects";
+        query.spatialRelationship =
+            "intersects";
 
-    query.returnGeometry =
-        true;
+        query.returnGeometry =
+            true;
 
-    query.outFields =
-        ["*"];
+        query.outFields =
+            ["*"];
 
-    const response =
-      await buildingLayer.queryFeatures(
-            query
-        );
-
-   return response.features || [];
-};
-
-
-const processPlot = async (
-    point
-) => {
-
-    clearHighlights();
-
-    showPin(
-        point,
-        [0, 0, 255]
-    );
-
-    const parcel =
-        await getParcel(point);
-
-    if (!parcel) {
-        throw new Error(
-            "Parcel not found."
-        );
-    }
-
-    highlightParcel(
-        parcel.geometry
-    );
-
-    let geometry4326 =
-        parcel.geometry;
-
-    const wkid =
-        parcel.geometry
-            ?.spatialReference?.wkid ||
-        parcel.geometry
-            ?.spatialReference?.latestWkid;
-
-    if (
-        wkid === 3857 ||
-        wkid === 102100
-    ) {
-        geometry4326 =
-            webMercatorUtils.webMercatorToGeographic(
-                parcel.geometry
+        const response =
+            await buildingLayer.queryFeatures(
+                query
             );
-    }
 
-    const geoJsonGeometry = {
-        type: "Polygon",
-        coordinates:
-            geometry4326.rings
+        return response.features || [];
     };
 
-    const ulpinResponse =
-        await generateUlpin(
-            geoJsonGeometry
+
+    const processPlot = async (
+        point
+    ) => {
+
+        clearHighlights();
+
+        showPin(
+            point,
+            [0, 0, 255]
         );
 
-    const ulpin =
-        ulpinResponse?.data?.ulpin ||
-        ulpinResponse?.data?.data?.ulpin ||
-        ulpinResponse?.data?.data ||
-        "Not Available";
+        const parcel =
+            await getParcel(point);
 
-    const buildings =
-        await getBuildings(
+        if (!parcel) {
+            throw new Error(
+                "Parcel not found."
+            );
+        }
+
+        highlightParcel(
             parcel.geometry
         );
 
-    const digipinSet =
-        new Set();
+        let geometry4326 =
+            parcel.geometry;
 
-    if (
-        buildings.length > 0
-    ) {
+        const wkid =
+            parcel.geometry
+                ?.spatialReference?.wkid ||
+            parcel.geometry
+                ?.spatialReference?.latestWkid;
 
-        for (const building of buildings) {
+        if (
+            wkid === 3857 ||
+            wkid === 102100
+        ) {
+            geometry4326 =
+                webMercatorUtils.webMercatorToGeographic(
+                    parcel.geometry
+                );
+        }
 
-            highlightBuilding(
-                building.geometry
+        const geoJsonGeometry = {
+            type: "Polygon",
+            coordinates:
+                geometry4326.rings
+        };
+
+        const ulpinResponse =
+            await generateUlpin(
+                geoJsonGeometry
             );
+
+        const ulpin =
+            ulpinResponse?.data?.ulpin ||
+            ulpinResponse?.data?.data?.ulpin ||
+            ulpinResponse?.data?.data ||
+            "Not Available";
+
+        const buildings =
+            await getBuildings(
+                parcel.geometry
+            );
+
+        const digipinSet =
+            new Set();
+
+        if (
+            buildings.length > 0
+        ) {
+
+            for (const building of buildings) {
+
+                highlightBuilding(
+                    building.geometry
+                );
+
+                try {
+
+                    let centroid =
+                        building.geometry
+                            .centroid;
+
+                    const centroidWkid =
+                        centroid
+                            ?.spatialReference
+                            ?.wkid ||
+                        centroid
+                            ?.spatialReference
+                            ?.latestWkid;
+
+                    if (
+                        centroidWkid ===
+                        3857 ||
+                        centroidWkid ===
+                        102100
+                    ) {
+
+                        centroid =
+                            webMercatorUtils.webMercatorToGeographic(
+                                centroid
+                            );
+                    }
+
+                    const response =
+                        await generateDigipin(
+                            centroid.y,
+                            centroid.x
+                        );
+
+                    const digipin =
+                        response?.data
+                            ?.digipin ||
+                        response?.data
+                            ?.data
+                            ?.digipin ||
+                        response?.data
+                            ?.data;
+
+                    if (
+                        digipin &&
+                        !digipinSet.has(
+                            digipin
+                        )
+                    ) {
+
+                        digipinSet.add(
+                            digipin
+                        );
+
+                        addDigipinLabel(
+                            centroid,
+                            digipin
+                        );
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        error
+                    );
+                }
+            }
+
+        } else {
 
             try {
 
                 let centroid =
-                    building.geometry
+                    geometry4326
                         .centroid;
-
-                const centroidWkid =
-                    centroid
-                        ?.spatialReference
-                        ?.wkid ||
-                    centroid
-                        ?.spatialReference
-                        ?.latestWkid;
-
-                if (
-                    centroidWkid ===
-                        3857 ||
-                    centroidWkid ===
-                        102100
-                ) {
-
-                    centroid =
-                        webMercatorUtils.webMercatorToGeographic(
-                            centroid
-                        );
-                }
 
                 const response =
                     await generateDigipin(
@@ -286,22 +334,22 @@ const processPlot = async (
                     response?.data
                         ?.data;
 
-               if (
-                digipin &&
-                !digipinSet.has(
-                    digipin
-                )
-            ) {
+                if (
+                    digipin &&
+                    !digipinSet.has(
+                        digipin
+                    )
+                ) {
 
-                digipinSet.add(
-                    digipin
-                );
+                    digipinSet.add(
+                        digipin
+                    );
 
-                addDigipinLabel(
-                    centroid,
-                    digipin
-                );
-            }
+                    addDigipinLabel(
+                        centroid,
+                        digipin
+                    );
+                }
 
             } catch (error) {
 
@@ -311,458 +359,410 @@ const processPlot = async (
             }
         }
 
-    } else {
-
-        try {
-
-            let centroid =
-                geometry4326
-                    .centroid;
-
-            const response =
-                await generateDigipin(
-                    centroid.y,
-                    centroid.x
-                );
-
-            const digipin =
-                response?.data
-                    ?.digipin ||
-                response?.data
-                    ?.data
-                    ?.digipin ||
-                response?.data
-                    ?.data;
-
-          if (
-            digipin &&
-            !digipinSet.has(
-                digipin
-            )
-        ) {
-
-            digipinSet.add(
-                digipin
-            );
-
-            addDigipinLabel(
-                centroid,
-                digipin
-            );
-        }
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-        }
-    }
-
-    await view.goTo(
-        [
-            parcel.geometry,
-            ...buildings.map(
-                (
-                    building
-                ) =>
-                    building.geometry
-            )
-        ],
-        {
-            duration: 1500
-        }
-    );
-
-    setResult({
-        ulpin,
-
-        digipins:
-            [...digipinSet],
-
-        digipinCount:
-            digipinSet.size,
-
-        buildingCount:
-            buildings.length,
-
-        plotNo:
-            parcel.attributes
-                ?.plot_no ||
-            parcel.attributes
-                ?.plot_number ||
-            parcel.attributes
-                ?.plot_no_ ||
-            "N/A",
-
-        mouza:
-            parcel.attributes
-                ?.mouza_name ||
-            parcel.attributes
-                ?.mouza ||
-            "N/A",
-
-        khatian:
-            parcel.attributes
-                ?.khatian_no ||
-            parcel.attributes
-                ?.khatian ||
-            "N/A"
-    });
-};
-
-const processProperty = async (
-    point
-) => {
-
-    clearHighlights();
-
-    showPin(
-        point,
-        [255, 0, 0]
-    );
-
-    const building =
-        await getBuilding(
-            point
+        await view.goTo(
+            [
+                parcel.geometry,
+                ...buildings.map(
+                    (
+                        building
+                    ) =>
+                        building.geometry
+                )
+            ],
+            {
+                duration: 1500
+            }
         );
 
-    if (!building) {
+        setResult({
+            ulpin,
 
-        throw new Error(
-            "No building found."
-        );
-    }
+            digipins:
+                [...digipinSet],
 
-    highlightBuilding(
-        building.geometry
-    );
+            digipinCount:
+                digipinSet.size,
 
-    let centroid =
-        building.geometry
-            .centroid;
+            buildingCount:
+                buildings.length,
 
-    const centroidWkid =
-        centroid
-            ?.spatialReference
-            ?.wkid ||
-        centroid
-            ?.spatialReference
-            ?.latestWkid;
+            plotNo:
+                parcel.attributes
+                    ?.plot_no ||
+                parcel.attributes
+                    ?.plot_number ||
+                parcel.attributes
+                    ?.plot_no_ ||
+                "N/A",
 
-    if (
-        centroidWkid === 3857 ||
-        centroidWkid === 102100
-    ) {
+            mouza:
+                parcel.attributes
+                    ?.mouza_name ||
+                parcel.attributes
+                    ?.mouza ||
+                "N/A",
 
-        centroid =
-            webMercatorUtils.webMercatorToGeographic(
-                centroid
-            );
-    }
-
-    const digipinResponse =
-        await generateDigipin(
-            centroid.y,
-            centroid.x
-        );
-
-    const digipin =
-        digipinResponse?.data
-            ?.digipin ||
-        digipinResponse?.data
-            ?.data
-            ?.digipin ||
-        digipinResponse?.data
-            ?.data ||
-        "Not Available";
-
-    addDigipinLabel(
-        centroid,
-        digipin
-    );
-
-    const parcel =
-        await getParcel(
-            centroid
-        );
-
-    if (!parcel) {
-
-        throw new Error(
-            "Parcel not found."
-        );
-    }
-
-    highlightParcel(
-        parcel.geometry
-    );
-
-    let geometry4326 =
-        parcel.geometry;
-
-    const parcelWkid =
-        parcel.geometry
-            ?.spatialReference
-            ?.wkid ||
-        parcel.geometry
-            ?.spatialReference
-            ?.latestWkid;
-
-    if (
-        parcelWkid === 3857 ||
-        parcelWkid === 102100
-    ) {
-
-        geometry4326 =
-            webMercatorUtils.webMercatorToGeographic(
-                parcel.geometry
-            );
-    }
-
-    const geoJsonGeometry = {
-        type: "Polygon",
-        coordinates:
-            geometry4326.rings
+            khatian:
+                parcel.attributes
+                    ?.khatian_no ||
+                parcel.attributes
+                    ?.khatian ||
+                "N/A"
+        });
     };
 
-    const ulpinResponse =
-        await generateUlpin(
-            geoJsonGeometry
+    const processProperty = async (
+        point
+    ) => {
+
+        clearHighlights();
+
+        showPin(
+            point,
+            [255, 0, 0]
         );
 
-    const ulpin =
-        ulpinResponse?.data
-            ?.ulpin ||
-        ulpinResponse?.data
-            ?.data
-            ?.ulpin ||
-        ulpinResponse?.data
-            ?.data ||
-        "Not Available";
+        const building =
+            await getBuilding(
+                point
+            );
 
-    await view.goTo(
-        [
-            parcel.geometry,
-            building.geometry
-        ],
-        {
-            duration: 1500
+        if (!building) {
+
+            throw new Error(
+                "No building found."
+            );
         }
-    );
 
-    setResult({
-        ulpin,
-
-        digipins: [
-            digipin
-        ],
-
-        digipinCount: 1,
-
-        buildingCount: 1,
-
-        plotNo:
-            parcel.attributes
-                ?.plot_no ||
-            parcel.attributes
-                ?.plot_number ||
-            parcel.attributes
-                ?.plot_no_ ||
-            "N/A",
-
-        mouza:
-            parcel.attributes
-                ?.mouza_name ||
-            parcel.attributes
-                ?.mouza ||
-            "N/A",
-
-        khatian:
-            parcel.attributes
-                ?.khatian_no ||
-            parcel.attributes
-                ?.khatian ||
-            "N/A"
-    });
-};
-
-const showPin = (
-    point,
-    color = [0, 0, 255]
-) => {
-
-    const graphic =
-        new Graphic({
-            geometry: point,
-
-            symbol: {
-                type: "simple-marker",
-
-                style: "circle",
-
-                size: 12,
-
-                color,
-
-                outline: {
-                    color: [255, 255, 255],
-                    width: 2
-                }
-            }
-        });
-
-    view.graphics.add(
-        graphic
-    );
-};
-
-const addDigipinLabel = (
-    point,
-    digipin
-) => {
-
-    const labelGraphic =
-        new Graphic({
-            geometry: point,
-
-            symbol: new TextSymbol({
-                text: digipin,
-
-                color: "#000000",
-
-                haloColor: "#FFFFFF",
-
-                haloSize: 3,
-
-                yoffset: -20,
-
-                font: {
-                    size: 11,
-                    weight: "bold"
-                }
-            })
-        });
-
-    view.graphics.add(
-        labelGraphic
-    );
-};
-
-const getBuilding = async (
-    point
-) => {
-
-    const query =
-        buildingLayer.createQuery();
-
-    query.geometry = point;
-
-    query.spatialRelationship =
-        "intersects";
-
-    query.returnGeometry =
-        true;
-
-    query.outFields =
-        ["*"];
-
-    const response =
-      await buildingLayer.queryFeatures(
-            query
+        highlightBuilding(
+            building.geometry
         );
 
-   return response.features?.[0];
-};
+        let centroid =
+            building.geometry
+                .centroid;
+
+        const centroidWkid =
+            centroid
+                ?.spatialReference
+                ?.wkid ||
+            centroid
+                ?.spatialReference
+                ?.latestWkid;
+
+        if (
+            centroidWkid === 3857 ||
+            centroidWkid === 102100
+        ) {
+
+            centroid =
+                webMercatorUtils.webMercatorToGeographic(
+                    centroid
+                );
+        }
+
+        const digipinResponse =
+            await generateDigipin(
+                centroid.y,
+                centroid.x
+            );
+
+        const digipin =
+            digipinResponse?.data
+                ?.digipin ||
+            digipinResponse?.data
+                ?.data
+                ?.digipin ||
+            digipinResponse?.data
+                ?.data ||
+            "Not Available";
+
+        addDigipinLabel(
+            centroid,
+            digipin
+        );
+
+        const parcel =
+            await getParcel(
+                centroid
+            );
+
+        if (!parcel) {
+
+            throw new Error(
+                "Parcel not found."
+            );
+        }
+
+        highlightParcel(
+            parcel.geometry
+        );
+
+        let geometry4326 =
+            parcel.geometry;
+
+        const parcelWkid =
+            parcel.geometry
+                ?.spatialReference
+                ?.wkid ||
+            parcel.geometry
+                ?.spatialReference
+                ?.latestWkid;
+
+        if (
+            parcelWkid === 3857 ||
+            parcelWkid === 102100
+        ) {
+
+            geometry4326 =
+                webMercatorUtils.webMercatorToGeographic(
+                    parcel.geometry
+                );
+        }
+
+        const geoJsonGeometry = {
+            type: "Polygon",
+            coordinates:
+                geometry4326.rings
+        };
+
+        const ulpinResponse =
+            await generateUlpin(
+                geoJsonGeometry
+            );
+
+        const ulpin =
+            ulpinResponse?.data
+                ?.ulpin ||
+            ulpinResponse?.data
+                ?.data
+                ?.ulpin ||
+            ulpinResponse?.data
+                ?.data ||
+            "Not Available";
+
+        await view.goTo(
+            [
+                parcel.geometry,
+                building.geometry
+            ],
+            {
+                duration: 1500
+            }
+        );
+
+        setResult({
+            ulpin,
+
+            digipins: [
+                digipin
+            ],
+
+            digipinCount: 1,
+
+            buildingCount: 1,
+
+            plotNo:
+                parcel.attributes
+                    ?.plot_no ||
+                parcel.attributes
+                    ?.plot_number ||
+                parcel.attributes
+                    ?.plot_no_ ||
+                "N/A",
+
+            mouza:
+                parcel.attributes
+                    ?.mouza_name ||
+                parcel.attributes
+                    ?.mouza ||
+                "N/A",
+
+            khatian:
+                parcel.attributes
+                    ?.khatian_no ||
+                parcel.attributes
+                    ?.khatian ||
+                "N/A"
+        });
+    };
+
+    const showPin = (
+        point,
+        color = [0, 0, 255]
+    ) => {
+
+        const graphic =
+            new Graphic({
+                geometry: point,
+
+                symbol: {
+                    type: "simple-marker",
+
+                    style: "circle",
+
+                    size: 12,
+
+                    color,
+
+                    outline: {
+                        color: [255, 255, 255],
+                        width: 2
+                    }
+                }
+            });
+
+        view.graphics.add(
+            graphic
+        );
+    };
+
+    const addDigipinLabel = (
+        point,
+        digipin
+    ) => {
+
+        const labelGraphic =
+            new Graphic({
+                geometry: point,
+
+                symbol: new TextSymbol({
+                    text: digipin,
+
+                    color: "#000000",
+
+                    haloColor: "#FFFFFF",
+
+                    haloSize: 3,
+
+                    yoffset: -20,
+
+                    font: {
+                        size: 11,
+                        weight: "bold"
+                    }
+                })
+            });
+
+        view.graphics.add(
+            labelGraphic
+        );
+    };
+
+    const getBuilding = async (
+        point
+    ) => {
+
+        const query =
+            buildingLayer.createQuery();
+
+        query.geometry = point;
+
+        query.spatialRelationship =
+            "intersects";
+
+        query.returnGeometry =
+            true;
+
+        query.outFields =
+            ["*"];
+
+        const response =
+            await buildingLayer.queryFeatures(
+                query
+            );
+
+        return response.features?.[0];
+    };
 
 
-const highlightBuilding = (
-    geometry
-) => {
+    const highlightBuilding = (
+        geometry
+    ) => {
 
-    const graphic =
-        new Graphic({
-            geometry,
+        const graphic =
+            new Graphic({
+                geometry,
 
-            symbol: {
-                type: "simple-fill",
+                symbol: {
+                    type: "simple-fill",
 
-                color: [
-                    255,
-                    0,
-                    0,
-                    0.15
-                ],
-
-                outline: {
                     color: [
                         255,
                         0,
-                        0
+                        0,
+                        0.15
                     ],
 
-                    width: 2
-                }
-            }
-        });
+                    outline: {
+                        color: [
+                            255,
+                            0,
+                            0
+                        ],
 
-    view.graphics.add(
-        graphic
-    );
-};
+                        width: 2
+                    }
+                }
+            });
+
+        view.graphics.add(
+            graphic
+        );
+    };
 
 
 
     const enableSelection = () => {
 
-    setError("");
-    setResult(null);
+        setError("");
+        setResult(null);
 
-    const clickHandler =
-        view.on(
-            "click",
-            async (event) => {
+        const clickHandler =
+            view.on(
+                "click",
+                async (event) => {
 
-                clickHandler.remove();
+                    clickHandler.remove();
 
-                try {
+                    try {
 
-                    setLoading(true);
+                        setLoading(true);
 
-                    if (
-                        selectionMode === "plot"
-                    ) {
+                        if (
+                            selectionMode === "plot"
+                        ) {
 
-                        await processPlot(
-                            event.mapPoint
+                            await processPlot(
+                                event.mapPoint
+                            );
+
+                        } else {
+
+                            await processProperty(
+                                event.mapPoint
+                            );
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Selection Error",
+                            error
                         );
 
-                    } else {
-
-                        await processProperty(
-                            event.mapPoint
+                        setError(
+                            error?.message ||
+                            "Failed to process selection."
                         );
+
+                    } finally {
+
+                        setLoading(false);
                     }
-
-                } catch (error) {
-
-                    console.error(
-                        "Selection Error",
-                        error
-                    );
-
-                    setError(
-                        error?.message ||
-                        "Failed to process selection."
-                    );
-
-                } finally {
-
-                    setLoading(false);
                 }
-            }
-        );
-};
+            );
+    };
 
 
     const applicationRecords =
@@ -771,7 +771,7 @@ const highlightBuilding = (
                 app =>
                     !app.disbursementStatus &&
                     app.verifiedStatus !==
-                        "Rejected"
+                    "Rejected"
             );
         }, [applications]);
 
@@ -780,9 +780,9 @@ const highlightBuilding = (
             return applications.filter(
                 app =>
                     app.disbursementStatus ===
-                        "Initial" &&
+                    "Initial" &&
                     app.verifiedStatus ===
-                        "Approved"
+                    "Approved"
             );
         }, [applications]);
 
@@ -791,9 +791,9 @@ const highlightBuilding = (
             return applications.filter(
                 app =>
                     app.disbursementStatus ===
-                        "Intermediate" &&
+                    "Intermediate" &&
                     app.constructionStatus ===
-                        "Approved"
+                    "Approved"
             );
         }, [applications]);
 
@@ -802,11 +802,11 @@ const highlightBuilding = (
             setApplications(prev =>
                 prev.map(app =>
                     app.applicationId ===
-                    applicationId
+                        applicationId
                         ? {
-                              ...app,
-                              ...updates
-                          }
+                            ...app,
+                            ...updates
+                        }
                         : app
                 )
             );
@@ -893,186 +893,186 @@ const highlightBuilding = (
         };
 
     const renderCard = (
-    application,
-    verifyBtnText,
-    approveHandler,
-    rejectHandler,
-    showGeoFields = false
-) => {
+        application,
+        verifyBtnText,
+        approveHandler,
+        rejectHandler,
+        showGeoFields = false
+    ) => {
 
-    const isExpanded =
-        expandedApplication ===
-        application.applicationId;
+        const isExpanded =
+            expandedApplication ===
+            application.applicationId;
 
-    return (
-        <div
-            key={application.applicationId}
-            className="application-item"
-        >
-
+        return (
             <div
-                className="application-item-header"
-                onClick={() =>
-                    toggleApplication(
-                        application.applicationId
-                    )
-                }
+                key={application.applicationId}
+                className="application-item"
             >
 
-                <span>
-                    {
-                        application.applicationId
+                <div
+                    className="application-item-header"
+                    onClick={() =>
+                        toggleApplication(
+                            application.applicationId
+                        )
                     }
-                </span>
+                >
 
-                <span>
-                    {isExpanded
-                        ? "▼"
-                        : "▶"}
-                </span>
-
-            </div>
-
-            {isExpanded && (
-                <div className="application-item-body">
-
-                    <p>
-                        <strong>
-                            Applicant Name:
-                        </strong>{" "}
+                    <span>
                         {
-                            application.applicantName
+                            application.applicationId
                         }
-                    </p>
+                    </span>
 
-                    <p>
-                        <strong>
-                            Aadhaar:
-                        </strong>{" "}
-                        {
-                            application.aadhaar
-                        }
-                    </p>
+                    <span>
+                        {isExpanded
+                            ? "▼"
+                            : "▶"}
+                    </span>
 
-                    <p>
-                        <strong>
-                            Plot Number:
-                        </strong>{" "}
-                        {
-                            application.plotNumber
-                        }
-                    </p>
+                </div>
 
-                    <p>
-                        <strong>
-                            Address:
-                        </strong>{" "}
-                        {
-                            application.addressAsPerAadhaar
-                        }
-                    </p>
+                {isExpanded && (
+                    <div className="application-item-body">
 
-                    <p>
-                        <strong>
-                            ULPIN:
-                        </strong>{" "}
-                        {
-                            application.ulpin ||
-                            "-"
-                        }
-                    </p>
+                        <p>
+                            <strong>
+                                Applicant Name:
+                            </strong>{" "}
+                            {
+                                application.applicantName
+                            }
+                        </p>
 
-                    <p>
-                        <strong>
-                            DIGIPIN:
-                        </strong>{" "}
-                        {
-                            application.digipin ||
-                            "-"
-                        }
-                    </p>
+                        <p>
+                            <strong>
+                                Aadhaar:
+                            </strong>{" "}
+                            {
+                                application.aadhaar
+                            }
+                        </p>
 
-                    {showGeoFields && (
-                        <>
-                            <p>
-                                <strong>
-                                    Image Lat:
-                                </strong>{" "}
-                                {
-                                    application.extractedImageLat
-                                }
-                            </p>
+                        <p>
+                            <strong>
+                                Plot Number:
+                            </strong>{" "}
+                            {
+                                application.plotNumber
+                            }
+                        </p>
 
-                            <p>
-                                <strong>
-                                    Image Long:
-                                </strong>{" "}
-                                {
-                                    application.extractedImageLong
-                                }
-                            </p>
-                        </>
-                    )}
+                        <p>
+                            <strong>
+                                Address:
+                            </strong>{" "}
+                            {
+                                application.addressAsPerAadhaar
+                            }
+                        </p>
 
-                    <div className="action-panel">
+                        <p>
+                            <strong>
+                                ULPIN:
+                            </strong>{" "}
+                            {
+                                application.ulpin ||
+                                "-"
+                            }
+                        </p>
 
-                        <button
-                            className="verify-btn"
-                            onClick={() => {
+                        <p>
+                            <strong>
+                                DIGIPIN:
+                            </strong>{" "}
+                            {
+                                application.digipin ||
+                                "-"
+                            }
+                        </p>
 
-                                if (
-                                    verifyBtnText ===
-                                    "Verify Application"
-                                ) {
-                                    setSelectionMode(
-                                        "plot"
-                                    );
-                                } else {
-                                    setSelectionMode(
-                                        "property"
-                                    );
-                                }
+                        {showGeoFields && (
+                            <>
+                                <p>
+                                    <strong>
+                                        Image Lat:
+                                    </strong>{" "}
+                                    {
+                                        application.extractedImageLat
+                                    }
+                                </p>
 
-                                enableSelection();
-                            }}
-                        >
-                            {verifyBtnText}
-                        </button>
+                                <p>
+                                    <strong>
+                                        Image Long:
+                                    </strong>{" "}
+                                    {
+                                        application.extractedImageLong
+                                    }
+                                </p>
+                            </>
+                        )}
 
-                        <div className="decision-buttons">
+                        <div className="action-panel-urban">
 
                             <button
-                                className="approve-btn"
-                                onClick={() =>
-                                    approveHandler(
-                                        application.applicationId
-                                    )
-                                }
+                                className="verify-btn"
+                                onClick={() => {
+
+                                    if (
+                                        verifyBtnText ===
+                                        "Verify Application"
+                                    ) {
+                                        setSelectionMode(
+                                            "plot"
+                                        );
+                                    } else {
+                                        setSelectionMode(
+                                            "property"
+                                        );
+                                    }
+
+                                    enableSelection();
+                                }}
                             >
-                                Approve
+                                {verifyBtnText}
                             </button>
 
-                            <button
-                                className="reject-btn"
-                                onClick={() =>
-                                    rejectHandler(
-                                        application.applicationId
-                                    )
-                                }
-                            >
-                                Reject
-                            </button>
+                            <div className="decision-buttons">
+
+                                <button
+                                    className="approve-btn-urban"
+                                    onClick={() =>
+                                        approveHandler(
+                                            application.applicationId
+                                        )
+                                    }
+                                >
+                                    Approve
+                                </button>
+
+                                <button
+                                    className="reject-btn-urban"
+                                    onClick={() =>
+                                        rejectHandler(
+                                            application.applicationId
+                                        )
+                                    }
+                                >
+                                    Reject
+                                </button>
+
+                            </div>
 
                         </div>
 
                     </div>
+                )}
 
-                </div>
-            )}
-
-        </div>
-    );
-};
+            </div>
+        );
+    };
 
     return (
         <div className="housing-verification-container">
@@ -1081,7 +1081,7 @@ const highlightBuilding = (
                 Urban Housing Scheme
             </h2>
 
-            <div className="sub-title">
+            <div className="sub-title-urban">
                 View Application
             </div>
 
@@ -1097,15 +1097,13 @@ const highlightBuilding = (
                     }
                 >
                     <span>
-                        Verify
-                        Application -
-                        1st
-                        Installment
+                        Application Verification -
+                        1st Installment
                     </span>
 
                     <span>
                         {expandedSection ===
-                        "application"
+                            "application"
                             ? "▼"
                             : "▶"}
                     </span>
@@ -1113,18 +1111,18 @@ const highlightBuilding = (
 
                 {expandedSection ===
                     "application" && (
-                    <div className="section-content">
-                        {applicationRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Application",
-                                    approveApplication,
-                                    rejectApplication
-                                )
-                        )}
-                    </div>
-                )}
+                        <div className="section-content">
+                            {applicationRecords.map(
+                                app =>
+                                    renderCard(
+                                        app,
+                                        "Verify Application",
+                                        approveApplication,
+                                        rejectApplication
+                                    )
+                            )}
+                        </div>
+                    )}
             </div>
 
             {/* Section 2 */}
@@ -1139,15 +1137,12 @@ const highlightBuilding = (
                     }
                 >
                     <span>
-                        Verify
-                        Construction
-                        Area - 2nd
-                        Installment
+                        Construction Area Verification - 2nd Installment
                     </span>
 
                     <span>
                         {expandedSection ===
-                        "construction"
+                            "construction"
                             ? "▼"
                             : "▶"}
                     </span>
@@ -1155,19 +1150,19 @@ const highlightBuilding = (
 
                 {expandedSection ===
                     "construction" && (
-                    <div className="section-content">
-                        {constructionRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Construction Area",
-                                    approveConstruction,
-                                    rejectConstruction,
-                                    true
-                                )
-                        )}
-                    </div>
-                )}
+                        <div className="section-content">
+                            {constructionRecords.map(
+                                app =>
+                                    renderCard(
+                                        app,
+                                        "Verify Construction Area",
+                                        approveConstruction,
+                                        rejectConstruction,
+                                        true
+                                    )
+                            )}
+                        </div>
+                    )}
             </div>
 
             {/* Section 3 */}
@@ -1182,16 +1177,13 @@ const highlightBuilding = (
                     }
                 >
                     <span>
-                        Verify
-                        Completion
-                        Certificate -
-                        3rd
-                        Installment
+                        Completion Certificate Verify-
+                        3rd Installment
                     </span>
 
                     <span>
                         {expandedSection ===
-                        "completion"
+                            "completion"
                             ? "▼"
                             : "▶"}
                     </span>
@@ -1199,25 +1191,22 @@ const highlightBuilding = (
 
                 {expandedSection ===
                     "completion" && (
-                    <div className="section-content">
-                        {completionRecords.map(
-                            app =>
-                                renderCard(
-                                    app,
-                                    "Verify Completion Certificate",
-                                    approveCompletion,
-                                    rejectCompletion,
-                                    true
-                                )
-                        )}
-                    </div>
-                )}
+                        <div className="section-content">
+                            {completionRecords.map(
+                                app =>
+                                    renderCard(
+                                        app,
+                                        "Verify Completion Certificate",
+                                        approveCompletion,
+                                        rejectCompletion,
+                                        true
+                                    )
+                            )}
+                        </div>
+                    )}
             </div>
         </div>
     );
 };
-
-
-
 
 export default GeoIdentifierTool;
