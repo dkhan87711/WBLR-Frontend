@@ -6,10 +6,10 @@ import departmentLogo from "../../assets/images/department.png";
 import institutionLogo from "../../assets/images/institution.png";
 import citizenLogo from "../../assets/images/citizen.png";
 
-import logo1 from "../../assets/images/3d.png";
-import logo2 from "../../assets/images/lake.png";
-import logo3 from "../../assets/images/flood.png";
-import logo4 from "../../assets/images/property.png";
+import logo1 from "../../assets/images/ulmp.png";
+import logo2 from "../../assets/images/ulmp-approval.png";
+import logo3 from "../../assets/images/datahub.png";
+import logo4 from "../../assets/images/3d.png";
 import logo5 from "../../assets/images/urban.png";
 import logo6 from "../../assets/images/property.png";
 import logo7 from "../../assets/images/aseet.png";
@@ -21,15 +21,15 @@ export const BhuManchitraHero = () => {
   const navigate = useNavigate();
 
   const appLogos = [
-    { src: logo1, size: 90, title: appConfig[0].title },
+    { src: logo1, size: 85, title: appConfig[0].title },
     { src: logo3, size: 75, title: appConfig[2].title },
     { src: logo5, size: 90, title: appConfig[4].title },
   ];
 
   const appLogos2 = [
-    { src: logo2, size: 100, title: appConfig[1].title },
-    { src: logo4, size: 90, title: appConfig[3].title },
-    { src: logo6, size: 85, title: appConfig[5].title },
+    { src: logo2, size: 75, title: appConfig[1].title },
+    { src: logo4, size: 85, title: appConfig[3].title },
+    { src: logo6, size: 90, title: appConfig[5].title },
   ];
 
   const loginCards = [
