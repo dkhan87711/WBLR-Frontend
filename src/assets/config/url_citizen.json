@@ -1,0 +1,8 @@
+[
+  {
+    "logo": "../../assets/images/weather.png",
+    "title": "ULMP Web Portal",
+    "description": "Unified Platform for Land Governance, Monitoring and Decision Support.",
+    "url": "http://localhost:5173/ulms/map"
+  }
+]
