@@ -3,13 +3,13 @@
     "logo": "../../assets/images/weather.png",
     "title": "ULMP Web Portal",
     "description": "Unified Platform for Land Governance, Monitoring and Decision Support.",
-    "url": "/map"
+    "url": "http://indcs0152:7000/ulmp/map"
   },
   {
     "logo": "../../assets/images/flood.png",
     "title": "ULMP Approval Flow",
     "description": "Streamlines the approval process for land development projects.",
-    "url": "/approval"
+    "url": "http://indcs0152:7000/ulmp/approval"
   },
   {
     "logo": "../../assets/images/lake.png",

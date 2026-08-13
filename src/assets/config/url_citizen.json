@@ -3,6 +3,6 @@
     "logo": "../../assets/images/weather.png",
     "title": "ULMP Web Portal",
     "description": "Unified Platform for Land Governance, Monitoring and Decision Support.",
-    "url": "/map"
+    "url": "http://indcs0152:7000/ulmp/approval"
   }
 ]

@@ -301,12 +301,12 @@ export const Citizen = () => {
                             {/* DEPARTMENT */}
                             <div
                                 className={`user-type department ${location.pathname ===
-                                    "/ulms/department"
+                                    "/ulmp/department"
                                     ? "active-role-department"
                                     : ""
                                     }`}
                                 onClick={() =>
-                                    goTo("/ulms/department")
+                                    goTo("/ulmp/department")
                                 }
                             >
                                 🏛 &nbsp;Department
@@ -316,12 +316,12 @@ export const Citizen = () => {
                             {/* INSTITUTION */}
                             <div
                                 className={`user-type institution ${location.pathname ===
-                                    "/ulms/institution"
+                                    "/ulmp/institution"
                                     ? "active-role-institution"
                                     : ""
                                     }`}
                                 onClick={() =>
-                                    goTo("/ulms/institution")
+                                    goTo("/ulmp/institution")
                                 }
                             >
                                 🏢 Institutional
@@ -331,12 +331,12 @@ export const Citizen = () => {
                             {/* CITIZEN */}
                             <div
                                 className={`user-type citizen ${location.pathname ===
-                                    "/ulms/citizen"
+                                    "/ulmp/citizen"
                                     ? "active-role-citizen"
                                     : ""
                                     }`}
                                 onClick={() =>
-                                    goTo("/ulms/citizen")
+                                    goTo("/ulmp/citizen")
                                 }
                             >
                                 👤 Citizen
