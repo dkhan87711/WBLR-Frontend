@@ -330,20 +330,23 @@ export const Institution = () => {
                             <div className="app-icon acquisition-icon">
                                 <FaTasks />
                             </div>
-                            <h3>Bhu-Manchitra Approval Flow</h3>
-                            <p>
-                                Streamlined approval system for reviewing, validating, and tracking land-related requests.
-                            </p>
+                       <h3>Bhu-Manchitra Data Hub</h3>
+                                <p>
+                                    Centralized repository for managing, integrating, and sharing geospatial datasets.
+                                </p>
 
-                            <button
-                                className="explore-btn acquisition-btn"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate("/map");
-                                }}
-                            >
-                                Explore ↗
-                            </button>
+                                <button
+                                    className="explore-btn compliance-btn"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(
+                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/sites/#/unified-land-management-system",
+                                            "_blank"
+                                        );
+                                    }}
+                                >
+                                    Explore ↗
+                                </button>
                         </div>
 
                     </div>

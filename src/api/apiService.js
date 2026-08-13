@@ -99,3 +99,42 @@ export const importGeoJson = async (features) => {
         { features }
     );
 };
+
+// ---------------------- ULPIN ----------------------
+
+export const decodeUlpin = async (
+    ulpin
+) => {
+
+    return await API.post(
+        ENDPOINTS.ULPIN_DECODE,
+        {
+            ulpin
+        }
+    );
+};
+
+export const generateUlpin = async (
+    geometry
+) => {
+
+    return await API.post(
+        ENDPOINTS.ULPIN_GENERATE,
+        {
+            geometry
+        }
+    );
+};
+
+// ---------------------- DIGIPIN ----------------------
+
+export const generateDigipin =
+    async (
+        latitude,
+        longitude
+    ) => {
+
+        return await API.get(
+            `${ENDPOINTS.DIGIPIN_GENERATE}?latitude=${latitude}&longitude=${longitude}`
+        );
+    };

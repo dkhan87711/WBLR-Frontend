@@ -16,7 +16,13 @@ const ENDPOINTS = {
 
     APPROVAL_SUBMIT: "/approval/submit",
     // NEW
-    APPROVAL_IMPORT_GEOJSON: "/approval/import-geojson"
+    APPROVAL_IMPORT_GEOJSON: "/approval/import-geojson",
+
+    ULPIN_DECODE: "/ulpin/decode",
+
+    ULPIN_GENERATE: "/ulpin/generate",
+
+    DIGIPIN_GENERATE: "/digipin/generate",
 
 };
 

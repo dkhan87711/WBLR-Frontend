@@ -392,7 +392,7 @@ export const Department = () => {
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/dashboards/4ca187c5ed5f40fe9788d14824cbff9c",
+                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/sites/#/unified-land-management-system",
                                             "_blank"
                                         );
                                     }}
@@ -415,7 +415,7 @@ export const Department = () => {
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         window.open(
-                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=dd63f5172f4342799a8204ccc02b8d3e",
+                                            "https://indcs0152.atrapa.deloitte.com/gisportal/apps/experiencebuilder/experience/?id=df3ec4af1a6f4061a6e6d905f6ed843a",
                                             "_blank"
                                         );
                                     }}
