@@ -301,12 +301,12 @@ export const Citizen = () => {
                             {/* DEPARTMENT */}
                             <div
                                 className={`user-type department ${location.pathname ===
-                                    "/ulmp/department"
+                                    "/department"
                                     ? "active-role-department"
                                     : ""
                                     }`}
                                 onClick={() =>
-                                    goTo("/ulmp/department")
+                                    goTo("/department")
                                 }
                             >
                                 🏛 &nbsp;Department
@@ -316,12 +316,12 @@ export const Citizen = () => {
                             {/* INSTITUTION */}
                             <div
                                 className={`user-type institution ${location.pathname ===
-                                    "/ulmp/institution"
+                                    "/institution"
                                     ? "active-role-institution"
                                     : ""
                                     }`}
                                 onClick={() =>
-                                    goTo("/ulmp/institution")
+                                    goTo("/institution")
                                 }
                             >
                                 🏢 Institutional
@@ -331,7 +331,7 @@ export const Citizen = () => {
                             {/* CITIZEN */}
                             <div
                                 className={`user-type citizen ${location.pathname ===
-                                    "/ulmp/citizen"
+                                    "/citizen"
                                     ? "active-role-citizen"
                                     : ""
                                     }`}
@@ -398,7 +398,6 @@ export const Citizen = () => {
                                     ? "Sending OTP..."
                                     : "Send OTP"}
                             </button>
-
                         </>
                     )}
 
