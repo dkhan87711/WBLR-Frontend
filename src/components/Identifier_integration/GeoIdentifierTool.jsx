@@ -44,9 +44,10 @@ const GeoIdentifierTool = ({
     const [selectedImage, setSelectedImage] =
         useState(null);
 
-    const toggleApplication = (
-        applicationId
+   const toggleApplication = (
+    applicationId
     ) => {
+        clearHighlights();
 
         setExpandedApplication(prev =>
             prev === applicationId
@@ -266,6 +267,7 @@ const GeoIdentifierTool = ({
                     building.geometry
                 );
 
+                
                 try {
 
                     let centroid =
@@ -733,6 +735,31 @@ const GeoIdentifierTool = ({
         );
     };
 
+    const addUlpinLabel = (
+    point,
+    ulpin
+) => {
+    const labelGraphic =
+        new Graphic({
+            geometry: point,
+            symbol: new TextSymbol({
+                text: `ULPIN\n${ulpin}`,
+                color: "#0033cc",
+                haloColor: "#ffffff",
+                haloSize: 2,
+                yoffset: 40,
+                font: {
+                    size: 10,
+                    weight: "bold"
+                }
+            })
+        });
+
+    view.graphics.add(
+        labelGraphic
+    );
+};
+
     const verifyConstructionImage =
         async application => {
 
@@ -797,6 +824,16 @@ const GeoIdentifierTool = ({
                     building.geometry
                 );
 
+                await view.goTo(
+                [
+                    parcel.geometry,
+                    building.geometry
+                ],
+                {
+                    duration: 1500
+                }
+            );
+
                 let geometry4326 =
                     parcel.geometry;
 
@@ -834,6 +871,11 @@ const GeoIdentifierTool = ({
                     ulpinResponse?.data
                         ?.data ||
                     "";
+
+                    addUlpinLabel(
+                        parcel.geometry.extent.center,
+                        imageUlpin
+                    );
 
                 let centroid =
                     building.geometry
@@ -874,6 +916,10 @@ const GeoIdentifierTool = ({
                     digipinResponse?.data
                         ?.data ||
                     "";
+                addDigipinLabel(
+                    centroid,
+                    imageDigipin
+                );
 
                 const matched =
                     imageUlpin?.trim() ===
@@ -905,10 +951,52 @@ const GeoIdentifierTool = ({
 
                 } else {
 
-                    alert(
-                        "Geotagged photo does not match DIGIPIN."
-                    );
-                }
+                view.graphics.add(
+                    new Graphic({
+                        geometry:
+                            parcel.geometry.extent.center,
+                        symbol: new TextSymbol({
+                            text:
+            `APPLICATION
+
+            ULPIN:
+            ${application.ulpin}
+
+            DIGIPIN:
+            ${application.digipin}`,
+                            color: "#008000",
+                            haloColor: "#ffffff",
+                            haloSize: 2,
+                            yoffset: 80
+                        })
+                    })
+                );
+
+                view.graphics.add(
+                    new Graphic({
+                        geometry: centroid,
+                        symbol: new TextSymbol({
+                            text:
+            `IMAGE
+
+            ULPIN:
+            ${imageUlpin}
+
+            DIGIPIN:
+            ${imageDigipin}`,
+                            color: "#ff0000",
+                            haloColor: "#ffffff",
+                            haloSize: 2,
+                            yoffset: -80
+                        })
+                    })
+                );
+
+                alert(
+                    "Geotagged photo location mismatch."
+                );
+            }
+                
 
             } catch (error) {
 
@@ -1017,36 +1105,42 @@ const GeoIdentifierTool = ({
 
 
     const applicationRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    !app.disbursementStatus &&
-                    app.verifiedStatus !==
-                    "Rejected"
-            );
-        }, [applications]);
+    useMemo(() => {
+        return applications.filter(
+            app =>
+                app.disbursementStatus !==
+                "Hold" &&
+                !app.disbursementStatus &&
+                app.verifiedStatus !==
+                "Rejected"
+        );
+    }, [applications]);
 
-    const constructionRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    app.disbursementStatus ===
+   const constructionRecords =
+    useMemo(() => {
+        return applications.filter(
+            app =>
+                app.disbursementStatus ===
                     "Initial" &&
-                    app.verifiedStatus ===
-                    "Approved"
-            );
-        }, [applications]);
+                app.verifiedStatus ===
+                    "Approved" &&
+                app.disbursementStatus !==
+                    "Hold"
+        );
+    }, [applications]);
 
     const completionRecords =
-        useMemo(() => {
-            return applications.filter(
-                app =>
-                    app.disbursementStatus ===
+    useMemo(() => {
+        return applications.filter(
+            app =>
+                app.disbursementStatus ===
                     "Intermediate" &&
-                    app.constructionStatus ===
-                    "Approved"
-            );
-        }, [applications]);
+                app.constructionStatus ===
+                    "Approved" &&
+                app.disbursementStatus !==
+                    "Hold"
+        );
+    }, [applications]);
 
     const updateApplication =
         (applicationId, updates) => {
@@ -1088,7 +1182,8 @@ const GeoIdentifierTool = ({
                 applicationId,
                 {
                     verifiedStatus:
-                        "Rejected"
+                        "Rejected",
+                    disbursementStatus: "Hold"
                 }
             );
         };
@@ -1132,7 +1227,8 @@ const GeoIdentifierTool = ({
                 applicationId,
                 {
                     constructionStatus:
-                        "Rejected"
+                        "Rejected",
+                    disbursementStatus: "Hold"
                 }
             );
         };
@@ -1180,7 +1276,8 @@ const GeoIdentifierTool = ({
                 {
                     completionStatus:
                         "Rejected",
-                    completionCertificateGenerated: false
+                    completionCertificateGenerated: false,
+                    disbursementStatus: "Hold"
                 }
             );
         };
@@ -1243,6 +1340,16 @@ const GeoIdentifierTool = ({
                 building.geometry
             );
 
+            await view.goTo(
+                [
+                    parcel.geometry,
+                    building.geometry
+                ],
+                {
+                    duration: 1500
+                }
+            );
+
             // Convert parcel geometry if needed
             let geometry4326 =
                 parcel.geometry;
@@ -1278,6 +1385,11 @@ const GeoIdentifierTool = ({
                 ulpinResponse?.data?.data?.ulpin ||
                 ulpinResponse?.data?.data ||
                 "";
+
+            addUlpinLabel(
+                parcel.geometry.extent.center,
+                ulpin
+            );
 
             // Generate DIGIPIN
             let centroid =
@@ -1315,6 +1427,10 @@ const GeoIdentifierTool = ({
                 digipinResponse?.data
                     ?.data ||
                 "";
+                addDigipinLabel(
+                centroid,
+                digipin
+            );
 
             // Duplicate check
             const duplicate =
@@ -1475,8 +1591,66 @@ const GeoIdentifierTool = ({
                             }
                         </p>
 
+                        
+
                         {showGeoFields && (
-                            <>
+                            <>{verifyBtnText === "Verify Construction Area" &&
+                                application.constructionImage && (
+                                    <div
+                                        style={{
+                                            marginBottom: "12px"
+                                        }}
+                                    >
+                                        <img
+                                            src={application.constructionImage}
+                                            alt="Construction Area"
+                                            onClick={() =>
+                                                setSelectedImage(
+                                                    application.constructionImage
+                                                )
+                                            }
+                                            style={{
+                                                width: "100%",
+                                                maxHeight: "220px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                                cursor: "pointer",
+                                                border: "1px solid #ccc"
+                                            }}
+                                            
+                                        />
+                                    </div>
+                                    
+                            )}
+
+                            {verifyBtnText === "Verify Completion Certificate" &&
+                                application.completionCertificateImage && (
+                                    <div
+                                        style={{
+                                            marginBottom: "12px"
+                                        }}
+                                    >
+                                        <img
+                                            src={application.completionCertificateImage}
+                                            alt="Completion Certificate"
+                                            onClick={() =>
+                                                setSelectedImage(
+                                                    application.completionCertificateImage
+                                                )
+                                            }
+                                            style={{
+                                                width: "100%",
+                                                maxHeight: "220px",
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                                cursor: "pointer",
+                                                border: "1px solid #ccc"
+                                            }}
+                                        />
+                                    </div>
+                            )}
+
+
                                 <p>
                                     <strong>
                                         Image Lat:
@@ -1502,6 +1676,15 @@ const GeoIdentifierTool = ({
                                         </strong>{" "}
                                         {application.imageUlpin}
                                     </p>
+
+                                    
+                                )}
+                                {application.imageUlpin && (
+                                <p>
+                                    Construction Image:
+                                    {application.constructionImage}
+                                </p>
+                                    
                                 )}
 
                                 {application.imageDigipin && (
@@ -1512,8 +1695,42 @@ const GeoIdentifierTool = ({
                                         {application.imageDigipin}
                                     </p>
                                 )}
+
+                                {application.constructionRemarks && (
+                                    <p>
+                                        <strong>
+                                            Verification Result:
+                                        </strong>{" "}
+                                        {
+                                            application.constructionRemarks
+                                        }
+                                    </p>
+                                )}
+
+                                {application.certificateAddress && (
+                                    <p>
+                                        <strong>
+                                            Certificate Address:
+                                        </strong>{" "}
+                                        {
+                                            application.certificateAddress
+                                        }
+                                    </p>
+                                )}
+
+                                {application.completionRemarks && (
+                                    <p>
+                                        <strong>
+                                            Certificate Verification:
+                                        </strong>{" "}
+                                        {
+                                            application.completionRemarks
+                                        }
+                                    </p>
+                                )}
                             </>
                         )}
+
 
                         <div className="action-panel-urban">
 
@@ -1598,7 +1815,7 @@ const GeoIdentifierTool = ({
         <div className="housing-verification-container">
 
             <h2>
-                Urban Housing Scheme
+                Urban Housing Scheme test
             </h2>
 
             <div className="sub-title-urban">
@@ -1725,8 +1942,22 @@ const GeoIdentifierTool = ({
                         </div>
                     )}
             </div>
+           {/* {selectedImage && (
+                <div
+                    className="image-modal"
+                    onClick={() =>
+                        setSelectedImage(null)
+                    }
+                >f
+                    <img
+                        src={selectedImage}
+                        alt="Preview"
+                    />
+                </div>
+            )} */}
         </div>
-    );
+   
+);
 };
 
 export default GeoIdentifierTool;
