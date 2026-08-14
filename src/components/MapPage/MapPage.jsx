@@ -1532,7 +1532,7 @@ const MapPage = () => {
                             className="header-launch-btn"
                             onClick={launchBhuSaarthi}
                         >
-                            Launch BhuSaarthi
+                            Launch Land AI Bot
                         </button>
 
                         <button
